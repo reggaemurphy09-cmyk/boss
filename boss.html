@@ -9,256 +9,112 @@
 <title>BOSS ME-90 Settings</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{
-  background:#0a0a0f!important;
-  color:#e0e0f0;
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;
-  min-height:100vh;
-  -webkit-text-size-adjust:none;
-  overflow-x:hidden;
-}
-:root{
-  --bg:#0a0a0f;
-  --surface:#111118;
-  --card:#16161f;
-  --border:#2a2a3a;
-  --accent:#ff3333;
-  --accent2:#ff8800;
-  --accent3:#00ccff;
-  --green:#00ff88;
-  --text:#e0e0f0;
-  --muted:#777790;
-}
-/* HEADER */
-.hdr{
-  background:#0d0005;
-  border-bottom:2px solid var(--accent);
-  padding:12px 14px;
-  position:sticky;top:0;z-index:999;
-  box-shadow:0 2px 20px rgba(255,50,50,0.3);
-}
-.hdr-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.boss{
-  background:var(--accent);color:#fff;
-  font-size:11px;font-weight:900;
-  padding:4px 9px;letter-spacing:2px;
-  border-radius:2px;flex-shrink:0;
-}
-.htitle{
-  font-size:14px;font-weight:800;
-  color:#fff;letter-spacing:1px;
-  font-variant:small-caps;
-}
+html,body{background:#0a0a0f!important;color:#e0e0f0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;min-height:100vh;-webkit-text-size-adjust:none;overflow-x:hidden}
+:root{--bg:#0a0a0f;--surface:#111118;--card:#16161f;--border:#2a2a3a;--accent:#ff3333;--accent2:#ff8800;--accent3:#00ccff;--green:#00ff88;--text:#e0e0f0;--muted:#777790}
+.hdr{background:#0d0005;border-bottom:2px solid var(--accent);padding:12px 14px;position:sticky;top:0;z-index:999;box-shadow:0 2px 20px rgba(255,50,50,0.3)}
+.hdr-top{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.boss{background:var(--accent);color:#fff;font-size:11px;font-weight:900;padding:4px 9px;letter-spacing:2px;border-radius:2px;flex-shrink:0}
+.htitle{font-size:14px;font-weight:800;color:#fff;letter-spacing:1px;font-variant:small-caps}
 .htitle span{color:var(--accent3)}
-.addbtn{
-  margin-left:auto;
-  background:var(--accent);
-  border:none;color:#fff;
-  font-size:11px;font-weight:700;
-  padding:8px 14px;border-radius:4px;
-  letter-spacing:1px;cursor:pointer;
-  -webkit-appearance:none;
-  flex-shrink:0;
-}
+.hbtns{margin-left:auto;display:flex;gap:6px;flex-shrink:0}
+.addbtn{background:var(--accent);border:none;color:#fff;font-size:11px;font-weight:700;padding:8px 12px;border-radius:4px;cursor:pointer;-webkit-appearance:none}
+.pastebtn{background:var(--accent3);border:none;color:#000;font-size:11px;font-weight:700;padding:8px 12px;border-radius:4px;cursor:pointer;-webkit-appearance:none}
 .srchwrap{position:relative}
-.srchwrap input{
-  width:100%;
-  background:rgba(255,255,255,0.08);
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:10px 14px 10px 36px;
-  color:var(--text);font-size:14px;
-  outline:none;-webkit-appearance:none;
-}
+.srchwrap input{width:100%;background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:8px;padding:10px 14px 10px 36px;color:var(--text);font-size:14px;outline:none;-webkit-appearance:none}
 .srchwrap input::placeholder{color:var(--muted)}
-.srchwrap input:focus{border-color:var(--accent3);background:rgba(0,200,255,0.06)}
+.srchwrap input:focus{border-color:var(--accent3)}
 .sicon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px}
-/* MAIN */
 .main{padding:12px 12px 40px;max-width:700px;margin:0 auto}
-.statsbar{
-  display:flex;gap:8px;flex-wrap:wrap;
-  margin-bottom:14px;
-}
-.stat{
-  background:var(--card);border:1px solid var(--border);
-  padding:5px 11px;border-radius:4px;
-  font-size:11px;color:var(--muted);
-  font-family:'Courier New',monospace;
-}
+.statsbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--border);padding:5px 11px;border-radius:4px;font-size:11px;color:var(--muted);font-family:'Courier New',monospace}
 .stat b{color:var(--accent3)}
-/* SONG LIST */
 .slist{display:flex;flex-direction:column;gap:6px}
-/* SONG CARD */
-.scard{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-left:3px solid var(--accent);
-  border-radius:6px;overflow:hidden;
-}
-.scard.open{
-  border-color:var(--accent3);
-  border-left-color:var(--green);
-}
-.shead{
-  display:flex;align-items:center;
-  padding:11px 12px;gap:8px;
-  cursor:pointer;user-select:none;
-  -webkit-user-select:none;
-}
-.bbank{
-  background:var(--accent);color:#fff;
-  font-size:9px;font-weight:700;
-  padding:3px 7px;border-radius:3px;
-  letter-spacing:1px;white-space:nowrap;
-  flex-shrink:0;font-family:'Courier New',monospace;
-}
+.scard{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;overflow:hidden}
+.scard.open{border-color:var(--accent3);border-left-color:var(--green)}
+.shead{display:flex;align-items:center;padding:11px 12px;gap:8px;cursor:pointer;user-select:none;-webkit-user-select:none}
+.bbank{background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:3px 7px;border-radius:3px;letter-spacing:1px;white-space:nowrap;flex-shrink:0;font-family:'Courier New',monospace}
 .sinfo{flex:1;min-width:0}
-.sname{
-  font-size:13px;font-weight:700;color:#fff;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
+.sname{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sartist{font-size:11px;color:var(--muted);margin-top:1px}
-.gtag{
-  font-size:9px;padding:2px 7px;border-radius:3px;
-  letter-spacing:1px;white-space:nowrap;flex-shrink:0;
-  font-family:'Courier New',monospace;font-weight:600;
-}
+.gtag{font-size:9px;padding:2px 7px;border-radius:3px;letter-spacing:1px;white-space:nowrap;flex-shrink:0;font-family:'Courier New',monospace;font-weight:600}
 .g-rock{background:rgba(255,50,50,0.15);color:#ff6666;border:1px solid rgba(255,50,50,0.3)}
 .g-metal{background:rgba(255,136,0,0.15);color:#ffaa33;border:1px solid rgba(255,136,0,0.3)}
 .g-ballad{background:rgba(0,200,255,0.15);color:#33ccff;border:1px solid rgba(0,200,255,0.3)}
 .g-funk{background:rgba(0,255,136,0.15);color:#00ff88;border:1px solid rgba(0,255,136,0.3)}
 .g-alt{background:rgba(180,100,255,0.15);color:#cc88ff;border:1px solid rgba(180,100,255,0.3)}
 .g-special{background:rgba(255,200,0,0.15);color:#ffcc00;border:1px solid rgba(255,200,0,0.3)}
-.delbtn{
-  background:none;border:1px solid rgba(255,50,50,0.3);
-  color:var(--accent);width:26px;height:26px;
-  border-radius:4px;font-size:12px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;-webkit-appearance:none;
-}
+.delbtn{background:none;border:1px solid rgba(255,50,50,0.3);color:var(--accent);width:26px;height:26px;border-radius:4px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-appearance:none}
 .expi{color:var(--muted);font-size:11px;flex-shrink:0;transition:transform 0.25s}
 .scard.open .expi{transform:rotate(180deg);color:var(--green)}
-/* SETTINGS PANEL */
 .spanel{display:none;border-top:1px solid var(--border);padding:0 12px 12px}
 .scard.open .spanel{display:block}
-/* TABS */
-.tabs{display:flex;gap:4px;margin:10px 0 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
-.tab{
-  background:#1a1a28;border:1px solid var(--border);
-  color:var(--muted);padding:6px 11px;
-  font-size:10px;border-radius:4px;cursor:pointer;
-  white-space:nowrap;flex-shrink:0;
-  font-family:'Courier New',monospace;letter-spacing:1px;
-  -webkit-appearance:none;
-}
-.tab.on{background:var(--accent3);color:#000;border-color:var(--accent3);font-weight:700}
-.tc{display:none}.tc.on{display:block}
-/* PARAM BLOCK */
-.pblock{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:5px;padding:10px 12px;margin-bottom:6px;
-}
-.ptitle{
-  font-size:9px;letter-spacing:2px;color:var(--accent3);
-  margin-bottom:8px;font-family:'Courier New',monospace;
-  padding-bottom:4px;border-bottom:1px solid var(--border);
-}
-.prow{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);
-}
+.ptabs{display:flex;gap:3px;margin:10px 0 8px}
+.ptab{flex:1;background:#1a1a28;border:1px solid var(--border);color:var(--muted);padding:7px 2px;font-size:10px;border-radius:4px;cursor:pointer;white-space:nowrap;font-family:'Courier New',monospace;text-align:center;-webkit-appearance:none}
+.ptab.on{color:#000;border-color:transparent;font-weight:700}
+.ptab.intro.on{background:#ff8800}
+.ptab.verse.on{background:#00ccff}
+.ptab.chorus.on{background:#ff3333}
+.ptab.solo.on{background:#00ff88}
+.pc{display:none}.pc.on{display:block}
+.stabs{display:flex;gap:3px;margin:8px 0;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.stab{background:#111118;border:1px solid var(--border);color:var(--muted);padding:5px 9px;font-size:9px;border-radius:3px;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:'Courier New',monospace;letter-spacing:1px;-webkit-appearance:none}
+.stab.on{background:var(--surface);color:var(--accent3);border-color:var(--accent3)}
+.sc{display:none}.sc.on{display:block}
+.pblock{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:10px 12px;margin-bottom:6px}
+.ptitle{font-size:9px;letter-spacing:2px;color:var(--accent3);margin-bottom:8px;font-family:'Courier New',monospace;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.prow{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
 .prow:last-child{border:none}
 .pname{font-size:11px;color:var(--muted);font-family:'Courier New',monospace}
 .pval{font-size:12px;font-weight:600;font-family:'Courier New',monospace}
-.pval.hi{color:var(--green)}
-.pval.warn{color:var(--accent2)}
-.pval.off{color:#444}
-/* TIP */
-.tip{
-  background:rgba(0,200,255,0.06);
-  border-left:3px solid var(--accent3);
-  border-radius:0 4px 4px 0;
-  padding:8px 11px;margin-top:8px;
-  font-size:12px;color:var(--accent3);
-  line-height:1.5;font-family:'Courier New',monospace;
-}
-/* EMPTY */
+.pval.hi{color:var(--green)}.pval.warn{color:var(--accent2)}.pval.off{color:#444}
+.tip{background:rgba(0,200,255,0.06);border-left:3px solid var(--accent3);border-radius:0 4px 4px 0;padding:8px 11px;margin-top:8px;font-size:12px;color:var(--accent3);line-height:1.5;font-family:'Courier New',monospace}
+.ginfo{background:rgba(255,136,0,0.06);border:1px solid rgba(255,136,0,0.2);border-radius:5px;padding:10px 12px;margin-bottom:6px;display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.ginfo-row{display:flex;justify-content:space-between;padding:3px 0}
 .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;font-family:'Courier New',monospace}
-/* MODAL */
-.moverlay{
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,0.92);z-index:9999;
-  overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;
-}
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
 .moverlay.open{display:block}
-.modal{
-  background:var(--card);border:1px solid var(--accent3);
-  border-radius:8px;overflow:hidden;
-  max-width:600px;margin:0 auto;
-  box-shadow:0 0 40px rgba(0,200,255,0.15);
-}
-.mhdr{
-  background:#0a1520;border-bottom:1px solid var(--border);
-  padding:13px 16px;display:flex;justify-content:space-between;align-items:center;
-  position:sticky;top:0;z-index:10;
-}
+.modal{background:var(--card);border:1px solid var(--accent3);border-radius:8px;overflow:hidden;max-width:600px;margin:0 auto;box-shadow:0 0 40px rgba(0,200,255,0.15)}
+.mhdr{background:#0a1520;border-bottom:1px solid var(--border);padding:13px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
 .mtitle{font-size:13px;color:var(--accent3);letter-spacing:2px;font-family:'Courier New',monospace}
-.closebtn{
-  background:none;border:1px solid var(--border);
-  color:var(--muted);width:32px;height:32px;
-  border-radius:4px;font-size:16px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  -webkit-appearance:none;
-}
+.closebtn{background:none;border:1px solid var(--border);color:var(--muted);width:32px;height:32px;border-radius:4px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-appearance:none}
 .mbody{padding:14px}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .frow.full{grid-template-columns:1fr}
 .fg{display:flex;flex-direction:column;gap:5px}
 .flabel{font-size:10px;color:var(--muted);letter-spacing:1px;font-family:'Courier New',monospace}
-.finput,.fsel{
-  background:var(--surface);border:1px solid var(--border);
-  color:var(--text);padding:9px 12px;
-  font-size:13px;border-radius:4px;
-  outline:none;width:100%;-webkit-appearance:none;
-  font-family:'Courier New',monospace;
-}
+.finput,.fsel{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 12px;font-size:13px;border-radius:4px;outline:none;width:100%;-webkit-appearance:none;font-family:'Courier New',monospace}
 .finput:focus,.fsel:focus{border-color:var(--accent3)}
-.fsel{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23777790' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 10px center;
-  padding-right:28px;
-}
-.slabel{
-  font-size:10px;color:var(--accent);letter-spacing:2px;
-  margin:14px 0 8px;padding-bottom:5px;
-  border-bottom:1px solid var(--border);
-  font-family:'Courier New',monospace;
-}
-.savebtn{
-  background:linear-gradient(135deg,var(--green),#00aa55);
-  border:none;color:#000;
-  font-size:13px;font-weight:900;
-  padding:14px;border-radius:6px;
-  width:100%;margin-top:14px;cursor:pointer;
-  letter-spacing:2px;-webkit-appearance:none;
-  font-family:'Courier New',monospace;
-}
+.fsel{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23777790' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.slabel{font-size:10px;color:var(--accent);letter-spacing:2px;margin:14px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--border);font-family:'Courier New',monospace}
+.savebtn{background:linear-gradient(135deg,var(--green),#00aa55);border:none;color:#000;font-size:13px;font-weight:900;padding:14px;border-radius:6px;width:100%;margin-top:14px;cursor:pointer;letter-spacing:2px;-webkit-appearance:none;font-family:'Courier New',monospace}
+.paste-info{background:rgba(0,200,255,0.05);border:1px solid rgba(0,200,255,0.2);border-radius:6px;padding:12px;margin-bottom:14px;font-size:12px;color:var(--accent3);font-family:'Courier New',monospace;line-height:1.7}
+.paste-info b{color:#fff;display:block;margin-bottom:6px;font-size:13px}
+.paste-area{width:100%;height:200px;background:var(--surface);border:1px solid var(--accent3);border-radius:6px;padding:12px;color:var(--text);font-family:'Courier New',monospace;font-size:11px;resize:none;outline:none;-webkit-appearance:none;line-height:1.6}
+.parse-btn{background:linear-gradient(135deg,var(--accent3),#0088aa);border:none;color:#000;font-size:13px;font-weight:900;padding:12px;border-radius:6px;width:100%;margin-top:10px;cursor:pointer;letter-spacing:2px;-webkit-appearance:none;font-family:'Courier New',monospace}
+.parse-result{display:none;margin-top:12px;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.3);border-radius:6px;padding:12px}
+.parse-result.show{display:block}
+.ok{color:var(--green);font-size:13px;font-family:'Courier New',monospace;margin-bottom:8px;font-weight:700}
+.err{color:var(--accent);font-size:12px;font-family:'Courier New',monospace}
+.confirm-btn{background:linear-gradient(135deg,var(--green),#00aa55);border:none;color:#000;font-size:13px;font-weight:900;padding:12px;border-radius:6px;width:100%;margin-top:10px;cursor:pointer;letter-spacing:2px;-webkit-appearance:none;font-family:'Courier New',monospace}
+.format-box{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-top:12px;font-size:10px;color:var(--muted);font-family:'Courier New',monospace;line-height:1.9}
+.format-box .fc{color:var(--accent3)}.format-box .fp{color:var(--accent2)}
 </style>
 </head>
 <body>
-
 <div class="hdr">
   <div class="hdr-top">
     <div class="boss">BOSS</div>
     <div class="htitle">ME-90 <span>SETTINGS</span></div>
-    <button class="addbtn" onclick="openM()">+ ADD</button>
+    <div class="hbtns">
+      <button class="pastebtn" onclick="openPaste()">📋 PASTE</button>
+      <button class="addbtn" onclick="openM()">+ ADD</button>
+    </div>
   </div>
   <div class="srchwrap">
     <span class="sicon">🔍</span>
     <input type="search" id="srch" placeholder="Search song or artist..." oninput="doFilter()">
   </div>
 </div>
-
 <div class="main">
   <div class="statsbar">
     <div class="stat">SONGS: <b id="tcnt">0</b></div>
@@ -269,360 +125,266 @@ html,body{
   <div class="slist" id="slist"></div>
 </div>
 
-<!-- MODAL -->
+<!-- PASTE MODAL -->
+
+<div class="moverlay" id="pmov">
+<div class="modal">
+  <div class="mhdr"><div class="mtitle">📋 PASTE SETTINGS</div><button class="closebtn" onclick="closePaste()">✕</button></div>
+  <div class="mbody">
+    <div class="paste-info"><b>📋 How to use:</b>1. Ask Claude for song settings<br>2. Copy the text<br>3. Paste here → PARSE → ADD ✅</div>
+    <textarea class="paste-area" id="pasteArea" placeholder="Paste Claude settings here...&#10;&#10;SONG: Song Name&#10;ARTIST: Artist&#10;GENRE: rock&#10;BANK: U1-1&#10;PICKUP: Bridge HB&#10;GUITAR VOL: 10 (Full)&#10;PEDAL FX: WAH&#10;TIP: tip here&#10;&#10;PART: INTRO&#10;PREAMP TYPE: NATURAL&#10;GAIN: 35%&#10;...&#10;&#10;PART: VERSE&#10;...&#10;&#10;PART: CHORUS&#10;...&#10;&#10;PART: SOLO&#10;..."></textarea>
+    <button class="parse-btn" onclick="parseSettings()">🔍 PARSE SETTINGS</button>
+    <div class="parse-result" id="parseResult"></div>
+    <div class="format-box"><span class="fc">Header:</span> SONG / ARTIST / GENRE / BANK / PICKUP / GUITAR VOL / PEDAL FX / TIP<br><span class="fp">Each PART (INTRO/VERSE/CHORUS/SOLO):</span><br>PREAMP TYPE / GAIN / BASS / MIDDLE / TREBLE / PREAMP LEVEL<br>COMP TYPE / SUSTAIN / OD TYPE / DRIVE / TONE / OD LEVEL<br>MOD TYPE / RATE / DEPTH / MOD LEVEL / DELAY TYPE / TIME / FEEDBACK / E.LEVEL<br>REVERB TYPE / REVERB LEVEL</div>
+  </div>
+</div>
+</div>
+
+<!-- ADD MODAL -->
 
 <div class="moverlay" id="mov">
 <div class="modal">
-  <div class="mhdr">
-    <div class="mtitle">ADD NEW SONG</div>
-    <button class="closebtn" onclick="closeM()">✕</button>
-  </div>
+  <div class="mhdr"><div class="mtitle">+ ADD NEW SONG</div><button class="closebtn" onclick="closeM()">✕</button></div>
   <div class="mbody">
     <div class="frow">
       <div class="fg"><label class="flabel">SONG NAME *</label><input class="finput" id="fs" placeholder="Song name"></div>
       <div class="fg"><label class="flabel">ARTIST *</label><input class="finput" id="fa" placeholder="Artist/Band"></div>
     </div>
     <div class="frow">
-      <div class="fg"><label class="flabel">GENRE</label>
-        <select class="fsel" id="fg2">
-          <option value="rock">ROCK</option><option value="metal">METAL</option>
-          <option value="ballad">BALLAD</option><option value="funk">FUNK</option>
-          <option value="alt">ALTERNATIVE</option><option value="special">SPECIAL FX</option>
-        </select>
-      </div>
-      <div class="fg"><label class="flabel">BANK SLOT</label>
-        <select class="fsel" id="fbank">
-          <option>U1-1</option><option>U1-2</option><option>U1-3</option><option>U1-4</option>
-          <option>U2-1</option><option>U2-2</option><option>U2-3</option><option>U2-4</option>
-          <option>U3-1</option><option>U3-2</option><option>U3-3</option><option>U3-4</option>
-          <option>U4-1</option><option>U4-2</option><option>U4-3</option><option>U4-4</option>
-          <option>U5-1</option><option>U5-2</option><option>U5-3</option><option>U5-4</option>
-          <option>U6-1</option><option>U6-2</option><option>U6-3</option><option>U6-4</option>
-          <option>U7-1</option><option>U7-2</option><option>U7-3</option><option>U7-4</option>
-          <option>U8-1</option><option>U8-2</option><option>U8-3</option><option>U8-4</option>
-          <option>U9-1</option><option>U9-2</option><option>U9-3</option><option>U9-4</option>
-        </select>
-      </div>
+      <div class="fg"><label class="flabel">GENRE</label><select class="fsel" id="fg2"><option value="rock">ROCK</option><option value="metal">METAL</option><option value="ballad">BALLAD</option><option value="funk">FUNK</option><option value="alt">ALTERNATIVE</option><option value="special">SPECIAL FX</option></select></div>
+      <div class="fg"><label class="flabel">BANK</label><select class="fsel" id="fbank"><option>U1-1</option><option>U1-2</option><option>U1-3</option><option>U1-4</option><option>U2-1</option><option>U2-2</option><option>U2-3</option><option>U2-4</option><option>U3-1</option><option>U3-2</option><option>U3-3</option><option>U3-4</option><option>U4-1</option><option>U4-2</option><option>U4-3</option><option>U4-4</option><option>U5-1</option><option>U5-2</option><option>U5-3</option><option>U5-4</option><option>U6-1</option><option>U6-2</option><option>U6-3</option><option>U6-4</option><option>U7-1</option><option>U7-2</option><option>U7-3</option><option>U7-4</option><option>U8-1</option><option>U8-2</option><option>U8-3</option><option>U8-4</option><option>U9-1</option><option>U9-2</option><option>U9-3</option><option>U9-4</option></select></div>
     </div>
-
-```
-<div class="slabel">⚙ PREAMP</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">TYPE</label>
-    <select class="fsel" id="fpt">
-      <option>NATURAL</option><option>TWIN COMBO</option><option>TWEED COMBO</option>
-      <option>DIAMOND</option><option>BRIT STACK</option><option>RECTI STACK</option>
-      <option>X-CRUNCH</option><option>X-HI GAIN</option><option>MAXIMUM</option>
-      <option>JUGGERNAUT</option><option>X-MODDED</option>
-    </select>
-  </div>
-  <div class="fg"><label class="flabel">GAIN %</label><input class="finput" id="fgain" placeholder="e.g. 35%"></div>
-</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">BASS %</label><input class="finput" id="fbass" placeholder="e.g. 50%"></div>
-  <div class="fg"><label class="flabel">MIDDLE %</label><input class="finput" id="fmid" placeholder="e.g. 60%"></div>
-</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">TREBLE %</label><input class="finput" id="ftre" placeholder="e.g. 48%"></div>
-  <div class="fg"><label class="flabel">LEVEL %</label><input class="finput" id="fplvl" placeholder="e.g. 60%"></div>
-</div>
-
-<div class="slabel">🎛 COMP/FX1</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">TYPE</label>
-    <select class="fsel" id="fcomp">
-      <option>COMP</option><option>SLOW GEAR</option><option>OFF</option>
-      <option>HUMANIZER</option><option>OCTAVE</option><option>DEFRETTER</option>
-      <option>T.WAH UP</option><option>FEEDBACKER</option><option>AC SIM</option><option>SOLO</option>
-    </select>
-  </div>
-  <div class="fg"><label class="flabel">SUSTAIN %</label><input class="finput" id="fsus" placeholder="e.g. 60%"></div>
-</div>
-
-<div class="slabel">🔥 OD/DS</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">TYPE</label>
-    <select class="fsel" id="fodt">
-      <option>OFF</option><option>BLUES OD</option><option>CENTA OD</option>
-      <option>T-SCREAM</option><option>OVERDRIVE</option><option>BOOST</option>
-      <option>DISTORTION</option><option>TURBO DS</option><option>RAT DS</option>
-      <option>METAL DS</option><option>CORE</option><option>MUFF FUZZ</option>
-    </select>
-  </div>
-  <div class="fg"><label class="flabel">DRIVE %</label><input class="finput" id="fdrv" placeholder="e.g. 35%"></div>
-</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">TONE %</label><input class="finput" id="fton" placeholder="e.g. 50%"></div>
-  <div class="fg"><label class="flabel">LEVEL %</label><input class="finput" id="fodlvl" placeholder="e.g. 55%"></div>
-</div>
-
-<div class="slabel">〰 MOD</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">TYPE</label>
-    <select class="fsel" id="fmt">
-      <option>OFF</option><option>CHORUS</option><option>FLANGER</option>
-      <option>PHASER</option><option>TREMOLO</option><option>VIBRATO</option>
-      <option>PITCH SHIFT</option><option>HARMONIST</option><option>ROTARY</option><option>OVERTONE</option>
-    </select>
-  </div>
-  <div class="fg"><label class="flabel">RATE %</label><input class="finput" id="fmr" placeholder="e.g. 25%"></div>
-</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">DEPTH %</label><input class="finput" id="fmd" placeholder="e.g. 30%"></div>
-  <div class="fg"><label class="flabel">LEVEL %</label><input class="finput" id="fml" placeholder="e.g. 45%"></div>
-</div>
-
-<div class="slabel">⏱ DELAY</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">TYPE</label>
-    <select class="fsel" id="fdt">
-      <option>ANALOG</option><option>STANDARD</option><option>WARM</option>
-      <option>TAPE</option><option>MODULATE</option><option>REVERSE</option>
-      <option>SHIMMER</option><option>TERA ECHO</option><option>PHRASE LOOP</option><option>+REVERB</option>
-    </select>
-  </div>
-  <div class="fg"><label class="flabel">TIME</label><input class="finput" id="fdtime" placeholder="e.g. 380ms"></div>
-</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">FEEDBACK %</label><input class="finput" id="fdfb" placeholder="e.g. 25%"></div>
-  <div class="fg"><label class="flabel">E.LEVEL %</label><input class="finput" id="fdel" placeholder="e.g. 38%"></div>
-</div>
-
-<div class="slabel">🌊 REVERB & GUITAR</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">REVERB TYPE</label>
-    <select class="fsel" id="frt"><option>ROOM</option><option>HALL</option><option>SPRING</option></select>
-  </div>
-  <div class="fg"><label class="flabel">REVERB LEVEL %</label><input class="finput" id="frl" placeholder="e.g. 30%"></div>
-</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">PEDAL FX</label>
-    <select class="fsel" id="fpfx">
-      <option>WAH</option><option>VOICE</option><option>+1 OCT</option><option>+2 OCT</option>
-      <option>-1 OCT</option><option>-2 OCT</option><option>OD/DS</option>
-      <option>MOD RATE</option><option>DELAY LEVEL</option><option>FREEZE</option>
-    </select>
-  </div>
-  <div class="fg"><label class="flabel">PICKUP</label>
-    <select class="fsel" id="fpick">
-      <option>Bridge HB</option><option>Middle SC</option><option>Neck SC</option>
-      <option>Bridge+Middle</option><option>Middle+Neck</option>
-    </select>
-  </div>
-</div>
-<div class="frow">
-  <div class="fg"><label class="flabel">GUITAR VOL</label>
-    <select class="fsel" id="fvol">
-      <option>10 (Full)</option><option>9</option><option>8</option>
-      <option>7</option><option>6</option><option>5 (Half)</option>
-    </select>
-  </div>
-  <div class="fg"></div>
-</div>
-<div class="frow full">
-  <div class="fg"><label class="flabel">TIPS / NOTES</label><input class="finput" id="ftip" placeholder="Playing tips..."></div>
-</div>
-<button class="savebtn" onclick="saveS()">💾 SAVE SONG SETTINGS</button>
-```
-
+    <div class="frow">
+      <div class="fg"><label class="flabel">PICKUP</label><select class="fsel" id="fpick"><option>Bridge HB</option><option>Middle SC</option><option>Neck SC</option><option>Bridge+Middle</option><option>Middle+Neck</option></select></div>
+      <div class="fg"><label class="flabel">GUITAR VOL</label><select class="fsel" id="fvol"><option>10 (Full)</option><option>9</option><option>8</option><option>7</option><option>6</option><option>5 (Half)</option></select></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label class="flabel">PEDAL FX</label><select class="fsel" id="fpfx"><option>WAH</option><option>VOICE</option><option>+1 OCT</option><option>+2 OCT</option><option>-1 OCT</option><option>-2 OCT</option><option>OD/DS</option><option>MOD RATE</option><option>DELAY LEVEL</option><option>FREEZE</option></select></div>
+      <div class="fg"></div>
+    </div>
+    <div class="frow full"><div class="fg"><label class="flabel">TIPS</label><input class="finput" id="ftip" placeholder="Playing tips..."></div></div>
+    <button class="savebtn" onclick="saveS()">💾 SAVE SONG</button>
   </div>
 </div>
 </div>
 
 <script>
-const DEF=[
-  {id:1,song:"Killing In The Name",artist:"Rage Against The Machine",genre:"metal",bank:"U4-1",
-   preamp:{type:"X-CRUNCH",gain:"72%",bass:"52%",middle:"58%",treble:"52%",level:"62%"},
-   comp:{type:"OFF",sustain:"--"},
-   od:{type:"DISTORTION",drive:"72%",tone:"52%",level:"60%"},
-   mod:{type:"PHASER",rate:"38%",depth:"48%",level:"55%"},
-   delay:{type:"STANDARD",time:"100ms",feedback:"12%",elevel:"20%"},
-   reverb:{type:"ROOM",level:"12%"},
-   pedal:"WAH",pickup:"Bridge HB",vol:"10 (Full)",
-   tip:"WAH pedal for Morello scratch. No compression. Tight palm muting on main riff!"},
-  {id:2,song:"Under The Bridge",artist:"Red Hot Chili Peppers",genre:"ballad",bank:"U1-2",
-   preamp:{type:"NATURAL",gain:"25%",bass:"52%",middle:"55%",treble:"48%",level:"57%"},
-   comp:{type:"COMP",sustain:"62%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"45%"},
-   delay:{type:"WARM",time:"420ms",feedback:"28%",elevel:"40%"},
-   reverb:{type:"HALL",level:"35%"},
-   pedal:"WAH",pickup:"Neck SC",vol:"8",
-   tip:"Neck pickup warm emotional tone. Guitar volume 8 for gentle verse feel."},
-  {id:3,song:"Californication",artist:"Red Hot Chili Peppers",genre:"ballad",bank:"U1-3",
-   preamp:{type:"NATURAL",gain:"22%",bass:"52%",middle:"54%",treble:"48%",level:"55%"},
-   comp:{type:"COMP",sustain:"60%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"43%"},
-   delay:{type:"WARM",time:"450ms",feedback:"30%",elevel:"42%"},
-   reverb:{type:"HALL",level:"38%"},
-   pedal:"WAH",pickup:"Neck SC",vol:"7",
-   tip:"Very soft delicate tone. Guitar volume 7. Barely touching strings."},
-  {id:4,song:"Can't Stop",artist:"Red Hot Chili Peppers",genre:"funk",bank:"U6-1",
-   preamp:{type:"TWIN COMBO",gain:"30%",bass:"50%",middle:"58%",treble:"52%",level:"60%"},
-   comp:{type:"COMP",sustain:"65%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"PHASER",rate:"35%",depth:"40%",level:"48%"},
-   delay:{type:"ANALOG",time:"300ms",feedback:"18%",elevel:"32%"},
-   reverb:{type:"ROOM",level:"20%"},
-   pedal:"WAH",pickup:"Middle SC",vol:"10 (Full)",
-   tip:"Middle pickup funky tone. Tight rhythmic strumming. WAH pedal for iconic riff!"},
-  {id:5,song:"Otherside",artist:"Red Hot Chili Peppers",genre:"alt",bank:"U7-1",
-   preamp:{type:"NATURAL",gain:"26%",bass:"52%",middle:"55%",treble:"47%",level:"57%"},
-   comp:{type:"COMP",sustain:"60%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"FLANGER",rate:"22%",depth:"28%",level:"44%"},
-   delay:{type:"WARM",time:"430ms",feedback:"28%",elevel:"40%"},
-   reverb:{type:"HALL",level:"36%"},
-   pedal:"WAH",pickup:"Neck SC",vol:"8",
-   tip:"Neck pickup dark moody tone. FLANGER gives mysterious Otherside feel."},
-  {id:6,song:"Snow (Hey Oh)",artist:"Red Hot Chili Peppers",genre:"rock",bank:"U6-3",
-   preamp:{type:"TWIN COMBO",gain:"27%",bass:"50%",middle:"56%",treble:"52%",level:"58%"},
-   comp:{type:"COMP",sustain:"63%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"25%",depth:"30%",level:"46%"},
-   delay:{type:"ANALOG",time:"360ms",feedback:"24%",elevel:"38%"},
-   reverb:{type:"ROOM",level:"25%"},
-   pedal:"WAH",pickup:"Middle SC",vol:"9",
-   tip:"FINGERPICK the iconic riff — no pick! Fast precise fingerpicking technique."},
-  {id:7,song:"By The Way",artist:"Red Hot Chili Peppers",genre:"rock",bank:"U6-4",
-   preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"57%",treble:"50%",level:"58%"},
-   comp:{type:"COMP",sustain:"62%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"28%",depth:"35%",level:"48%"},
-   delay:{type:"ANALOG",time:"370ms",feedback:"25%",elevel:"40%"},
-   reverb:{type:"ROOM",level:"27%"},
-   pedal:"WAH",pickup:"Middle SC",vol:"9",
-   tip:"Layered clean tone. Middle pickup bright clean sound."},
-  {id:8,song:"Scar Tissue",artist:"Red Hot Chili Peppers",genre:"ballad",bank:"U1-4",
-   preamp:{type:"NATURAL",gain:"24%",bass:"52%",middle:"55%",treble:"50%",level:"56%"},
-   comp:{type:"COMP",sustain:"62%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"20%",depth:"26%",level:"44%"},
-   delay:{type:"WARM",time:"440ms",feedback:"28%",elevel:"40%"},
-   reverb:{type:"HALL",level:"36%"},
-   pedal:"WAH",pickup:"Neck SC",vol:"8",
-   tip:"Dreamy soft tone. Neck pickup. Slide guitar feel smooth playing."},
-  {id:9,song:"Enter Sandman",artist:"Metallica",genre:"metal",bank:"U8-2",
-   preamp:{type:"MAXIMUM",gain:"78%",bass:"46%",middle:"52%",treble:"52%",level:"65%"},
-   comp:{type:"OFF",sustain:"--"},
-   od:{type:"METAL DS",drive:"75%",tone:"48%",level:"62%"},
-   mod:{type:"OFF",rate:"--",depth:"--",level:"--"},
-   delay:{type:"STANDARD",time:"55ms",feedback:"8%",elevel:"15%"},
-   reverb:{type:"ROOM",level:"10%"},
-   pedal:"WAH",pickup:"Bridge HB",vol:"10 (Full)",
-   tip:"TIGHT palm muting is everything! Pick close to bridge. Drop D tuning needed!"},
-  {id:10,song:"Livin On A Prayer",artist:"Bon Jovi",genre:"rock",bank:"U4-1",
-   preamp:{type:"X-CRUNCH",gain:"55%",bass:"48%",middle:"62%",treble:"50%",level:"62%"},
-   comp:{type:"COMP",sustain:"55%"},
-   od:{type:"BLUES OD",drive:"35%",tone:"50%",level:"55%"},
-   mod:{type:"CHORUS",rate:"35%",depth:"40%",level:"52%"},
-   delay:{type:"ANALOG",time:"360ms",feedback:"25%",elevel:"38%"},
-   reverb:{type:"HALL",level:"30%"},
-   pedal:"WAH",pickup:"Bridge HB",vol:"10 (Full)",
-   tip:"Slow WAH for talk box simulation on intro. Bridge HB for full chorus sections."},
-  {id:11,song:"You Give Love A Bad Name",artist:"Bon Jovi",genre:"rock",bank:"U4-3",
-   preamp:{type:"BRIT STACK",gain:"68%",bass:"47%",middle:"60%",treble:"52%",level:"65%"},
-   comp:{type:"OFF",sustain:"--"},
-   od:{type:"DISTORTION",drive:"65%",tone:"52%",level:"60%"},
-   mod:{type:"OFF",rate:"--",depth:"--",level:"--"},
-   delay:{type:"STANDARD",time:"80ms",feedback:"12%",elevel:"20%"},
-   reverb:{type:"ROOM",level:"15%"},
-   pedal:"WAH",pickup:"Bridge HB",vol:"10 (Full)",
-   tip:"Bridge HB. Tight aggressive pick attack. Palm mute on main riff."},
-  {id:12,song:"Wanted Dead Or Alive",artist:"Bon Jovi",genre:"ballad",bank:"U5-4",
-   preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"55%",treble:"52%",level:"58%"},
-   comp:{type:"COMP",sustain:"60%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"22%",depth:"25%",level:"45%"},
-   delay:{type:"ANALOG",time:"340ms",feedback:"22%",elevel:"35%"},
-   reverb:{type:"HALL",level:"35%"},
-   pedal:"WAH",pickup:"Neck SC",vol:"8",
-   tip:"Acoustic style clean. Neck pickup warm feel. Switch to bridge HB for solo."},
-  {id:13,song:"It's My Life",artist:"Bon Jovi",genre:"rock",bank:"U4-4",
-   preamp:{type:"BRIT STACK",gain:"62%",bass:"47%",middle:"62%",treble:"50%",level:"63%"},
-   comp:{type:"OFF",sustain:"--"},
-   od:{type:"OVERDRIVE",drive:"48%",tone:"52%",level:"58%"},
-   mod:{type:"OFF",rate:"--",depth:"--",level:"--"},
-   delay:{type:"STANDARD",time:"100ms",feedback:"15%",elevel:"22%"},
-   reverb:{type:"ROOM",level:"18%"},
-   pedal:"WAH",pickup:"Bridge HB",vol:"10 (Full)",
-   tip:"Driving powerful tone. Strong consistent pick attack throughout."},
-  {id:14,song:"Always",artist:"Bon Jovi",genre:"ballad",bank:"U5-1",
-   preamp:{type:"TWIN COMBO",gain:"28%",bass:"50%",middle:"55%",treble:"48%",level:"58%"},
-   comp:{type:"COMP",sustain:"58%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"45%"},
-   delay:{type:"WARM",time:"420ms",feedback:"28%",elevel:"40%"},
-   reverb:{type:"HALL",level:"38%"},
-   pedal:"WAH",pickup:"Neck SC",vol:"7",
-   tip:"Neck pickup emotional tone. Vol 7 verse, 10 for solo. Very emotional playing."},
-  {id:15,song:"Bed Of Roses",artist:"Bon Jovi",genre:"ballad",bank:"U5-2",
-   preamp:{type:"NATURAL",gain:"25%",bass:"50%",middle:"54%",treble:"48%",level:"56%"},
-   comp:{type:"COMP",sustain:"60%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"42%"},
-   delay:{type:"WARM",time:"440ms",feedback:"30%",elevel:"42%"},
-   reverb:{type:"HALL",level:"40%"},
-   pedal:"WAH",pickup:"Neck SC",vol:"7",
-   tip:"Softest warmest tone. Light pick attack. Let notes breathe."},
-  {id:16,song:"Thank You For Loving Me",artist:"Bon Jovi",genre:"ballad",bank:"U5-3",
-   preamp:{type:"NATURAL",gain:"22%",bass:"50%",middle:"54%",treble:"48%",level:"55%"},
-   comp:{type:"COMP",sustain:"62%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"18%",depth:"22%",level:"40%"},
-   delay:{type:"WARM",time:"460ms",feedback:"32%",elevel:"43%"},
-   reverb:{type:"HALL",level:"42%"},
-   pedal:"WAH",pickup:"Neck SC",vol:"7",
-   tip:"Softest clean possible. Very gentle pick attack. Emotional ballad tone."},
-  {id:17,song:"Faithfully",artist:"Journey",genre:"ballad",bank:"U9-3",
-   preamp:{type:"NATURAL",gain:"25%",bass:"52%",middle:"55%",treble:"47%",level:"57%"},
-   comp:{type:"COMP",sustain:"62%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"22%",depth:"30%",level:"48%"},
-   delay:{type:"WARM",time:"430ms",feedback:"30%",elevel:"42%"},
-   reverb:{type:"HALL",level:"40%"},
-   pedal:"WAH",pickup:"Neck SC",vol:"8",
-   tip:"Neck pickup always. Slow wide vibrato on held notes. Neal Schon warm singing tone."},
-  {id:18,song:"Hands In My Pocket",artist:"Alanis Morissette",genre:"alt",bank:"U2-1",
-   preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"57%",treble:"52%",level:"58%"},
-   comp:{type:"COMP",sustain:"60%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"28%",depth:"32%",level:"48%"},
-   delay:{type:"ANALOG",time:"350ms",feedback:"22%",elevel:"38%"},
-   reverb:{type:"ROOM",level:"28%"},
-   pedal:"WAH",pickup:"Middle SC",vol:"8",
-   tip:"Middle pickup jangly tone. Light strumming. Relaxed confident playing style."},
-  {id:19,song:"Moonlight Intro",artist:"Special FX",genre:"special",bank:"U9-3",
-   preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},
-   comp:{type:"SLOW GEAR",sustain:"85%"},
-   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-   mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},
-   delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},
-   reverb:{type:"HALL",level:"85%"},
-   pedal:"WAH",pickup:"Neck SC",vol:"7",
-   tip:"SLOW GEAR on COMP! Play Am-F-C-G slowly. Volume swell 0→8 each chord. Max HALL reverb!"}
+function dp(){return{preamp:{type:"NATURAL",gain:"50%",bass:"50%",middle:"55%",treble:"48%",level:"60%"},comp:{type:"COMP",sustain:"55%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"ANALOG",time:"350ms",feedback:"20%",elevel:"35%"},reverb:{type:"ROOM",level:"25%"}};}
+
+// Helper to create 4 parts
+function mkp(i,v,c,s){return{intro:i,verse:v,chorus:c,solo:s};}
+
+const ALL=[
+  // RATM
+  {id:1,song:"Killing In The Name",artist:"Rage Against The Machine",genre:"metal",bank:"U4-1",pickup:"Bridge HB",vol:"10 (Full)",pedal:"WAH",tip:"WAH pedal for Morello scratch. No compression. Tight palm muting!",parts:mkp(
+    {preamp:{type:"X-CRUNCH",gain:"60%",bass:"52%",middle:"56%",treble:"52%",level:"60%"},comp:{type:"OFF",sustain:"--"},od:{type:"DISTORTION",drive:"60%",tone:"50%",level:"58%"},mod:{type:"PHASER",rate:"35%",depth:"42%",level:"50%"},delay:{type:"STANDARD",time:"80ms",feedback:"8%",elevel:"15%"},reverb:{type:"ROOM",level:"10%"}},
+    {preamp:{type:"X-CRUNCH",gain:"65%",bass:"52%",middle:"58%",treble:"52%",level:"62%"},comp:{type:"OFF",sustain:"--"},od:{type:"DISTORTION",drive:"65%",tone:"52%",level:"60%"},mod:{type:"PHASER",rate:"38%",depth:"45%",level:"52%"},delay:{type:"STANDARD",time:"100ms",feedback:"10%",elevel:"18%"},reverb:{type:"ROOM",level:"10%"}},
+    {preamp:{type:"X-CRUNCH",gain:"72%",bass:"52%",middle:"58%",treble:"52%",level:"65%"},comp:{type:"OFF",sustain:"--"},od:{type:"DISTORTION",drive:"72%",tone:"52%",level:"62%"},mod:{type:"PHASER",rate:"38%",depth:"48%",level:"55%"},delay:{type:"STANDARD",time:"100ms",feedback:"12%",elevel:"20%"},reverb:{type:"ROOM",level:"12%"}},
+    {preamp:{type:"X-CRUNCH",gain:"68%",bass:"46%",middle:"65%",treble:"48%",level:"65%"},comp:{type:"COMP",sustain:"60%"},od:{type:"DISTORTION",drive:"65%",tone:"48%",level:"60%"},mod:{type:"PHASER",rate:"35%",depth:"42%",level:"50%"},delay:{type:"ANALOG",time:"350ms",feedback:"20%",elevel:"35%"},reverb:{type:"ROOM",level:"15%"}}
+  )},
+  // RHCP
+  {id:2,song:"Under The Bridge",artist:"Red Hot Chili Peppers",genre:"ballad",bank:"U1-2",pickup:"Neck SC",vol:"8",pedal:"WAH",tip:"Neck pickup warm emotional tone. Guitar volume 8 for gentle verse.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"22%",bass:"52%",middle:"54%",treble:"47%",level:"55%"},comp:{type:"COMP",sustain:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"42%"},delay:{type:"WARM",time:"430ms",feedback:"26%",elevel:"38%"},reverb:{type:"HALL",level:"33%"}},
+    {preamp:{type:"NATURAL",gain:"25%",bass:"52%",middle:"55%",treble:"48%",level:"57%"},comp:{type:"COMP",sustain:"62%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"45%"},delay:{type:"WARM",time:"420ms",feedback:"28%",elevel:"40%"},reverb:{type:"HALL",level:"35%"}},
+    {preamp:{type:"NATURAL",gain:"35%",bass:"50%",middle:"58%",treble:"48%",level:"60%"},comp:{type:"COMP",sustain:"58%"},od:{type:"BLUES OD",drive:"25%",tone:"48%",level:"52%"},mod:{type:"CHORUS",rate:"25%",depth:"32%",level:"47%"},delay:{type:"WARM",time:"400ms",feedback:"25%",elevel:"38%"},reverb:{type:"HALL",level:"32%"}},
+    {preamp:{type:"NATURAL",gain:"55%",bass:"44%",middle:"68%",treble:"45%",level:"62%"},comp:{type:"COMP",sustain:"70%"},od:{type:"T-SCREAM",drive:"28%",tone:"44%",level:"56%"},mod:{type:"CHORUS",rate:"18%",depth:"18%",level:"40%"},delay:{type:"ANALOG",time:"380ms",feedback:"24%",elevel:"38%"},reverb:{type:"HALL",level:"28%"}}
+  )},
+  {id:3,song:"Californication",artist:"Red Hot Chili Peppers",genre:"ballad",bank:"U1-3",pickup:"Neck SC",vol:"7",pedal:"WAH",tip:"Very soft delicate tone. Guitar volume 7. Barely touching strings.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"20%",bass:"52%",middle:"53%",treble:"47%",level:"54%"},comp:{type:"COMP",sustain:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"18%",depth:"23%",level:"41%"},delay:{type:"WARM",time:"460ms",feedback:"29%",elevel:"41%"},reverb:{type:"HALL",level:"36%"}},
+    {preamp:{type:"NATURAL",gain:"22%",bass:"52%",middle:"54%",treble:"48%",level:"55%"},comp:{type:"COMP",sustain:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"43%"},delay:{type:"WARM",time:"450ms",feedback:"30%",elevel:"42%"},reverb:{type:"HALL",level:"38%"}},
+    {preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"57%",treble:"48%",level:"58%"},comp:{type:"COMP",sustain:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"45%"},delay:{type:"WARM",time:"430ms",feedback:"27%",elevel:"40%"},reverb:{type:"HALL",level:"35%"}},
+    {preamp:{type:"NATURAL",gain:"52%",bass:"43%",middle:"67%",treble:"45%",level:"62%"},comp:{type:"COMP",sustain:"68%"},od:{type:"T-SCREAM",drive:"27%",tone:"43%",level:"55%"},mod:{type:"CHORUS",rate:"18%",depth:"18%",level:"40%"},delay:{type:"ANALOG",time:"375ms",feedback:"23%",elevel:"38%"},reverb:{type:"HALL",level:"27%"}}
+  )},
+  {id:4,song:"Scar Tissue",artist:"Red Hot Chili Peppers",genre:"ballad",bank:"U1-4",pickup:"Neck SC",vol:"8",pedal:"WAH",tip:"Dreamy soft tone. Neck pickup. Slide guitar feel smooth playing.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"20%",bass:"52%",middle:"53%",treble:"49%",level:"54%"},comp:{type:"COMP",sustain:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"18%",depth:"24%",level:"42%"},delay:{type:"WARM",time:"450ms",feedback:"27%",elevel:"39%"},reverb:{type:"HALL",level:"34%"}},
+    {preamp:{type:"NATURAL",gain:"24%",bass:"52%",middle:"55%",treble:"50%",level:"56%"},comp:{type:"COMP",sustain:"62%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"20%",depth:"26%",level:"44%"},delay:{type:"WARM",time:"440ms",feedback:"28%",elevel:"40%"},reverb:{type:"HALL",level:"36%"}},
+    {preamp:{type:"BRIT STACK",gain:"50%",bass:"48%",middle:"60%",treble:"50%",level:"61%"},comp:{type:"COMP",sustain:"52%"},od:{type:"BLUES OD",drive:"35%",tone:"50%",level:"55%"},mod:{type:"CHORUS",rate:"23%",depth:"28%",level:"44%"},delay:{type:"ANALOG",time:"360ms",feedback:"22%",elevel:"36%"},reverb:{type:"HALL",level:"28%"}},
+    {preamp:{type:"NATURAL",gain:"52%",bass:"44%",middle:"66%",treble:"46%",level:"62%"},comp:{type:"COMP",sustain:"66%"},od:{type:"T-SCREAM",drive:"28%",tone:"44%",level:"55%"},mod:{type:"CHORUS",rate:"18%",depth:"18%",level:"40%"},delay:{type:"ANALOG",time:"370ms",feedback:"23%",elevel:"37%"},reverb:{type:"HALL",level:"26%"}}
+  )},
+  {id:5,song:"Can't Stop",artist:"Red Hot Chili Peppers",genre:"funk",bank:"U6-1",pickup:"Middle SC",vol:"10 (Full)",pedal:"WAH",tip:"Middle pickup funky tone. Tight rhythmic strumming. WAH pedal for iconic riff!",parts:mkp(
+    {preamp:{type:"TWIN COMBO",gain:"25%",bass:"50%",middle:"56%",treble:"52%",level:"58%"},comp:{type:"COMP",sustain:"63%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"PHASER",rate:"32%",depth:"38%",level:"46%"},delay:{type:"ANALOG",time:"300ms",feedback:"16%",elevel:"30%"},reverb:{type:"ROOM",level:"18%"}},
+    {preamp:{type:"TWIN COMBO",gain:"30%",bass:"50%",middle:"58%",treble:"52%",level:"60%"},comp:{type:"COMP",sustain:"65%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"PHASER",rate:"35%",depth:"40%",level:"48%"},delay:{type:"ANALOG",time:"300ms",feedback:"18%",elevel:"32%"},reverb:{type:"ROOM",level:"20%"}},
+    {preamp:{type:"TWIN COMBO",gain:"38%",bass:"50%",middle:"60%",treble:"52%",level:"62%"},comp:{type:"COMP",sustain:"60%"},od:{type:"BLUES OD",drive:"30%",tone:"52%",level:"55%"},mod:{type:"PHASER",rate:"32%",depth:"38%",level:"46%"},delay:{type:"ANALOG",time:"290ms",feedback:"16%",elevel:"30%"},reverb:{type:"ROOM",level:"18%"}},
+    {preamp:{type:"NATURAL",gain:"52%",bass:"45%",middle:"65%",treble:"48%",level:"63%"},comp:{type:"COMP",sustain:"63%"},od:{type:"T-SCREAM",drive:"30%",tone:"46%",level:"56%"},mod:{type:"CHORUS",rate:"20%",depth:"22%",level:"42%"},delay:{type:"ANALOG",time:"350ms",feedback:"20%",elevel:"34%"},reverb:{type:"ROOM",level:"18%"}}
+  )},
+  {id:6,song:"Otherside",artist:"Red Hot Chili Peppers",genre:"alt",bank:"U7-1",pickup:"Neck SC",vol:"8",pedal:"WAH",tip:"Neck pickup dark moody tone. FLANGER gives mysterious Otherside feel.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"22%",bass:"52%",middle:"53%",treble:"46%",level:"55%"},comp:{type:"COMP",sustain:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"FLANGER",rate:"20%",depth:"26%",level:"42%"},delay:{type:"WARM",time:"440ms",feedback:"27%",elevel:"39%"},reverb:{type:"HALL",level:"34%"}},
+    {preamp:{type:"NATURAL",gain:"26%",bass:"52%",middle:"55%",treble:"47%",level:"57%"},comp:{type:"COMP",sustain:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"FLANGER",rate:"22%",depth:"28%",level:"44%"},delay:{type:"WARM",time:"430ms",feedback:"28%",elevel:"40%"},reverb:{type:"HALL",level:"36%"}},
+    {preamp:{type:"BRIT STACK",gain:"55%",bass:"48%",middle:"62%",treble:"50%",level:"63%"},comp:{type:"COMP",sustain:"50%"},od:{type:"OVERDRIVE",drive:"40%",tone:"50%",level:"57%"},mod:{type:"CHORUS",rate:"22%",depth:"26%",level:"43%"},delay:{type:"ANALOG",time:"360ms",feedback:"22%",elevel:"36%"},reverb:{type:"HALL",level:"28%"}},
+    {preamp:{type:"NATURAL",gain:"54%",bass:"44%",middle:"67%",treble:"46%",level:"63%"},comp:{type:"COMP",sustain:"65%"},od:{type:"T-SCREAM",drive:"30%",tone:"45%",level:"56%"},mod:{type:"CHORUS",rate:"18%",depth:"20%",level:"41%"},delay:{type:"ANALOG",time:"365ms",feedback:"22%",elevel:"36%"},reverb:{type:"HALL",level:"27%"}}
+  )},
+  {id:7,song:"Snow (Hey Oh)",artist:"Red Hot Chili Peppers",genre:"rock",bank:"U6-3",pickup:"Middle SC",vol:"9",pedal:"WAH",tip:"FINGERPICK the iconic riff — no pick! Fast precise fingerpicking technique.",parts:mkp(
+    {preamp:{type:"TWIN COMBO",gain:"24%",bass:"50%",middle:"55%",treble:"52%",level:"57%"},comp:{type:"COMP",sustain:"62%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"23%",depth:"28%",level:"44%"},delay:{type:"ANALOG",time:"370ms",feedback:"23%",elevel:"37%"},reverb:{type:"ROOM",level:"23%"}},
+    {preamp:{type:"TWIN COMBO",gain:"27%",bass:"50%",middle:"56%",treble:"52%",level:"58%"},comp:{type:"COMP",sustain:"63%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"25%",depth:"30%",level:"46%"},delay:{type:"ANALOG",time:"360ms",feedback:"24%",elevel:"38%"},reverb:{type:"ROOM",level:"25%"}},
+    {preamp:{type:"BRIT STACK",gain:"55%",bass:"48%",middle:"62%",treble:"50%",level:"63%"},comp:{type:"COMP",sustain:"52%"},od:{type:"OVERDRIVE",drive:"40%",tone:"50%",level:"57%"},mod:{type:"CHORUS",rate:"22%",depth:"27%",level:"43%"},delay:{type:"ANALOG",time:"340ms",feedback:"20%",elevel:"34%"},reverb:{type:"ROOM",level:"22%"}},
+    {preamp:{type:"NATURAL",gain:"55%",bass:"44%",middle:"67%",treble:"46%",level:"63%"},comp:{type:"COMP",sustain:"65%"},od:{type:"T-SCREAM",drive:"30%",tone:"45%",level:"56%"},mod:{type:"CHORUS",rate:"18%",depth:"20%",level:"41%"},delay:{type:"ANALOG",time:"370ms",feedback:"23%",elevel:"37%"},reverb:{type:"ROOM",level:"22%"}}
+  )},
+  {id:8,song:"By The Way",artist:"Red Hot Chili Peppers",genre:"rock",bank:"U6-4",pickup:"Middle SC",vol:"9",pedal:"WAH",tip:"Layered clean tone. Middle pickup bright clean sound.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"24%",bass:"50%",middle:"55%",treble:"50%",level:"56%"},comp:{type:"COMP",sustain:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"26%",depth:"33%",level:"46%"},delay:{type:"ANALOG",time:"380ms",feedback:"24%",elevel:"39%"},reverb:{type:"ROOM",level:"25%"}},
+    {preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"57%",treble:"50%",level:"58%"},comp:{type:"COMP",sustain:"62%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"28%",depth:"35%",level:"48%"},delay:{type:"ANALOG",time:"370ms",feedback:"25%",elevel:"40%"},reverb:{type:"ROOM",level:"27%"}},
+    {preamp:{type:"BRIT STACK",gain:"55%",bass:"47%",middle:"62%",treble:"50%",level:"63%"},comp:{type:"OFF",sustain:"--"},od:{type:"OVERDRIVE",drive:"42%",tone:"50%",level:"58%"},mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"42%"},delay:{type:"ANALOG",time:"340ms",feedback:"20%",elevel:"34%"},reverb:{type:"ROOM",level:"22%"}},
+    {preamp:{type:"NATURAL",gain:"55%",bass:"44%",middle:"67%",treble:"46%",level:"63%"},comp:{type:"COMP",sustain:"65%"},od:{type:"T-SCREAM",drive:"30%",tone:"46%",level:"56%"},mod:{type:"CHORUS",rate:"18%",depth:"20%",level:"41%"},delay:{type:"ANALOG",time:"365ms",feedback:"22%",elevel:"36%"},reverb:{type:"ROOM",level:"22%"}}
+  )},
+  // METALLICA
+  {id:9,song:"Enter Sandman",artist:"Metallica",genre:"metal",bank:"U8-2",pickup:"Bridge HB",vol:"10 (Full)",pedal:"WAH",tip:"TIGHT palm muting! Pick close to bridge. Drop D tuning needed!",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"32%",bass:"50%",middle:"58%",treble:"50%",level:"58%"},comp:{type:"COMP",sustain:"55%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"ANALOG",time:"320ms",feedback:"18%",elevel:"28%"},reverb:{type:"ROOM",level:"18%"}},
+    {preamp:{type:"MAXIMUM",gain:"76%",bass:"46%",middle:"52%",treble:"52%",level:"64%"},comp:{type:"OFF",sustain:"--"},od:{type:"METAL DS",drive:"73%",tone:"48%",level:"60%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"60ms",feedback:"8%",elevel:"14%"},reverb:{type:"ROOM",level:"10%"}},
+    {preamp:{type:"MAXIMUM",gain:"78%",bass:"46%",middle:"52%",treble:"52%",level:"65%"},comp:{type:"OFF",sustain:"--"},od:{type:"METAL DS",drive:"75%",tone:"48%",level:"62%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"55ms",feedback:"8%",elevel:"15%"},reverb:{type:"ROOM",level:"10%"}},
+    {preamp:{type:"MAXIMUM",gain:"72%",bass:"43%",middle:"68%",treble:"45%",level:"65%"},comp:{type:"COMP",sustain:"65%"},od:{type:"METAL DS",drive:"65%",tone:"46%",level:"60%"},mod:{type:"CHORUS",rate:"18%",depth:"18%",level:"38%"},delay:{type:"ANALOG",time:"370ms",feedback:"22%",elevel:"35%"},reverb:{type:"ROOM",level:"15%"}}
+  )},
+  // BON JOVI
+  {id:10,song:"Livin On A Prayer",artist:"Bon Jovi",genre:"rock",bank:"U4-1",pickup:"Bridge HB",vol:"10 (Full)",pedal:"WAH",tip:"Slow WAH for talk box simulation on intro. Bridge HB for full chorus.",parts:mkp(
+    {preamp:{type:"X-CRUNCH",gain:"40%",bass:"48%",middle:"58%",treble:"49%",level:"58%"},comp:{type:"COMP",sustain:"48%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"30%",depth:"35%",level:"48%"},delay:{type:"ANALOG",time:"360ms",feedback:"22%",elevel:"35%"},reverb:{type:"HALL",level:"28%"}},
+    {preamp:{type:"X-CRUNCH",gain:"50%",bass:"48%",middle:"60%",treble:"50%",level:"60%"},comp:{type:"COMP",sustain:"52%"},od:{type:"BLUES OD",drive:"30%",tone:"50%",level:"52%"},mod:{type:"CHORUS",rate:"32%",depth:"38%",level:"50%"},delay:{type:"ANALOG",time:"360ms",feedback:"23%",elevel:"36%"},reverb:{type:"HALL",level:"28%"}},
+    {preamp:{type:"X-CRUNCH",gain:"58%",bass:"47%",middle:"63%",treble:"50%",level:"63%"},comp:{type:"COMP",sustain:"55%"},od:{type:"BLUES OD",drive:"38%",tone:"50%",level:"56%"},mod:{type:"CHORUS",rate:"35%",depth:"42%",level:"53%"},delay:{type:"ANALOG",time:"360ms",feedback:"25%",elevel:"38%"},reverb:{type:"HALL",level:"30%"}},
+    {preamp:{type:"NATURAL",gain:"62%",bass:"44%",middle:"68%",treble:"46%",level:"63%"},comp:{type:"COMP",sustain:"68%"},od:{type:"T-SCREAM",drive:"33%",tone:"45%",level:"57%"},mod:{type:"CHORUS",rate:"18%",depth:"18%",level:"40%"},delay:{type:"ANALOG",time:"380ms",feedback:"25%",elevel:"38%"},reverb:{type:"HALL",level:"28%"}}
+  )},
+  {id:11,song:"You Give Love A Bad Name",artist:"Bon Jovi",genre:"rock",bank:"U4-3",pickup:"Bridge HB",vol:"10 (Full)",pedal:"WAH",tip:"Bridge HB. Tight aggressive pick attack. Palm mute on main riff.",parts:mkp(
+    {preamp:{type:"BRIT STACK",gain:"55%",bass:"47%",middle:"58%",treble:"51%",level:"62%"},comp:{type:"OFF",sustain:"--"},od:{type:"DISTORTION",drive:"55%",tone:"51%",level:"58%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"70ms",feedback:"10%",elevel:"18%"},reverb:{type:"ROOM",level:"13%"}},
+    {preamp:{type:"BRIT STACK",gain:"62%",bass:"47%",middle:"59%",treble:"51%",level:"63%"},comp:{type:"OFF",sustain:"--"},od:{type:"DISTORTION",drive:"60%",tone:"51%",level:"59%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"75ms",feedback:"11%",elevel:"19%"},reverb:{type:"ROOM",level:"13%"}},
+    {preamp:{type:"BRIT STACK",gain:"68%",bass:"47%",middle:"60%",treble:"52%",level:"65%"},comp:{type:"OFF",sustain:"--"},od:{type:"DISTORTION",drive:"65%",tone:"52%",level:"60%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"80ms",feedback:"12%",elevel:"20%"},reverb:{type:"ROOM",level:"15%"}},
+    {preamp:{type:"NATURAL",gain:"65%",bass:"44%",middle:"68%",treble:"46%",level:"65%"},comp:{type:"COMP",sustain:"65%"},od:{type:"T-SCREAM",drive:"33%",tone:"45%",level:"58%"},mod:{type:"CHORUS",rate:"18%",depth:"18%",level:"40%"},delay:{type:"ANALOG",time:"380ms",feedback:"23%",elevel:"37%"},reverb:{type:"ROOM",level:"18%"}}
+  )},
+  {id:12,song:"Wanted Dead Or Alive",artist:"Bon Jovi",genre:"ballad",bank:"U5-4",pickup:"Neck SC",vol:"8",pedal:"WAH",tip:"Acoustic style clean. Neck pickup warm feel. Switch to bridge HB for solo.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"22%",bass:"50%",middle:"53%",treble:"51%",level:"56%"},comp:{type:"COMP",sustain:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"20%",depth:"23%",level:"43%"},delay:{type:"ANALOG",time:"350ms",feedback:"21%",elevel:"34%"},reverb:{type:"HALL",level:"33%"}},
+    {preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"55%",treble:"52%",level:"58%"},comp:{type:"COMP",sustain:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"22%",depth:"25%",level:"45%"},delay:{type:"ANALOG",time:"340ms",feedback:"22%",elevel:"35%"},reverb:{type:"HALL",level:"35%"}},
+    {preamp:{type:"X-CRUNCH",gain:"50%",bass:"48%",middle:"60%",treble:"50%",level:"61%"},comp:{type:"COMP",sustain:"50%"},od:{type:"BLUES OD",drive:"30%",tone:"50%",level:"53%"},mod:{type:"CHORUS",rate:"24%",depth:"27%",level:"45%"},delay:{type:"ANALOG",time:"340ms",feedback:"22%",elevel:"35%"},reverb:{type:"HALL",level:"32%"}},
+    {preamp:{type:"NATURAL",gain:"58%",bass:"45%",middle:"67%",treble:"47%",level:"63%"},comp:{type:"COMP",sustain:"65%"},od:{type:"T-SCREAM",drive:"33%",tone:"46%",level:"57%"},mod:{type:"CHORUS",rate:"20%",depth:"20%",level:"42%"},delay:{type:"ANALOG",time:"380ms",feedback:"25%",elevel:"38%"},reverb:{type:"HALL",level:"28%"}}
+  )},
+  {id:13,song:"It's My Life",artist:"Bon Jovi",genre:"rock",bank:"U4-4",pickup:"Bridge HB",vol:"10 (Full)",pedal:"WAH",tip:"Driving powerful tone. Strong consistent pick attack throughout.",parts:mkp(
+    {preamp:{type:"BRIT STACK",gain:"52%",bass:"47%",middle:"60%",treble:"49%",level:"60%"},comp:{type:"OFF",sustain:"--"},od:{type:"OVERDRIVE",drive:"40%",tone:"51%",level:"55%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"85ms",feedback:"13%",elevel:"20%"},reverb:{type:"ROOM",level:"16%"}},
+    {preamp:{type:"BRIT STACK",gain:"58%",bass:"47%",middle:"61%",treble:"50%",level:"62%"},comp:{type:"OFF",sustain:"--"},od:{type:"OVERDRIVE",drive:"44%",tone:"51%",level:"57%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"90ms",feedback:"14%",elevel:"21%"},reverb:{type:"ROOM",level:"17%"}},
+    {preamp:{type:"BRIT STACK",gain:"62%",bass:"47%",middle:"62%",treble:"50%",level:"63%"},comp:{type:"OFF",sustain:"--"},od:{type:"OVERDRIVE",drive:"48%",tone:"52%",level:"58%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"100ms",feedback:"15%",elevel:"22%"},reverb:{type:"ROOM",level:"18%"}},
+    {preamp:{type:"NATURAL",gain:"63%",bass:"44%",middle:"68%",treble:"46%",level:"64%"},comp:{type:"COMP",sustain:"65%"},od:{type:"T-SCREAM",drive:"33%",tone:"45%",level:"58%"},mod:{type:"CHORUS",rate:"18%",depth:"18%",level:"40%"},delay:{type:"ANALOG",time:"375ms",feedback:"23%",elevel:"37%"},reverb:{type:"ROOM",level:"18%"}}
+  )},
+  {id:14,song:"Always",artist:"Bon Jovi",genre:"ballad",bank:"U5-1",pickup:"Neck SC",vol:"7",pedal:"WAH",tip:"Neck pickup emotional tone. Vol 7 verse, 10 for solo.",parts:mkp(
+    {preamp:{type:"TWIN COMBO",gain:"22%",bass:"50%",middle:"53%",treble:"47%",level:"56%"},comp:{type:"COMP",sustain:"56%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"20%",depth:"26%",level:"43%"},delay:{type:"WARM",time:"430ms",feedback:"27%",elevel:"39%"},reverb:{type:"HALL",level:"36%"}},
+    {preamp:{type:"TWIN COMBO",gain:"28%",bass:"50%",middle:"55%",treble:"48%",level:"58%"},comp:{type:"COMP",sustain:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"45%"},delay:{type:"WARM",time:"420ms",feedback:"28%",elevel:"40%"},reverb:{type:"HALL",level:"38%"}},
+    {preamp:{type:"TWIN COMBO",gain:"35%",bass:"50%",middle:"57%",treble:"48%",level:"61%"},comp:{type:"COMP",sustain:"56%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"24%",depth:"30%",level:"47%"},delay:{type:"WARM",time:"410ms",feedback:"27%",elevel:"39%"},reverb:{type:"HALL",level:"36%"}},
+    {preamp:{type:"NATURAL",gain:"55%",bass:"44%",middle:"68%",treble:"45%",level:"62%"},comp:{type:"COMP",sustain:"68%"},od:{type:"T-SCREAM",drive:"30%",tone:"44%",level:"56%"},mod:{type:"CHORUS",rate:"18%",depth:"18%",level:"40%"},delay:{type:"ANALOG",time:"380ms",feedback:"25%",elevel:"38%"},reverb:{type:"HALL",level:"32%"}}
+  )},
+  {id:15,song:"Bed Of Roses",artist:"Bon Jovi",genre:"ballad",bank:"U5-2",pickup:"Neck SC",vol:"7",pedal:"WAH",tip:"Softest warmest tone. Light pick attack. Let notes breathe.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"20%",bass:"50%",middle:"52%",treble:"47%",level:"54%"},comp:{type:"COMP",sustain:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"18%",depth:"23%",level:"40%"},delay:{type:"WARM",time:"450ms",feedback:"29%",elevel:"41%"},reverb:{type:"HALL",level:"38%"}},
+    {preamp:{type:"NATURAL",gain:"25%",bass:"50%",middle:"54%",treble:"48%",level:"56%"},comp:{type:"COMP",sustain:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"42%"},delay:{type:"WARM",time:"440ms",feedback:"30%",elevel:"42%"},reverb:{type:"HALL",level:"40%"}},
+    {preamp:{type:"TWIN COMBO",gain:"32%",bass:"50%",middle:"56%",treble:"48%",level:"60%"},comp:{type:"COMP",sustain:"56%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"44%"},delay:{type:"WARM",time:"430ms",feedback:"28%",elevel:"40%"},reverb:{type:"HALL",level:"37%"}},
+    {preamp:{type:"NATURAL",gain:"52%",bass:"44%",middle:"68%",treble:"44%",level:"60%"},comp:{type:"COMP",sustain:"70%"},od:{type:"T-SCREAM",drive:"28%",tone:"43%",level:"55%"},mod:{type:"CHORUS",rate:"18%",depth:"20%",level:"40%"},delay:{type:"ANALOG",time:"400ms",feedback:"28%",elevel:"40%"},reverb:{type:"HALL",level:"35%"}}
+  )},
+  {id:16,song:"Thank You For Loving Me",artist:"Bon Jovi",genre:"ballad",bank:"U5-3",pickup:"Neck SC",vol:"7",pedal:"WAH",tip:"Softest clean possible. Very gentle pick attack. Emotional ballad tone.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"18%",bass:"50%",middle:"52%",treble:"47%",level:"53%"},comp:{type:"COMP",sustain:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"16%",depth:"20%",level:"38%"},delay:{type:"WARM",time:"470ms",feedback:"31%",elevel:"42%"},reverb:{type:"HALL",level:"40%"}},
+    {preamp:{type:"NATURAL",gain:"22%",bass:"50%",middle:"54%",treble:"48%",level:"55%"},comp:{type:"COMP",sustain:"62%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"18%",depth:"22%",level:"40%"},delay:{type:"WARM",time:"460ms",feedback:"32%",elevel:"43%"},reverb:{type:"HALL",level:"42%"}},
+    {preamp:{type:"TWIN COMBO",gain:"30%",bass:"50%",middle:"55%",treble:"48%",level:"59%"},comp:{type:"COMP",sustain:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"42%"},delay:{type:"WARM",time:"450ms",feedback:"30%",elevel:"41%"},reverb:{type:"HALL",level:"40%"}},
+    {preamp:{type:"NATURAL",gain:"50%",bass:"44%",middle:"67%",treble:"44%",level:"60%"},comp:{type:"COMP",sustain:"68%"},od:{type:"T-SCREAM",drive:"27%",tone:"43%",level:"54%"},mod:{type:"CHORUS",rate:"18%",depth:"18%",level:"38%"},delay:{type:"ANALOG",time:"400ms",feedback:"27%",elevel:"40%"},reverb:{type:"HALL",level:"38%"}}
+  )},
+  // JOURNEY
+  {id:17,song:"Faithfully",artist:"Journey",genre:"ballad",bank:"U9-3",pickup:"Neck SC",vol:"8",pedal:"WAH",tip:"Neck pickup always. Slow wide vibrato. Neal Schon warm singing tone.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"22%",bass:"52%",middle:"54%",treble:"46%",level:"55%"},comp:{type:"COMP",sustain:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"20%",depth:"28%",level:"46%"},delay:{type:"WARM",time:"440ms",feedback:"29%",elevel:"41%"},reverb:{type:"HALL",level:"38%"}},
+    {preamp:{type:"NATURAL",gain:"25%",bass:"52%",middle:"55%",treble:"47%",level:"57%"},comp:{type:"COMP",sustain:"62%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"22%",depth:"30%",level:"48%"},delay:{type:"WARM",time:"430ms",feedback:"30%",elevel:"42%"},reverb:{type:"HALL",level:"40%"}},
+    {preamp:{type:"NATURAL",gain:"30%",bass:"52%",middle:"57%",treble:"48%",level:"60%"},comp:{type:"COMP",sustain:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"25%",depth:"35%",level:"50%"},delay:{type:"WARM",time:"420ms",feedback:"28%",elevel:"40%"},reverb:{type:"HALL",level:"38%"}},
+    {preamp:{type:"NATURAL",gain:"55%",bass:"44%",middle:"68%",treble:"45%",level:"62%"},comp:{type:"COMP",sustain:"70%"},od:{type:"T-SCREAM",drive:"28%",tone:"44%",level:"56%"},mod:{type:"CHORUS",rate:"18%",depth:"20%",level:"42%"},delay:{type:"ANALOG",time:"390ms",feedback:"26%",elevel:"40%"},reverb:{type:"HALL",level:"33%"}}
+  )},
+  // ALANIS
+  {id:18,song:"Hands In My Pocket",artist:"Alanis Morissette",genre:"alt",bank:"U2-1",pickup:"Middle SC",vol:"8",pedal:"WAH",tip:"Middle pickup jangly tone. Light strumming. Relaxed confident style.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"22%",bass:"50%",middle:"55%",treble:"51%",level:"56%"},comp:{type:"COMP",sustain:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"25%",depth:"30%",level:"46%"},delay:{type:"ANALOG",time:"360ms",feedback:"21%",elevel:"37%"},reverb:{type:"ROOM",level:"26%"}},
+    {preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"57%",treble:"52%",level:"58%"},comp:{type:"COMP",sustain:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"28%",depth:"32%",level:"48%"},delay:{type:"ANALOG",time:"350ms",feedback:"22%",elevel:"38%"},reverb:{type:"ROOM",level:"28%"}},
+    {preamp:{type:"X-CRUNCH",gain:"48%",bass:"48%",middle:"60%",treble:"50%",level:"62%"},comp:{type:"COMP",sustain:"50%"},od:{type:"OVERDRIVE",drive:"35%",tone:"50%",level:"55%"},mod:{type:"CHORUS",rate:"25%",depth:"30%",level:"45%"},delay:{type:"ANALOG",time:"340ms",feedback:"20%",elevel:"35%"},reverb:{type:"ROOM",level:"25%"}},
+    {preamp:{type:"NATURAL",gain:"50%",bass:"45%",middle:"63%",treble:"48%",level:"60%"},comp:{type:"COMP",sustain:"62%"},od:{type:"T-SCREAM",drive:"28%",tone:"46%",level:"54%"},mod:{type:"CHORUS",rate:"20%",depth:"22%",level:"42%"},delay:{type:"ANALOG",time:"360ms",feedback:"22%",elevel:"36%"},reverb:{type:"ROOM",level:"24%"}}
+  )},
+  // U2
+  {id:19,song:"Where The Streets Have No Name",artist:"U2",genre:"rock",bank:"U8-1",pickup:"Neck SC",vol:"9",pedal:"DELAY LEVEL",tip:"The Edge dotted delay is EVERYTHING. Long repeating delay. Keep it clean!",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"25%",bass:"50%",middle:"55%",treble:"55%",level:"58%"},comp:{type:"COMP",sustain:"50%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"22%",depth:"25%",level:"44%"},delay:{type:"TAPE",time:"500ms",feedback:"45%",elevel:"52%"},reverb:{type:"HALL",level:"38%"}},
+    {preamp:{type:"NATURAL",gain:"30%",bass:"50%",middle:"55%",treble:"55%",level:"60%"},comp:{type:"COMP",sustain:"50%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"25%",depth:"28%",level:"46%"},delay:{type:"TAPE",time:"490ms",feedback:"43%",elevel:"50%"},reverb:{type:"HALL",level:"36%"}},
+    {preamp:{type:"NATURAL",gain:"38%",bass:"50%",middle:"57%",treble:"55%",level:"63%"},comp:{type:"COMP",sustain:"50%"},od:{type:"OVERDRIVE",drive:"22%",tone:"52%",level:"52%"},mod:{type:"CHORUS",rate:"25%",depth:"28%",level:"46%"},delay:{type:"TAPE",time:"480ms",feedback:"42%",elevel:"48%"},reverb:{type:"HALL",level:"35%"}},
+    {preamp:{type:"NATURAL",gain:"45%",bass:"48%",middle:"60%",treble:"53%",level:"63%"},comp:{type:"COMP",sustain:"55%"},od:{type:"OVERDRIVE",drive:"28%",tone:"52%",level:"54%"},mod:{type:"CHORUS",rate:"22%",depth:"25%",level:"44%"},delay:{type:"TAPE",time:"500ms",feedback:"40%",elevel:"48%"},reverb:{type:"HALL",level:"35%"}}
+  )},
+  {id:20,song:"With Or Without You",artist:"U2",genre:"ballad",bank:"U8-3",pickup:"Neck SC",vol:"8",pedal:"DELAY LEVEL",tip:"Very atmospheric. Long delay and reverb. Slow emotional playing.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"20%",bass:"52%",middle:"54%",treble:"52%",level:"55%"},comp:{type:"COMP",sustain:"55%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"44%"},delay:{type:"TAPE",time:"480ms",feedback:"42%",elevel:"48%"},reverb:{type:"HALL",level:"40%"}},
+    {preamp:{type:"NATURAL",gain:"25%",bass:"52%",middle:"55%",treble:"52%",level:"57%"},comp:{type:"COMP",sustain:"55%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"22%",depth:"27%",level:"46%"},delay:{type:"TAPE",time:"470ms",feedback:"42%",elevel:"48%"},reverb:{type:"HALL",level:"40%"}},
+    {preamp:{type:"NATURAL",gain:"32%",bass:"50%",middle:"57%",treble:"52%",level:"60%"},comp:{type:"COMP",sustain:"52%"},od:{type:"OVERDRIVE",drive:"20%",tone:"52%",level:"50%"},mod:{type:"CHORUS",rate:"22%",depth:"27%",level:"46%"},delay:{type:"TAPE",time:"470ms",feedback:"40%",elevel:"46%"},reverb:{type:"HALL",level:"38%"}},
+    {preamp:{type:"NATURAL",gain:"42%",bass:"48%",middle:"60%",treble:"50%",level:"62%"},comp:{type:"COMP",sustain:"58%"},od:{type:"OVERDRIVE",drive:"25%",tone:"52%",level:"52%"},mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"44%"},delay:{type:"TAPE",time:"480ms",feedback:"40%",elevel:"46%"},reverb:{type:"HALL",level:"37%"}}
+  )},
+  // CREED
+  {id:21,song:"Higher",artist:"Creed",genre:"rock",bank:"U7-2",pickup:"Bridge HB",vol:"9",pedal:"WAH",tip:"Big open rock tone. Mark Tremonti style. Strong palm muting on verse.",parts:mkp(
+    {preamp:{type:"BRIT STACK",gain:"48%",bass:"50%",middle:"58%",treble:"49%",level:"60%"},comp:{type:"COMP",sustain:"48%"},od:{type:"OVERDRIVE",drive:"35%",tone:"50%",level:"53%"},mod:{type:"CHORUS",rate:"18%",depth:"22%",level:"42%"},delay:{type:"WARM",time:"390ms",feedback:"23%",elevel:"36%"},reverb:{type:"HALL",level:"32%"}},
+    {preamp:{type:"BRIT STACK",gain:"55%",bass:"50%",middle:"60%",treble:"50%",level:"62%"},comp:{type:"COMP",sustain:"45%"},od:{type:"OVERDRIVE",drive:"40%",tone:"50%",level:"55%"},mod:{type:"CHORUS",rate:"20%",depth:"24%",level:"43%"},delay:{type:"WARM",time:"380ms",feedback:"24%",elevel:"37%"},reverb:{type:"HALL",level:"33%"}},
+    {preamp:{type:"BRIT STACK",gain:"62%",bass:"50%",middle:"62%",treble:"50%",level:"64%"},comp:{type:"COMP",sustain:"45%"},od:{type:"OVERDRIVE",drive:"44%",tone:"50%",level:"57%"},mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"44%"},delay:{type:"WARM",time:"380ms",feedback:"24%",elevel:"37%"},reverb:{type:"HALL",level:"34%"}},
+    {preamp:{type:"NATURAL",gain:"60%",bass:"45%",middle:"68%",treble:"46%",level:"64%"},comp:{type:"COMP",sustain:"65%"},od:{type:"T-SCREAM",drive:"32%",tone:"45%",level:"57%"},mod:{type:"CHORUS",rate:"18%",depth:"20%",level:"41%"},delay:{type:"ANALOG",time:"380ms",feedback:"24%",elevel:"37%"},reverb:{type:"HALL",level:"30%"}}
+  )},
+  {id:22,song:"With Arms Wide Open",artist:"Creed",genre:"ballad",bank:"U7-3",pickup:"Neck SC",vol:"7",pedal:"WAH",tip:"Soft emotional ballad. Neck pickup. Very gentle playing.",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"22%",bass:"50%",middle:"54%",treble:"48%",level:"55%"},comp:{type:"COMP",sustain:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"43%"},delay:{type:"WARM",time:"420ms",feedback:"27%",elevel:"39%"},reverb:{type:"HALL",level:"36%"}},
+    {preamp:{type:"NATURAL",gain:"26%",bass:"50%",middle:"55%",treble:"48%",level:"57%"},comp:{type:"COMP",sustain:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"22%",depth:"27%",level:"45%"},delay:{type:"WARM",time:"410ms",feedback:"27%",elevel:"39%"},reverb:{type:"HALL",level:"36%"}},
+    {preamp:{type:"BRIT STACK",gain:"48%",bass:"48%",middle:"60%",treble:"49%",level:"61%"},comp:{type:"COMP",sustain:"48%"},od:{type:"OVERDRIVE",drive:"32%",tone:"50%",level:"53%"},mod:{type:"CHORUS",rate:"22%",depth:"27%",level:"44%"},delay:{type:"WARM",time:"400ms",feedback:"26%",elevel:"38%"},reverb:{type:"HALL",level:"34%"}},
+    {preamp:{type:"NATURAL",gain:"55%",bass:"44%",middle:"67%",treble:"45%",level:"62%"},comp:{type:"COMP",sustain:"67%"},od:{type:"T-SCREAM",drive:"30%",tone:"44%",level:"56%"},mod:{type:"CHORUS",rate:"18%",depth:"20%",level:"41%"},delay:{type:"ANALOG",time:"385ms",feedback:"25%",elevel:"38%"},reverb:{type:"HALL",level:"32%"}}
+  )},
+  // LIVE (band)
+  {id:23,song:"Lightning Crashes",artist:"Live",genre:"alt",bank:"U7-4",pickup:"Bridge HB",vol:"9",pedal:"WAH",tip:"Atmospheric alt rock. Ed Kowalczyk style. Build from soft to powerful.",parts:mkp(
+    {preamp:{type:"DIAMOND",gain:"30%",bass:"50%",middle:"56%",treble:"49%",level:"57%"},comp:{type:"COMP",sustain:"52%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"FLANGER",rate:"22%",depth:"26%",level:"42%"},delay:{type:"ANALOG",time:"400ms",feedback:"27%",elevel:"39%"},reverb:{type:"HALL",level:"34%"}},
+    {preamp:{type:"DIAMOND",gain:"38%",bass:"50%",middle:"57%",treble:"49%",level:"59%"},comp:{type:"COMP",sustain:"50%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"FLANGER",rate:"24%",depth:"28%",level:"43%"},delay:{type:"ANALOG",time:"400ms",feedback:"28%",elevel:"40%"},reverb:{type:"HALL",level:"34%"}},
+    {preamp:{type:"BRIT STACK",gain:"58%",bass:"48%",middle:"62%",treble:"50%",level:"64%"},comp:{type:"COMP",sustain:"48%"},od:{type:"CENTA OD",drive:"38%",tone:"50%",level:"56%"},mod:{type:"FLANGER",rate:"24%",depth:"28%",level:"43%"},delay:{type:"ANALOG",time:"390ms",feedback:"26%",elevel:"38%"},reverb:{type:"HALL",level:"32%"}},
+    {preamp:{type:"NATURAL",gain:"58%",bass:"44%",middle:"67%",treble:"46%",level:"63%"},comp:{type:"COMP",sustain:"65%"},od:{type:"T-SCREAM",drive:"30%",tone:"45%",level:"56%"},mod:{type:"CHORUS",rate:"18%",depth:"20%",level:"41%"},delay:{type:"ANALOG",time:"380ms",feedback:"24%",elevel:"37%"},reverb:{type:"HALL",level:"30%"}}
+  )},
+  // SPECIAL
+  {id:24,song:"Moonlight Intro",artist:"Special FX",genre:"special",bank:"U9-3",pickup:"Neck SC",vol:"7",pedal:"WAH",tip:"SLOW GEAR on COMP! Play Am-F-C-G slowly. Volume swell 0→8 each chord. Max HALL reverb!",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}},
+    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}},
+    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}},
+    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}}
+  )}
 ];
 
-let songs=[],nid=1;
-
-function load(){
-  try{
-    const s=localStorage.getItem('me90v3');
-    if(s){songs=JSON.parse(s);nid=Math.max(...songs.map(x=>x.id),0)+1;}
-    else{songs=DEF;nid=DEF.length+1;save();}
-  }catch(e){songs=DEF;nid=DEF.length+1;}
-}
-function save(){try{localStorage.setItem('me90v3',JSON.stringify(songs));}catch(e){}}
+let songs=[],nid=1,parsedSong=null;
+function load(){try{const s=localStorage.getItem('me90v6');if(s){songs=JSON.parse(s);nid=Math.max(...songs.map(x=>x.id),0)+1;}else{songs=ALL;nid=ALL.length+1;save();}}catch(e){songs=ALL;nid=ALL.length+1;}}
+function save(){try{localStorage.setItem('me90v6',JSON.stringify(songs));}catch(e){}}
 function gc(g){return{rock:'g-rock',metal:'g-metal',ballad:'g-ballad',funk:'g-funk',alt:'g-alt',special:'g-special'}[g]||'g-rock';}
 function gl(g){return{rock:'ROCK',metal:'METAL',ballad:'BALLAD',funk:'FUNK',alt:'ALT',special:'SPECIAL'}[g]||(g||'').toUpperCase();}
-function vc(v){
-  if(!v||v==='--'||v==='OFF')return'off';
-  const n=parseInt(v);
-  if(isNaN(n))return'hi';
-  if(n>=65)return'hi';
-  if(n<=25)return'warn';
-  return'';
+function vc(v){if(!v||v==='--'||v==='OFF')return'off';const n=parseInt(v);if(isNaN(n))return'hi';if(n>=65)return'hi';if(n<=25)return'warn';return'';}
+
+function pH(s,pn){
+  const p=s.parts[pn]||dp();
+  const k=s.id+pn;
+  return`<div class="pc ${pn==='intro'?'on':''}" id="pc${k}">
+  <div class="stabs">
+    <div class="stab on" onclick="ss(event,'${k}','pre')">PREAMP</div>
+    <div class="stab" onclick="ss(event,'${k}','comp')">COMP</div>
+    <div class="stab" onclick="ss(event,'${k}','od')">OD/DS</div>
+    <div class="stab" onclick="ss(event,'${k}','mod')">MOD</div>
+    <div class="stab" onclick="ss(event,'${k}','dly')">DELAY</div>
+    <div class="stab" onclick="ss(event,'${k}','rvb')">REVERB</div>
+  </div>
+  <div class="sc on" id="s${k}pre"><div class="pblock"><div class="ptitle">◆ PREAMP</div>
+    <div class="prow"><span class="pname">TYPE</span><span class="pval hi">${p.preamp.type}</span></div>
+    <div class="prow"><span class="pname">GAIN</span><span class="pval ${vc(p.preamp.gain)}">${p.preamp.gain}</span></div>
+    <div class="prow"><span class="pname">BASS</span><span class="pval">${p.preamp.bass}</span></div>
+    <div class="prow"><span class="pname">MIDDLE</span><span class="pval ${vc(p.preamp.middle)}">${p.preamp.middle}</span></div>
+    <div class="prow"><span class="pname">TREBLE</span><span class="pval">${p.preamp.treble}</span></div>
+    <div class="prow"><span class="pname">LEVEL</span><span class="pval">${p.preamp.level}</span></div>
+  </div></div>
+  <div class="sc" id="s${k}comp"><div class="pblock"><div class="ptitle">◆ COMP/FX1</div>
+    <div class="prow"><span class="pname">TYPE</span><span class="pval ${p.comp.type==='OFF'?'off':'hi'}">${p.comp.type}</span></div>
+    <div class="prow"><span class="pname">SUSTAIN</span><span class="pval ${vc(p.comp.sustain)}">${p.comp.sustain}</span></div>
+  </div></div>
+  <div class="sc" id="s${k}od"><div class="pblock"><div class="ptitle">◆ OD/DS</div>
+    <div class="prow"><span class="pname">TYPE</span><span class="pval ${p.od.type==='OFF'?'off':'hi'}">${p.od.type}</span></div>
+    <div class="prow"><span class="pname">DRIVE</span><span class="pval ${vc(p.od.drive)}">${p.od.drive}</span></div>
+    <div class="prow"><span class="pname">TONE</span><span class="pval">${p.od.tone}</span></div>
+    <div class="prow"><span class="pname">LEVEL</span><span class="pval">${p.od.level}</span></div>
+  </div></div>
+  <div class="sc" id="s${k}mod"><div class="pblock"><div class="ptitle">◆ MOD</div>
+    <div class="prow"><span class="pname">TYPE</span><span class="pval ${p.mod.type==='OFF'?'off':'hi'}">${p.mod.type}</span></div>
+    <div class="prow"><span class="pname">RATE</span><span class="pval">${p.mod.rate}</span></div>
+    <div class="prow"><span class="pname">DEPTH</span><span class="pval ${vc(p.mod.depth)}">${p.mod.depth}</span></div>
+    <div class="prow"><span class="pname">LEVEL</span><span class="pval">${p.mod.level}</span></div>
+  </div></div>
+  <div class="sc" id="s${k}dly"><div class="pblock"><div class="ptitle">◆ DELAY</div>
+    <div class="prow"><span class="pname">TYPE</span><span class="pval hi">${p.delay.type}</span></div>
+    <div class="prow"><span class="pname">TIME</span><span class="pval">${p.delay.time}</span></div>
+    <div class="prow"><span class="pname">FEEDBACK</span><span class="pval">${p.delay.feedback}</span></div>
+    <div class="prow"><span class="pname">E.LEVEL</span><span class="pval">${p.delay.elevel}</span></div>
+  </div></div>
+  <div class="sc" id="s${k}rvb"><div class="pblock"><div class="ptitle">◆ REVERB</div>
+    <div class="prow"><span class="pname">TYPE</span><span class="pval hi">${p.reverb.type}</span></div>
+    <div class="prow"><span class="pname">LEVEL</span><span class="pval ${vc(p.reverb.level)}">${p.reverb.level}</span></div>
+  </div></div>
+</div>`;
 }
 
 function render(list){
@@ -632,152 +394,87 @@ function render(list){
 <div class="scard" id="c${s.id}">
   <div class="shead" onclick="tog(${s.id})">
     <div class="bbank">${s.bank}</div>
-    <div class="sinfo">
-      <div class="sname">${s.song}</div>
-      <div class="sartist">${s.artist}</div>
-    </div>
+    <div class="sinfo"><div class="sname">${s.song}</div><div class="sartist">${s.artist}</div></div>
     <div class="gtag ${gc(s.genre)}">${gl(s.genre)}</div>
     <button class="delbtn" onclick="del(event,${s.id})">✕</button>
     <div class="expi">▼</div>
   </div>
   <div class="spanel">
-    <div class="tabs">
-      <div class="tab on" onclick="stab(event,${s.id},'pre')">PREAMP</div>
-      <div class="tab" onclick="stab(event,${s.id},'comp')">COMP</div>
-      <div class="tab" onclick="stab(event,${s.id},'od')">OD/DS</div>
-      <div class="tab" onclick="stab(event,${s.id},'mod')">MOD</div>
-      <div class="tab" onclick="stab(event,${s.id},'dly')">DELAY</div>
-      <div class="tab" onclick="stab(event,${s.id},'rvb')">REVERB</div>
-      <div class="tab" onclick="stab(event,${s.id},'gtr')">GUITAR</div>
+    <div class="ginfo">
+      <div class="ginfo-row"><span class="pname">PICKUP</span><span class="pval warn">${s.pickup}</span></div>
+      <div class="ginfo-row"><span class="pname">VOL</span><span class="pval warn">${s.vol}</span></div>
+      <div class="ginfo-row"><span class="pname">PEDAL FX</span><span class="pval hi">${s.pedal}</span></div>
+      <div class="ginfo-row"><span class="pname">BANK</span><span class="pval hi">${s.bank}</span></div>
     </div>
-    <div class="tc on" id="t${s.id}pre">
-      <div class="pblock">
-        <div class="ptitle">◆ PREAMP</div>
-        <div class="prow"><span class="pname">TYPE</span><span class="pval hi">${s.preamp.type}</span></div>
-        <div class="prow"><span class="pname">GAIN</span><span class="pval ${vc(s.preamp.gain)}">${s.preamp.gain}</span></div>
-        <div class="prow"><span class="pname">BASS</span><span class="pval">${s.preamp.bass}</span></div>
-        <div class="prow"><span class="pname">MIDDLE</span><span class="pval ${vc(s.preamp.middle)}">${s.preamp.middle}</span></div>
-        <div class="prow"><span class="pname">TREBLE</span><span class="pval">${s.preamp.treble}</span></div>
-        <div class="prow"><span class="pname">LEVEL</span><span class="pval">${s.preamp.level}</span></div>
-      </div>
+    <div class="ptabs">
+      <div class="ptab intro on" onclick="sp(event,${s.id},'intro')">🎸 INTRO</div>
+      <div class="ptab verse" onclick="sp(event,${s.id},'verse')">🎵 VERSE</div>
+      <div class="ptab chorus" onclick="sp(event,${s.id},'chorus')">🔥 CHORUS</div>
+      <div class="ptab solo" onclick="sp(event,${s.id},'solo')">⚡ SOLO</div>
     </div>
-    <div class="tc" id="t${s.id}comp">
-      <div class="pblock">
-        <div class="ptitle">◆ COMP/FX1</div>
-        <div class="prow"><span class="pname">TYPE</span><span class="pval ${s.comp.type==='OFF'?'off':'hi'}">${s.comp.type}</span></div>
-        <div class="prow"><span class="pname">SUSTAIN</span><span class="pval ${vc(s.comp.sustain)}">${s.comp.sustain}</span></div>
-      </div>
-    </div>
-    <div class="tc" id="t${s.id}od">
-      <div class="pblock">
-        <div class="ptitle">◆ OD/DS</div>
-        <div class="prow"><span class="pname">TYPE</span><span class="pval ${s.od.type==='OFF'?'off':'hi'}">${s.od.type}</span></div>
-        <div class="prow"><span class="pname">DRIVE</span><span class="pval ${vc(s.od.drive)}">${s.od.drive}</span></div>
-        <div class="prow"><span class="pname">TONE</span><span class="pval">${s.od.tone}</span></div>
-        <div class="prow"><span class="pname">LEVEL</span><span class="pval">${s.od.level}</span></div>
-      </div>
-    </div>
-    <div class="tc" id="t${s.id}mod">
-      <div class="pblock">
-        <div class="ptitle">◆ MOD</div>
-        <div class="prow"><span class="pname">TYPE</span><span class="pval ${s.mod.type==='OFF'?'off':'hi'}">${s.mod.type}</span></div>
-        <div class="prow"><span class="pname">RATE</span><span class="pval">${s.mod.rate}</span></div>
-        <div class="prow"><span class="pname">DEPTH</span><span class="pval ${vc(s.mod.depth)}">${s.mod.depth}</span></div>
-        <div class="prow"><span class="pname">LEVEL</span><span class="pval">${s.mod.level}</span></div>
-      </div>
-    </div>
-    <div class="tc" id="t${s.id}dly">
-      <div class="pblock">
-        <div class="ptitle">◆ DELAY</div>
-        <div class="prow"><span class="pname">TYPE</span><span class="pval hi">${s.delay.type}</span></div>
-        <div class="prow"><span class="pname">TIME</span><span class="pval">${s.delay.time}</span></div>
-        <div class="prow"><span class="pname">FEEDBACK</span><span class="pval">${s.delay.feedback}</span></div>
-        <div class="prow"><span class="pname">E.LEVEL</span><span class="pval">${s.delay.elevel}</span></div>
-      </div>
-    </div>
-    <div class="tc" id="t${s.id}rvb">
-      <div class="pblock">
-        <div class="ptitle">◆ REVERB</div>
-        <div class="prow"><span class="pname">TYPE</span><span class="pval hi">${s.reverb.type}</span></div>
-        <div class="prow"><span class="pname">LEVEL</span><span class="pval ${vc(s.reverb.level)}">${s.reverb.level}</span></div>
-      </div>
-      <div class="pblock">
-        <div class="ptitle">◆ PEDAL FX</div>
-        <div class="prow"><span class="pname">TYPE</span><span class="pval hi">${s.pedal}</span></div>
-      </div>
-    </div>
-    <div class="tc" id="t${s.id}gtr">
-      <div class="pblock">
-        <div class="ptitle">◆ GUITAR SETUP</div>
-        <div class="prow"><span class="pname">PICKUP</span><span class="pval hi">${s.pickup}</span></div>
-        <div class="prow"><span class="pname">VOLUME</span><span class="pval warn">${s.vol}</span></div>
-        <div class="prow"><span class="pname">BANK</span><span class="pval hi">${s.bank}</span></div>
-        <div class="prow"><span class="pname">OUTPUT</span><span class="pval hi">LINE MODE</span></div>
-        <div class="prow"><span class="pname">AMP CH</span><span class="pval hi">CLEAN</span></div>
-      </div>
-    </div>
+    ${pH(s,'intro')}${pH(s,'verse')}${pH(s,'chorus')}${pH(s,'solo')}
     ${s.tip?`<div class="tip">💡 ${s.tip}</div>`:''}
   </div>
 </div>`).join('');
 }
 
-function tog(id){
-  const c=document.getElementById('c'+id);
-  c.classList.toggle('open');
-}
-function stab(e,id,tab){
+function tog(id){document.getElementById('c'+id).classList.toggle('open');}
+function sp(e,id,part){
   e.stopPropagation();
-  const c=document.getElementById('c'+id);
-  c.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
-  c.querySelectorAll('.tc').forEach(t=>t.classList.remove('on'));
+  const card=document.getElementById('c'+id);
+  card.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
+  card.querySelectorAll('.pc').forEach(t=>t.classList.remove('on'));
   e.target.classList.add('on');
-  document.getElementById('t'+id+tab).classList.add('on');
+  document.getElementById('pc'+id+part).classList.add('on');
 }
-function del(e,id){
+function ss(e,key,sec){
   e.stopPropagation();
-  if(confirm('Delete this song?')){
-    songs=songs.filter(s=>s.id!==id);
-    save();doFilter();stats();
-  }
+  const pc=document.getElementById('pc'+key);
+  if(!pc)return;
+  pc.querySelectorAll('.stab').forEach(t=>t.classList.remove('on'));
+  pc.querySelectorAll('.sc').forEach(t=>t.classList.remove('on'));
+  e.target.classList.add('on');
+  document.getElementById('s'+key+sec).classList.add('on');
 }
+function del(e,id){e.stopPropagation();if(confirm('Delete this song?')){songs=songs.filter(s=>s.id!==id);save();doFilter();stats();}}
 function doFilter(){
   const q=document.getElementById('srch').value.toLowerCase().trim();
-  const f=q?songs.filter(s=>
-    s.song.toLowerCase().includes(q)||
-    s.artist.toLowerCase().includes(q)||
-    (s.genre||'').toLowerCase().includes(q)||
-    s.bank.toLowerCase().includes(q)
-  ):songs;
+  const f=q?songs.filter(s=>s.song.toLowerCase().includes(q)||s.artist.toLowerCase().includes(q)||(s.genre||'').toLowerCase().includes(q)||s.bank.toLowerCase().includes(q)):songs;
   render(f);stats();
 }
-function stats(){
-  document.getElementById('tcnt').textContent=songs.length;
-  document.getElementById('bcnt').textContent=new Set(songs.map(s=>s.bank.split('-')[0])).size;
+function stats(){document.getElementById('tcnt').textContent=songs.length;document.getElementById('bcnt').textContent=new Set(songs.map(s=>s.bank.split('-')[0])).size;}
+
+function openPaste(){document.getElementById('pmov').classList.add('open');document.getElementById('pmov').scrollTop=0;}
+function closePaste(){document.getElementById('pmov').classList.remove('open');parsedSong=null;document.getElementById('parseResult').className='parse-result';document.getElementById('pasteArea').value='';}
+function gv(text,key){const r=new RegExp('^'+key+'\\s*:\\s*(.+)$','im');const m=text.match(r);return m?m[1].trim():'';}
+function parsePart(text){return{preamp:{type:gv(text,'PREAMP TYPE')||'NATURAL',gain:gv(text,'GAIN')||'50%',bass:gv(text,'BASS')||'50%',middle:gv(text,'MIDDLE')||'55%',treble:gv(text,'TREBLE')||'48%',level:gv(text,'PREAMP LEVEL')||'60%'},comp:{type:gv(text,'COMP TYPE')||'COMP',sustain:gv(text,'SUSTAIN')||'55%'},od:{type:gv(text,'OD TYPE')||'OFF',drive:gv(text,'DRIVE')||'--',tone:gv(text,'TONE')||'--',level:gv(text,'OD LEVEL')||'--'},mod:{type:gv(text,'MOD TYPE')||'OFF',rate:gv(text,'RATE')||'--',depth:gv(text,'DEPTH')||'--',level:gv(text,'MOD LEVEL')||'--'},delay:{type:gv(text,'DELAY TYPE')||'ANALOG',time:gv(text,'TIME')||'350ms',feedback:gv(text,'FEEDBACK')||'20%',elevel:gv(text,'E.LEVEL')||'35%'},reverb:{type:gv(text,'REVERB TYPE')||'ROOM',level:gv(text,'REVERB LEVEL')||'25%'}};}
+function parseSettings(){
+  const text=document.getElementById('pasteArea').value.trim();
+  const res=document.getElementById('parseResult');
+  if(!text){res.className='parse-result show';res.innerHTML='<div class="err">⚠️ Please paste settings first!</div>';return;}
+  const song=gv(text,'SONG'),artist=gv(text,'ARTIST');
+  if(!song||!artist){res.className='parse-result show';res.innerHTML='<div class="err">⚠️ Cannot find SONG or ARTIST!</div>';return;}
+  const secs=text.split(/^PART\s*:\s*/im);
+  const parts={intro:dp(),verse:dp(),chorus:dp(),solo:dp()};
+  for(let i=1;i<secs.length;i++){const sec=secs[i];const fl=sec.split('\n')[0].trim().toLowerCase();if(fl.includes('intro'))parts.intro=parsePart(sec);else if(fl.includes('verse'))parts.verse=parsePart(sec);else if(fl.includes('chorus'))parts.chorus=parsePart(sec);else if(fl.includes('solo'))parts.solo=parsePart(sec);}
+  if(secs.length<=1){const p=parsePart(text);parts.intro=parts.verse=parts.chorus=parts.solo=p;}
+  parsedSong={id:nid++,song,artist,genre:(gv(text,'GENRE')||'rock').toLowerCase(),bank:gv(text,'BANK')||'U1-1',pickup:gv(text,'PICKUP')||'Bridge HB',vol:gv(text,'GUITAR VOL')||'10 (Full)',pedal:gv(text,'PEDAL FX')||'WAH',tip:gv(text,'TIP')||'',parts};
+  res.className='parse-result show';
+  res.innerHTML=`<div class="ok">✅ Parsed successfully!</div><div style="font-size:11px;color:#e0e0f0;font-family:'Courier New',monospace;line-height:1.8">🎵 <b style="color:#fff">${song}</b> — ${artist}<br>🏦 Bank: <b style="color:var(--accent3)">${parsedSong.bank}</b><br>🎸 Pickup: <b style="color:var(--accent2)">${parsedSong.pickup}</b> | Vol: <b style="color:var(--accent2)">${parsedSong.vol}</b><br>${secs.length>1?'✅ Found: INTRO + VERSE + CHORUS + SOLO':'⚠️ Same settings applied to all parts'}</div><button class="confirm-btn" onclick="confirmPaste()">✅ ADD TO MY SONGS</button>`;
 }
-function openM(){
-  document.getElementById('mov').classList.add('open');
-  document.getElementById('mov').scrollTop=0;
-}
+function confirmPaste(){if(!parsedSong)return;songs.push(parsedSong);save();closePaste();doFilter();stats();alert('✅ '+parsedSong.song+' added!');parsedSong=null;}
+function openM(){document.getElementById('mov').classList.add('open');document.getElementById('mov').scrollTop=0;}
 function closeM(){document.getElementById('mov').classList.remove('open');}
 function g(id){return document.getElementById(id);}
 function saveS(){
   const song=g('fs').value.trim(),artist=g('fa').value.trim();
   if(!song||!artist){alert('Please enter song name and artist!');return;}
-  const ns={
-    id:nid++,song,artist,
-    genre:g('fg2').value,bank:g('fbank').value,
-    preamp:{type:g('fpt').value,gain:g('fgain').value||'50%',bass:g('fbass').value||'50%',middle:g('fmid').value||'55%',treble:g('ftre').value||'48%',level:g('fplvl').value||'60%'},
-    comp:{type:g('fcomp').value,sustain:g('fsus').value||'55%'},
-    od:{type:g('fodt').value,drive:g('fdrv').value||'--',tone:g('fton').value||'--',level:g('fodlvl').value||'--'},
-    mod:{type:g('fmt').value,rate:g('fmr').value||'--',depth:g('fmd').value||'--',level:g('fml').value||'--'},
-    delay:{type:g('fdt').value,time:g('fdtime').value||'350ms',feedback:g('fdfb').value||'20%',elevel:g('fdel').value||'35%'},
-    reverb:{type:g('frt').value,level:g('frl').value||'25%'},
-    pedal:g('fpfx').value,pickup:g('fpick').value,vol:g('fvol').value,
-    tip:g('ftip').value
-  };
+  const ns={id:nid++,song,artist,genre:g('fg2').value,bank:g('fbank').value,pickup:g('fpick').value,vol:g('fvol').value,pedal:g('fpfx').value,tip:g('ftip').value,parts:{intro:dp(),verse:dp(),chorus:dp(),solo:dp()}};
   songs.push(ns);save();closeM();doFilter();stats();
-  ['fs','fa','fgain','fbass','fmid','ftre','fplvl','fsus','fdrv','fton','fodlvl','fmr','fmd','fml','fdtime','fdfb','fdel','frl','ftip'].forEach(id=>g(id).value='');
+  ['fs','fa','ftip'].forEach(id=>g(id).value='');
+  alert('✅ Song added! Use PASTE to add detailed settings.');
 }
+document.getElementById('pmov').addEventListener('click',function(e){if(e.target===this)closePaste();});
 document.getElementById('mov').addEventListener('click',function(e){if(e.target===this)closeM();});
 load();doFilter();stats();
 </script>
