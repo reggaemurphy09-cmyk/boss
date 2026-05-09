@@ -3,1202 +3,783 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BOSS ME-90 Song Settings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BOSS ME-90 Settings</title>
 <style>
-/* Offline safe - using system fonts that work on iPhone */
-:root {
-  --bg: #0a0a0f;
-  --surface: #111118;
-  --card: #16161f;
-  --border: #2a2a3a;
-  --accent: #ff4444;
-  --accent2: #ff8800;
-  --accent3: #00d4ff;
-  --green: #00ff88;
-  --text: #e0e0f0;
-  --muted: #666680;
-  --knob: #1e1e2e;
-  --font-display: 'Courier New', Courier, monospace;
-  --font-body: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  --font-mono: 'Courier New', Courier, monospace;
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  background:#0a0a0f!important;
+  color:#e0e0f0;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;
+  min-height:100vh;
+  -webkit-text-size-adjust:none;
+  overflow-x:hidden;
 }
-
-- { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-body {
-background: var(–bg);
-color: var(–text);
-font-family: var(–font-body);
-min-height: 100vh;
-overflow-x: hidden;
--webkit-text-size-adjust: 100%;
+:root{
+  --bg:#0a0a0f;
+  --surface:#111118;
+  --card:#16161f;
+  --border:#2a2a3a;
+  --accent:#ff3333;
+  --accent2:#ff8800;
+  --accent3:#00ccff;
+  --green:#00ff88;
+  --text:#e0e0f0;
+  --muted:#777790;
 }
-
-body::before {
-content: ‘’;
-position: fixed;
-top: 0; left: 0; right: 0; bottom: 0;
-background:
-radial-gradient(ellipse at 20% 20%, rgba(255,68,68,0.05) 0%, transparent 50%),
-radial-gradient(ellipse at 80% 80%, rgba(0,212,255,0.05) 0%, transparent 50%);
-pointer-events: none;
-z-index: 0;
+/* HEADER */
+.hdr{
+  background:#0d0005;
+  border-bottom:2px solid var(--accent);
+  padding:12px 14px;
+  position:sticky;top:0;z-index:999;
+  box-shadow:0 2px 20px rgba(255,50,50,0.3);
 }
-
-.header {
-background: linear-gradient(135deg, #0d0d15 0%, #1a0a0a 100%);
-border-bottom: 2px solid var(–accent);
-padding: 16px;
-position: sticky;
-top: 0;
-z-index: 100;
-box-shadow: 0 4px 30px rgba(255,68,68,0.2);
+.hdr-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.boss{
+  background:var(--accent);color:#fff;
+  font-size:11px;font-weight:900;
+  padding:4px 9px;letter-spacing:2px;
+  border-radius:2px;flex-shrink:0;
 }
-
-.header-top {
-display: flex;
-align-items: center;
-gap: 12px;
-margin-bottom: 10px;
+.htitle{
+  font-size:14px;font-weight:800;
+  color:#fff;letter-spacing:1px;
+  font-variant:small-caps;
 }
-
-.boss-badge {
-background: var(–accent);
-color: white;
-font-family: var(–font-mono);
-font-weight: 900;
-font-size: 13px;
-padding: 4px 10px;
-letter-spacing: 2px;
-flex-shrink: 0;
+.htitle span{color:var(--accent3)}
+.addbtn{
+  margin-left:auto;
+  background:var(--accent);
+  border:none;color:#fff;
+  font-size:11px;font-weight:700;
+  padding:8px 14px;border-radius:4px;
+  letter-spacing:1px;cursor:pointer;
+  -webkit-appearance:none;
+  flex-shrink:0;
 }
-
-.title {
-font-family: var(–font-mono);
-font-size: 15px;
-font-weight: 700;
-color: white;
-letter-spacing: 1px;
+.srchwrap{position:relative}
+.srchwrap input{
+  width:100%;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:10px 14px 10px 36px;
+  color:var(--text);font-size:14px;
+  outline:none;-webkit-appearance:none;
 }
-
-.title span { color: var(–accent3); }
-
-.add-btn {
-background: linear-gradient(135deg, var(–accent), #cc0000);
-border: none;
-color: white;
-font-family: var(–font-mono);
-font-size: 11px;
-font-weight: 700;
-padding: 8px 14px;
-cursor: pointer;
-letter-spacing: 1px;
-margin-left: auto;
-border-radius: 4px;
--webkit-appearance: none;
+.srchwrap input::placeholder{color:var(--muted)}
+.srchwrap input:focus{border-color:var(--accent3);background:rgba(0,200,255,0.06)}
+.sicon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px}
+/* MAIN */
+.main{padding:12px 12px 40px;max-width:700px;margin:0 auto}
+.statsbar{
+  display:flex;gap:8px;flex-wrap:wrap;
+  margin-bottom:14px;
 }
-
-.search-wrap {
-position: relative;
-width: 100%;
+.stat{
+  background:var(--card);border:1px solid var(--border);
+  padding:5px 11px;border-radius:4px;
+  font-size:11px;color:var(--muted);
+  font-family:'Courier New',monospace;
 }
-
-.search-wrap input {
-width: 100%;
-background: rgba(255,255,255,0.07);
-border: 1px solid var(–border);
-border-radius: 8px;
-padding: 10px 16px 10px 38px;
-color: var(–text);
-font-family: var(–font-mono);
-font-size: 14px;
-outline: none;
--webkit-appearance: none;
+.stat b{color:var(--accent3)}
+/* SONG LIST */
+.slist{display:flex;flex-direction:column;gap:6px}
+/* SONG CARD */
+.scard{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+  border-radius:6px;overflow:hidden;
 }
-
-.search-wrap input:focus {
-border-color: var(–accent3);
-background: rgba(0,212,255,0.05);
+.scard.open{
+  border-color:var(--accent3);
+  border-left-color:var(--green);
 }
-
-.search-icon {
-position: absolute;
-left: 12px;
-top: 50%;
-transform: translateY(-50%);
-font-size: 15px;
+.shead{
+  display:flex;align-items:center;
+  padding:11px 12px;gap:8px;
+  cursor:pointer;user-select:none;
+  -webkit-user-select:none;
 }
-
-.main {
-max-width: 900px;
-margin: 0 auto;
-padding: 16px;
-position: relative;
-z-index: 1;
+.bbank{
+  background:var(--accent);color:#fff;
+  font-size:9px;font-weight:700;
+  padding:3px 7px;border-radius:3px;
+  letter-spacing:1px;white-space:nowrap;
+  flex-shrink:0;font-family:'Courier New',monospace;
 }
-
-.stats-bar {
-display: flex;
-gap: 8px;
-margin-bottom: 16px;
-flex-wrap: wrap;
+.sinfo{flex:1;min-width:0}
+.sname{
+  font-size:13px;font-weight:700;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-
-.stat {
-background: var(–card);
-border: 1px solid var(–border);
-padding: 6px 12px;
-font-family: var(–font-mono);
-font-size: 11px;
-color: var(–muted);
-border-radius: 4px;
+.sartist{font-size:11px;color:var(--muted);margin-top:1px}
+.gtag{
+  font-size:9px;padding:2px 7px;border-radius:3px;
+  letter-spacing:1px;white-space:nowrap;flex-shrink:0;
+  font-family:'Courier New',monospace;font-weight:600;
 }
-
-.stat span { color: var(–accent3); font-weight: bold; }
-
-.song-list {
-display: flex;
-flex-direction: column;
-gap: 8px;
+.g-rock{background:rgba(255,50,50,0.15);color:#ff6666;border:1px solid rgba(255,50,50,0.3)}
+.g-metal{background:rgba(255,136,0,0.15);color:#ffaa33;border:1px solid rgba(255,136,0,0.3)}
+.g-ballad{background:rgba(0,200,255,0.15);color:#33ccff;border:1px solid rgba(0,200,255,0.3)}
+.g-funk{background:rgba(0,255,136,0.15);color:#00ff88;border:1px solid rgba(0,255,136,0.3)}
+.g-alt{background:rgba(180,100,255,0.15);color:#cc88ff;border:1px solid rgba(180,100,255,0.3)}
+.g-special{background:rgba(255,200,0,0.15);color:#ffcc00;border:1px solid rgba(255,200,0,0.3)}
+.delbtn{
+  background:none;border:1px solid rgba(255,50,50,0.3);
+  color:var(--accent);width:26px;height:26px;
+  border-radius:4px;font-size:12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;-webkit-appearance:none;
 }
-
-.song-card {
-background: var(–card);
-border: 1px solid var(–border);
-border-left: 3px solid var(–accent);
-overflow: hidden;
-border-radius: 4px;
+.expi{color:var(--muted);font-size:11px;flex-shrink:0;transition:transform 0.25s}
+.scard.open .expi{transform:rotate(180deg);color:var(--green)}
+/* SETTINGS PANEL */
+.spanel{display:none;border-top:1px solid var(--border);padding:0 12px 12px}
+.scard.open .spanel{display:block}
+/* TABS */
+.tabs{display:flex;gap:4px;margin:10px 0 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.tab{
+  background:#1a1a28;border:1px solid var(--border);
+  color:var(--muted);padding:6px 11px;
+  font-size:10px;border-radius:4px;cursor:pointer;
+  white-space:nowrap;flex-shrink:0;
+  font-family:'Courier New',monospace;letter-spacing:1px;
+  -webkit-appearance:none;
 }
-
-.song-card.active {
-border-color: var(–accent3);
-border-left-color: var(–green);
+.tab.on{background:var(--accent3);color:#000;border-color:var(--accent3);font-weight:700}
+.tc{display:none}.tc.on{display:block}
+/* PARAM BLOCK */
+.pblock{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:5px;padding:10px 12px;margin-bottom:6px;
 }
-
-.song-header {
-display: flex;
-align-items: center;
-padding: 12px 14px;
-gap: 10px;
-cursor: pointer;
-user-select: none;
--webkit-user-select: none;
+.ptitle{
+  font-size:9px;letter-spacing:2px;color:var(--accent3);
+  margin-bottom:8px;font-family:'Courier New',monospace;
+  padding-bottom:4px;border-bottom:1px solid var(--border);
 }
-
-.bank-badge {
-background: var(–accent);
-color: white;
-font-family: var(–font-mono);
-font-size: 10px;
-font-weight: 700;
-padding: 3px 7px;
-letter-spacing: 1px;
-white-space: nowrap;
-flex-shrink: 0;
-border-radius: 3px;
+.prow{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);
 }
-
-.song-info { flex: 1; min-width: 0; }
-
-.song-name {
-font-family: var(–font-mono);
-font-size: 13px;
-font-weight: 700;
-color: white;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
+.prow:last-child{border:none}
+.pname{font-size:11px;color:var(--muted);font-family:'Courier New',monospace}
+.pval{font-size:12px;font-weight:600;font-family:'Courier New',monospace}
+.pval.hi{color:var(--green)}
+.pval.warn{color:var(--accent2)}
+.pval.off{color:#444}
+/* TIP */
+.tip{
+  background:rgba(0,200,255,0.06);
+  border-left:3px solid var(--accent3);
+  border-radius:0 4px 4px 0;
+  padding:8px 11px;margin-top:8px;
+  font-size:12px;color:var(--accent3);
+  line-height:1.5;font-family:'Courier New',monospace;
 }
-
-.song-artist {
-font-size: 11px;
-color: var(–muted);
-margin-top: 2px;
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;font-family:'Courier New',monospace}
+/* MODAL */
+.moverlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.92);z-index:9999;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;
 }
-
-.genre-tag {
-font-size: 9px;
-padding: 2px 7px;
-border-radius: 2px;
-font-family: var(–font-mono);
-letter-spacing: 1px;
-flex-shrink: 0;
-white-space: nowrap;
+.moverlay.open{display:block}
+.modal{
+  background:var(--card);border:1px solid var(--accent3);
+  border-radius:8px;overflow:hidden;
+  max-width:600px;margin:0 auto;
+  box-shadow:0 0 40px rgba(0,200,255,0.15);
 }
-
-.genre-rock { background: rgba(255,68,68,0.2); color: var(–accent); border: 1px solid rgba(255,68,68,0.3); }
-.genre-metal { background: rgba(255,136,0,0.2); color: var(–accent2); border: 1px solid rgba(255,136,0,0.3); }
-.genre-ballad { background: rgba(0,212,255,0.2); color: var(–accent3); border: 1px solid rgba(0,212,255,0.3); }
-.genre-funk { background: rgba(0,255,136,0.2); color: var(–green); border: 1px solid rgba(0,255,136,0.3); }
-.genre-alt { background: rgba(180,100,255,0.2); color: #c084fc; border: 1px solid rgba(180,100,255,0.3); }
-.genre-special { background: rgba(255,200,0,0.2); color: #ffc800; border: 1px solid rgba(255,200,0,0.3); }
-
-.expand-icon {
-color: var(–muted);
-font-size: 12px;
-transition: transform 0.3s;
-flex-shrink: 0;
+.mhdr{
+  background:#0a1520;border-bottom:1px solid var(--border);
+  padding:13px 16px;display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:10;
 }
-
-.song-card.active .expand-icon { transform: rotate(180deg); color: var(–green); }
-
-.delete-btn {
-background: none;
-border: 1px solid rgba(255,68,68,0.3);
-color: var(–accent);
-width: 26px;
-height: 26px;
-cursor: pointer;
-font-size: 12px;
-display: flex;
-align-items: center;
-justify-content: center;
-flex-shrink: 0;
-border-radius: 3px;
--webkit-appearance: none;
+.mtitle{font-size:13px;color:var(--accent3);letter-spacing:2px;font-family:'Courier New',monospace}
+.closebtn{
+  background:none;border:1px solid var(--border);
+  color:var(--muted);width:32px;height:32px;
+  border-radius:4px;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  -webkit-appearance:none;
 }
-
-.settings-panel {
-display: none;
-padding: 0 14px 14px;
-border-top: 1px solid var(–border);
+.mbody{padding:14px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.frow.full{grid-template-columns:1fr}
+.fg{display:flex;flex-direction:column;gap:5px}
+.flabel{font-size:10px;color:var(--muted);letter-spacing:1px;font-family:'Courier New',monospace}
+.finput,.fsel{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);padding:9px 12px;
+  font-size:13px;border-radius:4px;
+  outline:none;width:100%;-webkit-appearance:none;
+  font-family:'Courier New',monospace;
 }
-
-.song-card.active .settings-panel { display: block; }
-
-.stomp-tabs {
-display: flex;
-gap: 4px;
-margin: 10px 0;
-overflow-x: auto;
--webkit-overflow-scrolling: touch;
-padding-bottom: 2px;
+.finput:focus,.fsel:focus{border-color:var(--accent3)}
+.fsel{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23777790' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+  padding-right:28px;
 }
-
-.stomp-tab {
-background: var(–knob);
-border: 1px solid var(–border);
-color: var(–muted);
-padding: 6px 12px;
-font-family: var(–font-mono);
-font-size: 10px;
-cursor: pointer;
-letter-spacing: 1px;
-white-space: nowrap;
-border-radius: 3px;
--webkit-appearance: none;
-flex-shrink: 0;
+.slabel{
+  font-size:10px;color:var(--accent);letter-spacing:2px;
+  margin:14px 0 8px;padding-bottom:5px;
+  border-bottom:1px solid var(--border);
+  font-family:'Courier New',monospace;
 }
-
-.stomp-tab.active {
-background: var(–accent3);
-color: #000;
-border-color: var(–accent3);
-font-weight: bold;
+.savebtn{
+  background:linear-gradient(135deg,var(--green),#00aa55);
+  border:none;color:#000;
+  font-size:13px;font-weight:900;
+  padding:14px;border-radius:6px;
+  width:100%;margin-top:14px;cursor:pointer;
+  letter-spacing:2px;-webkit-appearance:none;
+  font-family:'Courier New',monospace;
 }
-
-.stomp-content { display: none; }
-.stomp-content.active { display: block; }
-
-.section-block {
-background: var(–surface);
-border: 1px solid var(–border);
-padding: 10px 12px;
-border-radius: 4px;
-margin-bottom: 8px;
-}
-
-.section-title {
-font-family: var(–font-mono);
-font-size: 9px;
-letter-spacing: 2px;
-color: var(–accent3);
-margin-bottom: 8px;
-}
-
-.param-row {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 4px 0;
-border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-
-.param-row:last-child { border-bottom: none; }
-
-.param-name {
-font-size: 11px;
-color: var(–muted);
-font-family: var(–font-mono);
-}
-
-.param-value {
-font-size: 12px;
-font-weight: 600;
-color: var(–text);
-font-family: var(–font-mono);
-}
-
-.param-value.highlight { color: var(–green); }
-.param-value.warn { color: var(–accent2); }
-.param-value.off { color: #444; }
-
-.tip-box {
-background: rgba(0,212,255,0.05);
-border: 1px solid rgba(0,212,255,0.2);
-border-left: 3px solid var(–accent3);
-padding: 8px 12px;
-margin-top: 8px;
-font-size: 12px;
-color: var(–accent3);
-font-family: var(–font-mono);
-border-radius: 0 4px 4px 0;
-line-height: 1.5;
-}
-
-/* Modal */
-.modal-overlay {
-display: none;
-position: fixed;
-inset: 0;
-background: rgba(0,0,0,0.88);
-z-index: 1000;
-overflow-y: auto;
--webkit-overflow-scrolling: touch;
-padding: 20px 16px;
-}
-
-.modal-overlay.open { display: block; }
-
-.modal {
-background: var(–card);
-border: 1px solid var(–accent3);
-box-shadow: 0 0 60px rgba(0,212,255,0.2);
-width: 100%;
-max-width: 600px;
-margin: 0 auto;
-border-radius: 8px;
-overflow: hidden;
-}
-
-.modal-header {
-background: linear-gradient(135deg, #0d1a2a, #0a0a0f);
-border-bottom: 1px solid var(–border);
-padding: 14px 16px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-position: sticky;
-top: 0;
-z-index: 10;
-}
-
-.modal-title {
-font-family: var(–font-mono);
-font-size: 13px;
-color: var(–accent3);
-letter-spacing: 2px;
-}
-
-.close-btn {
-background: none;
-border: 1px solid var(–border);
-color: var(–muted);
-width: 32px;
-height: 32px;
-cursor: pointer;
-font-size: 16px;
-display: flex;
-align-items: center;
-justify-content: center;
-border-radius: 4px;
--webkit-appearance: none;
-}
-
-.modal-body { padding: 16px; }
-
-.form-row {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 10px;
-margin-bottom: 10px;
-}
-
-.form-row.single { grid-template-columns: 1fr; }
-
-.form-group {
-display: flex;
-flex-direction: column;
-gap: 5px;
-}
-
-.form-label {
-font-family: var(–font-mono);
-font-size: 10px;
-color: var(–muted);
-letter-spacing: 1px;
-}
-
-.form-input, .form-select {
-background: var(–surface);
-border: 1px solid var(–border);
-color: var(–text);
-padding: 9px 12px;
-font-family: var(–font-mono);
-font-size: 13px;
-outline: none;
-width: 100%;
-border-radius: 4px;
--webkit-appearance: none;
-}
-
-.form-input:focus, .form-select:focus {
-border-color: var(–accent3);
-}
-
-.form-select {
-background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘12’ viewBox=‘0 0 12 12’%3E%3Cpath fill=’%23666680’ d=‘M6 8L1 3h10z’/%3E%3C/svg%3E”);
-background-repeat: no-repeat;
-background-position: right 10px center;
-padding-right: 28px;
-}
-
-.section-label {
-font-family: var(–font-mono);
-font-size: 10px;
-color: var(–accent);
-letter-spacing: 2px;
-margin: 14px 0 8px;
-padding-bottom: 6px;
-border-bottom: 1px solid var(–border);
-}
-
-.save-btn {
-background: linear-gradient(135deg, var(–green), #00aa55);
-border: none;
-color: #000;
-font-family: var(–font-mono);
-font-size: 13px;
-font-weight: 900;
-padding: 14px 24px;
-cursor: pointer;
-letter-spacing: 2px;
-width: 100%;
-margin-top: 16px;
-border-radius: 6px;
--webkit-appearance: none;
-}
-
-.no-results {
-text-align: center;
-padding: 40px;
-color: var(–muted);
-font-family: var(–font-mono);
-font-size: 13px;
-}
-
-.empty-state {
-text-align: center;
-padding: 60px 20px;
-color: var(–muted);
-}
-
-.empty-state .icon { font-size: 48px; margin-bottom: 16px; }
-.empty-state p { font-family: var(–font-mono); font-size: 14px; }
 </style>
-
 </head>
 <body>
 
-<div class="header">
-  <div class="header-top">
-    <div class="boss-badge">BOSS</div>
-    <div class="title">ME-90 <span>SETTINGS</span></div>
-    <button class="add-btn" onclick="openModal()">+ ADD</button>
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="boss">BOSS</div>
+    <div class="htitle">ME-90 <span>SETTINGS</span></div>
+    <button class="addbtn" onclick="openM()">+ ADD</button>
   </div>
-  <div class="search-wrap">
-    <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="Search song or artist..." oninput="filterSongs()">
+  <div class="srchwrap">
+    <span class="sicon">🔍</span>
+    <input type="search" id="srch" placeholder="Search song or artist..." oninput="doFilter()">
   </div>
 </div>
 
 <div class="main">
-  <div class="stats-bar">
-    <div class="stat">SONGS: <span id="totalCount">0</span></div>
-    <div class="stat">BANKS: <span id="banksCount">0</span></div>
-    <div class="stat">AMP: <span>JC-120</span></div>
+  <div class="statsbar">
+    <div class="stat">SONGS: <b id="tcnt">0</b></div>
+    <div class="stat">BANKS: <b id="bcnt">0</b></div>
+    <div class="stat">AMP: <b>KATANA 50</b></div>
+    <div class="stat">MODE: <b>LINE</b></div>
   </div>
-  <div class="song-list" id="songList"></div>
+  <div class="slist" id="slist"></div>
 </div>
 
-<!-- Modal -->
+<!-- MODAL -->
 
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">ADD NEW SONG</div>
-      <button class="close-btn" onclick="closeModal()">✕</button>
+<div class="moverlay" id="mov">
+<div class="modal">
+  <div class="mhdr">
+    <div class="mtitle">ADD NEW SONG</div>
+    <button class="closebtn" onclick="closeM()">✕</button>
+  </div>
+  <div class="mbody">
+    <div class="frow">
+      <div class="fg"><label class="flabel">SONG NAME *</label><input class="finput" id="fs" placeholder="Song name"></div>
+      <div class="fg"><label class="flabel">ARTIST *</label><input class="finput" id="fa" placeholder="Artist/Band"></div>
     </div>
-    <div class="modal-body">
+    <div class="frow">
+      <div class="fg"><label class="flabel">GENRE</label>
+        <select class="fsel" id="fg2">
+          <option value="rock">ROCK</option><option value="metal">METAL</option>
+          <option value="ballad">BALLAD</option><option value="funk">FUNK</option>
+          <option value="alt">ALTERNATIVE</option><option value="special">SPECIAL FX</option>
+        </select>
+      </div>
+      <div class="fg"><label class="flabel">BANK SLOT</label>
+        <select class="fsel" id="fbank">
+          <option>U1-1</option><option>U1-2</option><option>U1-3</option><option>U1-4</option>
+          <option>U2-1</option><option>U2-2</option><option>U2-3</option><option>U2-4</option>
+          <option>U3-1</option><option>U3-2</option><option>U3-3</option><option>U3-4</option>
+          <option>U4-1</option><option>U4-2</option><option>U4-3</option><option>U4-4</option>
+          <option>U5-1</option><option>U5-2</option><option>U5-3</option><option>U5-4</option>
+          <option>U6-1</option><option>U6-2</option><option>U6-3</option><option>U6-4</option>
+          <option>U7-1</option><option>U7-2</option><option>U7-3</option><option>U7-4</option>
+          <option>U8-1</option><option>U8-2</option><option>U8-3</option><option>U8-4</option>
+          <option>U9-1</option><option>U9-2</option><option>U9-3</option><option>U9-4</option>
+        </select>
+      </div>
+    </div>
 
 ```
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">SONG NAME *</label>
-      <input class="form-input" id="f_song" placeholder="Song name">
-    </div>
-    <div class="form-group">
-      <label class="form-label">ARTIST *</label>
-      <input class="form-input" id="f_artist" placeholder="Band/Artist">
-    </div>
+<div class="slabel">⚙ PREAMP</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">TYPE</label>
+    <select class="fsel" id="fpt">
+      <option>NATURAL</option><option>TWIN COMBO</option><option>TWEED COMBO</option>
+      <option>DIAMOND</option><option>BRIT STACK</option><option>RECTI STACK</option>
+      <option>X-CRUNCH</option><option>X-HI GAIN</option><option>MAXIMUM</option>
+      <option>JUGGERNAUT</option><option>X-MODDED</option>
+    </select>
   </div>
-
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">GENRE</label>
-      <select class="form-select" id="f_genre">
-        <option value="rock">ROCK</option>
-        <option value="metal">METAL</option>
-        <option value="ballad">BALLAD</option>
-        <option value="funk">FUNK</option>
-        <option value="alt">ALTERNATIVE</option>
-        <option value="special">SPECIAL FX</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">BANK SLOT</label>
-      <select class="form-select" id="f_bank">
-        <option>U1-1</option><option>U1-2</option><option>U1-3</option><option>U1-4</option>
-        <option>U2-1</option><option>U2-2</option><option>U2-3</option><option>U2-4</option>
-        <option>U3-1</option><option>U3-2</option><option>U3-3</option><option>U3-4</option>
-        <option>U4-1</option><option>U4-2</option><option>U4-3</option><option>U4-4</option>
-        <option>U5-1</option><option>U5-2</option><option>U5-3</option><option>U5-4</option>
-        <option>U6-1</option><option>U6-2</option><option>U6-3</option><option>U6-4</option>
-        <option>U7-1</option><option>U7-2</option><option>U7-3</option><option>U7-4</option>
-        <option>U8-1</option><option>U8-2</option><option>U8-3</option><option>U8-4</option>
-        <option>U9-1</option><option>U9-2</option><option>U9-3</option><option>U9-4</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="section-label">⚙ PREAMP</div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">TYPE</label>
-      <select class="form-select" id="f_preamp_type">
-        <option>NATURAL</option><option>TWIN COMBO</option><option>TWEED COMBO</option>
-        <option>DIAMOND</option><option>BRIT STACK</option><option>RECTI STACK</option>
-        <option>X-CRUNCH</option><option>X-HI GAIN</option><option>MAXIMUM</option>
-        <option>JUGGERNAUT</option><option>X-MODDED</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">GAIN %</label>
-      <input class="form-input" id="f_gain" placeholder="e.g. 35%">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">BASS %</label>
-      <input class="form-input" id="f_bass" placeholder="e.g. 50%">
-    </div>
-    <div class="form-group">
-      <label class="form-label">MIDDLE %</label>
-      <input class="form-input" id="f_middle" placeholder="e.g. 60%">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">TREBLE %</label>
-      <input class="form-input" id="f_treble" placeholder="e.g. 48%">
-    </div>
-    <div class="form-group">
-      <label class="form-label">LEVEL %</label>
-      <input class="form-input" id="f_preamp_level" placeholder="e.g. 60%">
-    </div>
-  </div>
-
-  <div class="section-label">🎛 OD/DS</div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">TYPE</label>
-      <select class="form-select" id="f_od_type">
-        <option>OFF</option><option>BLUES OD</option><option>CENTA OD</option>
-        <option>T-SCREAM</option><option>OVERDRIVE</option><option>BOOST</option>
-        <option>DISTORTION</option><option>TURBO DS</option><option>RAT DS</option>
-        <option>METAL DS</option><option>CORE</option><option>MUFF FUZZ</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">DRIVE %</label>
-      <input class="form-input" id="f_drive" placeholder="e.g. 35%">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">TONE %</label>
-      <input class="form-input" id="f_tone" placeholder="e.g. 50%">
-    </div>
-    <div class="form-group">
-      <label class="form-label">LEVEL %</label>
-      <input class="form-input" id="f_od_level" placeholder="e.g. 55%">
-    </div>
-  </div>
-
-  <div class="section-label">〰 MOD</div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">TYPE</label>
-      <select class="form-select" id="f_mod_type">
-        <option>OFF</option><option>CHORUS</option><option>FLANGER</option>
-        <option>PHASER</option><option>TREMOLO</option><option>VIBRATO</option>
-        <option>PITCH SHIFT</option><option>HARMONIST</option><option>ROTARY</option>
-        <option>UNI-V</option><option>OVERTONE</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">RATE %</label>
-      <input class="form-input" id="f_mod_rate" placeholder="e.g. 25%">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">DEPTH %</label>
-      <input class="form-input" id="f_mod_depth" placeholder="e.g. 30%">
-    </div>
-    <div class="form-group">
-      <label class="form-label">LEVEL %</label>
-      <input class="form-input" id="f_mod_level" placeholder="e.g. 45%">
-    </div>
-  </div>
-
-  <div class="section-label">⏱ DELAY</div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">TYPE</label>
-      <select class="form-select" id="f_delay_type">
-        <option>ANALOG</option><option>STANDARD</option><option>WARM</option>
-        <option>TAPE</option><option>MODULATE</option><option>REVERSE</option>
-        <option>SHIMMER</option><option>TERA ECHO</option><option>PHRASE LOOP</option>
-        <option>+REVERB</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">TIME</label>
-      <input class="form-input" id="f_delay_time" placeholder="e.g. 380ms">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">FEEDBACK %</label>
-      <input class="form-input" id="f_feedback" placeholder="e.g. 25%">
-    </div>
-    <div class="form-group">
-      <label class="form-label">E.LEVEL %</label>
-      <input class="form-input" id="f_elevel" placeholder="e.g. 38%">
-    </div>
-  </div>
-
-  <div class="section-label">🌊 REVERB & GUITAR</div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">REVERB TYPE</label>
-      <select class="form-select" id="f_reverb_type">
-        <option>ROOM</option><option>HALL</option><option>SPRING</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">REVERB LEVEL %</label>
-      <input class="form-input" id="f_reverb_level" placeholder="e.g. 30%">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">PEDAL FX</label>
-      <select class="form-select" id="f_pedal">
-        <option>WAH</option><option>VOICE</option><option>+1 OCT</option>
-        <option>+2 OCT</option><option>-1 OCT</option><option>-2 OCT</option>
-        <option>OD/DS</option><option>MOD RATE</option><option>DELAY LEVEL</option>
-        <option>FREEZE</option><option>OSC DELAY</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">PICKUP</label>
-      <select class="form-select" id="f_pickup">
-        <option>Bridge HB</option><option>Middle SC</option><option>Neck SC</option>
-        <option>Bridge+Middle</option><option>Middle+Neck</option>
-      </select>
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">GUITAR VOL</label>
-      <select class="form-select" id="f_vol">
-        <option>10 (Full)</option><option>9</option><option>8</option>
-        <option>7</option><option>6</option><option>5 (Half)</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">COMP TYPE</label>
-      <select class="form-select" id="f_comp">
-        <option>COMP</option><option>SLOW GEAR</option><option>OFF</option>
-        <option>HUMANIZER</option><option>OCTAVE</option><option>DEFRETTER</option>
-        <option>T.WAH UP</option><option>FEEDBACKER</option><option>AC SIM</option>
-        <option>SOLO</option><option>TUNE DOWN</option>
-      </select>
-    </div>
-  </div>
-  <div class="form-row single">
-    <div class="form-group">
-      <label class="form-label">TIPS / NOTES</label>
-      <input class="form-input" id="f_tip" placeholder="e.g. Use neck pickup for warm tone...">
-    </div>
-  </div>
-
-  <button class="save-btn" onclick="saveSong()">💾 SAVE SONG SETTINGS</button>
+  <div class="fg"><label class="flabel">GAIN %</label><input class="finput" id="fgain" placeholder="e.g. 35%"></div>
 </div>
+<div class="frow">
+  <div class="fg"><label class="flabel">BASS %</label><input class="finput" id="fbass" placeholder="e.g. 50%"></div>
+  <div class="fg"><label class="flabel">MIDDLE %</label><input class="finput" id="fmid" placeholder="e.g. 60%"></div>
+</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">TREBLE %</label><input class="finput" id="ftre" placeholder="e.g. 48%"></div>
+  <div class="fg"><label class="flabel">LEVEL %</label><input class="finput" id="fplvl" placeholder="e.g. 60%"></div>
+</div>
+
+<div class="slabel">🎛 COMP/FX1</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">TYPE</label>
+    <select class="fsel" id="fcomp">
+      <option>COMP</option><option>SLOW GEAR</option><option>OFF</option>
+      <option>HUMANIZER</option><option>OCTAVE</option><option>DEFRETTER</option>
+      <option>T.WAH UP</option><option>FEEDBACKER</option><option>AC SIM</option><option>SOLO</option>
+    </select>
+  </div>
+  <div class="fg"><label class="flabel">SUSTAIN %</label><input class="finput" id="fsus" placeholder="e.g. 60%"></div>
+</div>
+
+<div class="slabel">🔥 OD/DS</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">TYPE</label>
+    <select class="fsel" id="fodt">
+      <option>OFF</option><option>BLUES OD</option><option>CENTA OD</option>
+      <option>T-SCREAM</option><option>OVERDRIVE</option><option>BOOST</option>
+      <option>DISTORTION</option><option>TURBO DS</option><option>RAT DS</option>
+      <option>METAL DS</option><option>CORE</option><option>MUFF FUZZ</option>
+    </select>
+  </div>
+  <div class="fg"><label class="flabel">DRIVE %</label><input class="finput" id="fdrv" placeholder="e.g. 35%"></div>
+</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">TONE %</label><input class="finput" id="fton" placeholder="e.g. 50%"></div>
+  <div class="fg"><label class="flabel">LEVEL %</label><input class="finput" id="fodlvl" placeholder="e.g. 55%"></div>
+</div>
+
+<div class="slabel">〰 MOD</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">TYPE</label>
+    <select class="fsel" id="fmt">
+      <option>OFF</option><option>CHORUS</option><option>FLANGER</option>
+      <option>PHASER</option><option>TREMOLO</option><option>VIBRATO</option>
+      <option>PITCH SHIFT</option><option>HARMONIST</option><option>ROTARY</option><option>OVERTONE</option>
+    </select>
+  </div>
+  <div class="fg"><label class="flabel">RATE %</label><input class="finput" id="fmr" placeholder="e.g. 25%"></div>
+</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">DEPTH %</label><input class="finput" id="fmd" placeholder="e.g. 30%"></div>
+  <div class="fg"><label class="flabel">LEVEL %</label><input class="finput" id="fml" placeholder="e.g. 45%"></div>
+</div>
+
+<div class="slabel">⏱ DELAY</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">TYPE</label>
+    <select class="fsel" id="fdt">
+      <option>ANALOG</option><option>STANDARD</option><option>WARM</option>
+      <option>TAPE</option><option>MODULATE</option><option>REVERSE</option>
+      <option>SHIMMER</option><option>TERA ECHO</option><option>PHRASE LOOP</option><option>+REVERB</option>
+    </select>
+  </div>
+  <div class="fg"><label class="flabel">TIME</label><input class="finput" id="fdtime" placeholder="e.g. 380ms"></div>
+</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">FEEDBACK %</label><input class="finput" id="fdfb" placeholder="e.g. 25%"></div>
+  <div class="fg"><label class="flabel">E.LEVEL %</label><input class="finput" id="fdel" placeholder="e.g. 38%"></div>
+</div>
+
+<div class="slabel">🌊 REVERB & GUITAR</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">REVERB TYPE</label>
+    <select class="fsel" id="frt"><option>ROOM</option><option>HALL</option><option>SPRING</option></select>
+  </div>
+  <div class="fg"><label class="flabel">REVERB LEVEL %</label><input class="finput" id="frl" placeholder="e.g. 30%"></div>
+</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">PEDAL FX</label>
+    <select class="fsel" id="fpfx">
+      <option>WAH</option><option>VOICE</option><option>+1 OCT</option><option>+2 OCT</option>
+      <option>-1 OCT</option><option>-2 OCT</option><option>OD/DS</option>
+      <option>MOD RATE</option><option>DELAY LEVEL</option><option>FREEZE</option>
+    </select>
+  </div>
+  <div class="fg"><label class="flabel">PICKUP</label>
+    <select class="fsel" id="fpick">
+      <option>Bridge HB</option><option>Middle SC</option><option>Neck SC</option>
+      <option>Bridge+Middle</option><option>Middle+Neck</option>
+    </select>
+  </div>
+</div>
+<div class="frow">
+  <div class="fg"><label class="flabel">GUITAR VOL</label>
+    <select class="fsel" id="fvol">
+      <option>10 (Full)</option><option>9</option><option>8</option>
+      <option>7</option><option>6</option><option>5 (Half)</option>
+    </select>
+  </div>
+  <div class="fg"></div>
+</div>
+<div class="frow full">
+  <div class="fg"><label class="flabel">TIPS / NOTES</label><input class="finput" id="ftip" placeholder="Playing tips..."></div>
+</div>
+<button class="savebtn" onclick="saveS()">💾 SAVE SONG SETTINGS</button>
 ```
 
   </div>
+</div>
 </div>
 
 <script>
-const defaultSongs = [
-  {
-    id:1, song:"Killing In The Name", artist:"Rage Against The Machine", genre:"metal", bank:"U4-1",
-    preamp:{type:"X-CRUNCH",gain:"72%",bass:"52%",middle:"58%",treble:"52%",level:"62%"},
-    od:{type:"DISTORTION",drive:"72%",tone:"52%",level:"60%"},
-    mod:{type:"PHASER",rate:"38%",depth:"48%",level:"55%"},
-    delay:{type:"STANDARD",time:"100ms",feedback:"12%",elevel:"20%"},
-    reverb:{type:"ROOM",level:"12%"}, comp:"OFF",
-    pedal:"WAH", pickup:"Bridge HB", vol:"10 (Full)",
-    tip:"WAH pedal for Morello scratch effect. No compression. Tight palm muting!"
-  },
-  {
-    id:2, song:"Under The Bridge", artist:"Red Hot Chili Peppers", genre:"ballad", bank:"U1-2",
-    preamp:{type:"NATURAL",gain:"25%",bass:"52%",middle:"55%",treble:"48%",level:"57%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"45%"},
-    delay:{type:"WARM",time:"420ms",feedback:"28%",elevel:"40%"},
-    reverb:{type:"HALL",level:"35%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Neck SC", vol:"8",
-    tip:"Neck pickup warm emotional tone. Guitar volume 8 for gentle verse."
-  },
-  {
-    id:3, song:"Californication", artist:"Red Hot Chili Peppers", genre:"ballad", bank:"U1-3",
-    preamp:{type:"NATURAL",gain:"22%",bass:"52%",middle:"54%",treble:"48%",level:"55%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"43%"},
-    delay:{type:"WARM",time:"450ms",feedback:"30%",elevel:"42%"},
-    reverb:{type:"HALL",level:"38%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Neck SC", vol:"7",
-    tip:"Very soft delicate tone. Guitar volume 7. Barely touching strings."
-  },
-  {
-    id:4, song:"Can't Stop", artist:"Red Hot Chili Peppers", genre:"funk", bank:"U6-1",
-    preamp:{type:"TWIN COMBO",gain:"30%",bass:"50%",middle:"58%",treble:"52%",level:"60%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"PHASER",rate:"35%",depth:"40%",level:"48%"},
-    delay:{type:"ANALOG",time:"300ms",feedback:"18%",elevel:"32%"},
-    reverb:{type:"ROOM",level:"20%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Middle SC", vol:"10 (Full)",
-    tip:"Middle pickup funky tone. Tight rhythmic strumming. WAH pedal for iconic riff!"
-  },
-  {
-    id:5, song:"Otherside", artist:"Red Hot Chili Peppers", genre:"alt", bank:"U7-1",
-    preamp:{type:"NATURAL",gain:"26%",bass:"52%",middle:"55%",treble:"47%",level:"57%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"FLANGER",rate:"22%",depth:"28%",level:"44%"},
-    delay:{type:"WARM",time:"430ms",feedback:"28%",elevel:"40%"},
-    reverb:{type:"HALL",level:"36%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Neck SC", vol:"8",
-    tip:"Neck pickup dark moody tone. FLANGER gives that mysterious Otherside feel."
-  },
-  {
-    id:6, song:"Snow (Hey Oh)", artist:"Red Hot Chili Peppers", genre:"rock", bank:"U6-3",
-    preamp:{type:"TWIN COMBO",gain:"27%",bass:"50%",middle:"56%",treble:"52%",level:"58%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"25%",depth:"30%",level:"46%"},
-    delay:{type:"ANALOG",time:"360ms",feedback:"24%",elevel:"38%"},
-    reverb:{type:"ROOM",level:"25%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Middle SC", vol:"9",
-    tip:"FINGERPICK the iconic riff — no pick! Fast precise fingerpicking technique."
-  },
-  {
-    id:7, song:"By The Way", artist:"Red Hot Chili Peppers", genre:"rock", bank:"U6-4",
-    preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"57%",treble:"50%",level:"58%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"28%",depth:"35%",level:"48%"},
-    delay:{type:"ANALOG",time:"370ms",feedback:"25%",elevel:"40%"},
-    reverb:{type:"ROOM",level:"27%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Middle SC", vol:"9",
-    tip:"Layered clean tone. Middle pickup for bright clean sound."
-  },
-  {
-    id:8, song:"Scar Tissue", artist:"Red Hot Chili Peppers", genre:"ballad", bank:"U1-4",
-    preamp:{type:"NATURAL",gain:"24%",bass:"52%",middle:"55%",treble:"50%",level:"56%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"20%",depth:"26%",level:"44%"},
-    delay:{type:"WARM",time:"440ms",feedback:"28%",elevel:"40%"},
-    reverb:{type:"HALL",level:"36%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Neck SC", vol:"8",
-    tip:"Dreamy soft tone. Neck pickup. Slide guitar feel, smooth playing."
-  },
-  {
-    id:9, song:"Enter Sandman", artist:"Metallica", genre:"metal", bank:"U8-2",
-    preamp:{type:"MAXIMUM",gain:"78%",bass:"46%",middle:"52%",treble:"52%",level:"65%"},
-    od:{type:"METAL DS",drive:"75%",tone:"48%",level:"62%"},
-    mod:{type:"OFF",rate:"--",depth:"--",level:"--"},
-    delay:{type:"STANDARD",time:"55ms",feedback:"8%",elevel:"15%"},
-    reverb:{type:"ROOM",level:"10%"}, comp:"OFF",
-    pedal:"WAH", pickup:"Bridge HB", vol:"10 (Full)",
-    tip:"TIGHT palm muting is everything! Pick close to bridge. Drop D tuning needed!"
-  },
-  {
-    id:10, song:"Livin On A Prayer", artist:"Bon Jovi", genre:"rock", bank:"U4-1",
-    preamp:{type:"X-CRUNCH",gain:"55%",bass:"48%",middle:"62%",treble:"50%",level:"62%"},
-    od:{type:"BLUES OD",drive:"35%",tone:"50%",level:"55%"},
-    mod:{type:"CHORUS",rate:"35%",depth:"40%",level:"52%"},
-    delay:{type:"ANALOG",time:"360ms",feedback:"25%",elevel:"38%"},
-    reverb:{type:"HALL",level:"30%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Bridge HB", vol:"10 (Full)",
-    tip:"Slow WAH pedal for talk box simulation on intro. Bridge HB for full chorus."
-  },
-  {
-    id:11, song:"You Give Love A Bad Name", artist:"Bon Jovi", genre:"rock", bank:"U4-3",
-    preamp:{type:"BRIT STACK",gain:"68%",bass:"47%",middle:"60%",treble:"52%",level:"65%"},
-    od:{type:"DISTORTION",drive:"65%",tone:"52%",level:"60%"},
-    mod:{type:"OFF",rate:"--",depth:"--",level:"--"},
-    delay:{type:"STANDARD",time:"80ms",feedback:"12%",elevel:"20%"},
-    reverb:{type:"ROOM",level:"15%"}, comp:"OFF",
-    pedal:"WAH", pickup:"Bridge HB", vol:"10 (Full)",
-    tip:"Bridge HB. Tight aggressive pick attack. Palm mute on main riff."
-  },
-  {
-    id:12, song:"Wanted Dead Or Alive", artist:"Bon Jovi", genre:"ballad", bank:"U5-4",
-    preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"55%",treble:"52%",level:"58%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"22%",depth:"25%",level:"45%"},
-    delay:{type:"ANALOG",time:"340ms",feedback:"22%",elevel:"35%"},
-    reverb:{type:"HALL",level:"35%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Neck SC", vol:"8",
-    tip:"Acoustic style clean. Neck pickup for warm feel. Switch to bridge HB for solo."
-  },
-  {
-    id:13, song:"It's My Life", artist:"Bon Jovi", genre:"rock", bank:"U4-4",
-    preamp:{type:"BRIT STACK",gain:"62%",bass:"47%",middle:"62%",treble:"50%",level:"63%"},
-    od:{type:"OVERDRIVE",drive:"48%",tone:"52%",level:"58%"},
-    mod:{type:"OFF",rate:"--",depth:"--",level:"--"},
-    delay:{type:"STANDARD",time:"100ms",feedback:"15%",elevel:"22%"},
-    reverb:{type:"ROOM",level:"18%"}, comp:"OFF",
-    pedal:"WAH", pickup:"Bridge HB", vol:"10 (Full)",
-    tip:"Driving powerful tone. Strong consistent pick attack throughout."
-  },
-  {
-    id:14, song:"Always", artist:"Bon Jovi", genre:"ballad", bank:"U5-1",
-    preamp:{type:"TWIN COMBO",gain:"28%",bass:"50%",middle:"55%",treble:"48%",level:"58%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"45%"},
-    delay:{type:"WARM",time:"420ms",feedback:"28%",elevel:"40%"},
-    reverb:{type:"HALL",level:"38%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Neck SC", vol:"7",
-    tip:"Neck pickup emotional tone. Vol 7 verse, 10 for solo. Very emotional playing."
-  },
-  {
-    id:15, song:"Bed Of Roses", artist:"Bon Jovi", genre:"ballad", bank:"U5-2",
-    preamp:{type:"NATURAL",gain:"25%",bass:"50%",middle:"54%",treble:"48%",level:"56%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"42%"},
-    delay:{type:"WARM",time:"440ms",feedback:"30%",elevel:"42%"},
-    reverb:{type:"HALL",level:"40%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Neck SC", vol:"7",
-    tip:"Softest warmest tone. Light pick attack. Let notes breathe."
-  },
-  {
-    id:16, song:"Thank You For Loving Me", artist:"Bon Jovi", genre:"ballad", bank:"U5-3",
-    preamp:{type:"NATURAL",gain:"22%",bass:"50%",middle:"54%",treble:"48%",level:"55%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"18%",depth:"22%",level:"40%"},
-    delay:{type:"WARM",time:"460ms",feedback:"32%",elevel:"43%"},
-    reverb:{type:"HALL",level:"42%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Neck SC", vol:"7",
-    tip:"Softest clean possible. Very gentle pick attack. Emotional ballad tone."
-  },
-  {
-    id:17, song:"Faithfully", artist:"Journey", genre:"ballad", bank:"U9-3",
-    preamp:{type:"NATURAL",gain:"25%",bass:"52%",middle:"55%",treble:"47%",level:"57%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"22%",depth:"30%",level:"48%"},
-    delay:{type:"WARM",time:"430ms",feedback:"30%",elevel:"42%"},
-    reverb:{type:"HALL",level:"40%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Neck SC", vol:"8",
-    tip:"Neck pickup always. Slow wide vibrato on held notes. Neal Schon warm singing tone."
-  },
-  {
-    id:18, song:"Hands In My Pocket", artist:"Alanis Morissette", genre:"alt", bank:"U2-1",
-    preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"57%",treble:"52%",level:"58%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"28%",depth:"32%",level:"48%"},
-    delay:{type:"ANALOG",time:"350ms",feedback:"22%",elevel:"38%"},
-    reverb:{type:"ROOM",level:"28%"}, comp:"COMP",
-    pedal:"WAH", pickup:"Middle SC", vol:"8",
-    tip:"Middle pickup jangly tone. Light strumming. Relaxed confident playing style."
-  },
-  {
-    id:19, song:"Moonlight Intro (Mystical)", artist:"Special FX", genre:"special", bank:"U9-3",
-    preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},
-    od:{type:"OFF",drive:"--",tone:"--",level:"--"},
-    mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},
-    delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},
-    reverb:{type:"HALL",level:"85%"}, comp:"SLOW GEAR",
-    pedal:"WAH", pickup:"Neck SC", vol:"7",
-    tip:"SLOW GEAR on COMP! Play Am-F-C-G slowly. Volume swell from 0→8 each chord. Max HALL reverb!"
-  }
+const DEF=[
+  {id:1,song:"Killing In The Name",artist:"Rage Against The Machine",genre:"metal",bank:"U4-1",
+   preamp:{type:"X-CRUNCH",gain:"72%",bass:"52%",middle:"58%",treble:"52%",level:"62%"},
+   comp:{type:"OFF",sustain:"--"},
+   od:{type:"DISTORTION",drive:"72%",tone:"52%",level:"60%"},
+   mod:{type:"PHASER",rate:"38%",depth:"48%",level:"55%"},
+   delay:{type:"STANDARD",time:"100ms",feedback:"12%",elevel:"20%"},
+   reverb:{type:"ROOM",level:"12%"},
+   pedal:"WAH",pickup:"Bridge HB",vol:"10 (Full)",
+   tip:"WAH pedal for Morello scratch. No compression. Tight palm muting on main riff!"},
+  {id:2,song:"Under The Bridge",artist:"Red Hot Chili Peppers",genre:"ballad",bank:"U1-2",
+   preamp:{type:"NATURAL",gain:"25%",bass:"52%",middle:"55%",treble:"48%",level:"57%"},
+   comp:{type:"COMP",sustain:"62%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"45%"},
+   delay:{type:"WARM",time:"420ms",feedback:"28%",elevel:"40%"},
+   reverb:{type:"HALL",level:"35%"},
+   pedal:"WAH",pickup:"Neck SC",vol:"8",
+   tip:"Neck pickup warm emotional tone. Guitar volume 8 for gentle verse feel."},
+  {id:3,song:"Californication",artist:"Red Hot Chili Peppers",genre:"ballad",bank:"U1-3",
+   preamp:{type:"NATURAL",gain:"22%",bass:"52%",middle:"54%",treble:"48%",level:"55%"},
+   comp:{type:"COMP",sustain:"60%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"43%"},
+   delay:{type:"WARM",time:"450ms",feedback:"30%",elevel:"42%"},
+   reverb:{type:"HALL",level:"38%"},
+   pedal:"WAH",pickup:"Neck SC",vol:"7",
+   tip:"Very soft delicate tone. Guitar volume 7. Barely touching strings."},
+  {id:4,song:"Can't Stop",artist:"Red Hot Chili Peppers",genre:"funk",bank:"U6-1",
+   preamp:{type:"TWIN COMBO",gain:"30%",bass:"50%",middle:"58%",treble:"52%",level:"60%"},
+   comp:{type:"COMP",sustain:"65%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"PHASER",rate:"35%",depth:"40%",level:"48%"},
+   delay:{type:"ANALOG",time:"300ms",feedback:"18%",elevel:"32%"},
+   reverb:{type:"ROOM",level:"20%"},
+   pedal:"WAH",pickup:"Middle SC",vol:"10 (Full)",
+   tip:"Middle pickup funky tone. Tight rhythmic strumming. WAH pedal for iconic riff!"},
+  {id:5,song:"Otherside",artist:"Red Hot Chili Peppers",genre:"alt",bank:"U7-1",
+   preamp:{type:"NATURAL",gain:"26%",bass:"52%",middle:"55%",treble:"47%",level:"57%"},
+   comp:{type:"COMP",sustain:"60%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"FLANGER",rate:"22%",depth:"28%",level:"44%"},
+   delay:{type:"WARM",time:"430ms",feedback:"28%",elevel:"40%"},
+   reverb:{type:"HALL",level:"36%"},
+   pedal:"WAH",pickup:"Neck SC",vol:"8",
+   tip:"Neck pickup dark moody tone. FLANGER gives mysterious Otherside feel."},
+  {id:6,song:"Snow (Hey Oh)",artist:"Red Hot Chili Peppers",genre:"rock",bank:"U6-3",
+   preamp:{type:"TWIN COMBO",gain:"27%",bass:"50%",middle:"56%",treble:"52%",level:"58%"},
+   comp:{type:"COMP",sustain:"63%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"25%",depth:"30%",level:"46%"},
+   delay:{type:"ANALOG",time:"360ms",feedback:"24%",elevel:"38%"},
+   reverb:{type:"ROOM",level:"25%"},
+   pedal:"WAH",pickup:"Middle SC",vol:"9",
+   tip:"FINGERPICK the iconic riff — no pick! Fast precise fingerpicking technique."},
+  {id:7,song:"By The Way",artist:"Red Hot Chili Peppers",genre:"rock",bank:"U6-4",
+   preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"57%",treble:"50%",level:"58%"},
+   comp:{type:"COMP",sustain:"62%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"28%",depth:"35%",level:"48%"},
+   delay:{type:"ANALOG",time:"370ms",feedback:"25%",elevel:"40%"},
+   reverb:{type:"ROOM",level:"27%"},
+   pedal:"WAH",pickup:"Middle SC",vol:"9",
+   tip:"Layered clean tone. Middle pickup bright clean sound."},
+  {id:8,song:"Scar Tissue",artist:"Red Hot Chili Peppers",genre:"ballad",bank:"U1-4",
+   preamp:{type:"NATURAL",gain:"24%",bass:"52%",middle:"55%",treble:"50%",level:"56%"},
+   comp:{type:"COMP",sustain:"62%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"20%",depth:"26%",level:"44%"},
+   delay:{type:"WARM",time:"440ms",feedback:"28%",elevel:"40%"},
+   reverb:{type:"HALL",level:"36%"},
+   pedal:"WAH",pickup:"Neck SC",vol:"8",
+   tip:"Dreamy soft tone. Neck pickup. Slide guitar feel smooth playing."},
+  {id:9,song:"Enter Sandman",artist:"Metallica",genre:"metal",bank:"U8-2",
+   preamp:{type:"MAXIMUM",gain:"78%",bass:"46%",middle:"52%",treble:"52%",level:"65%"},
+   comp:{type:"OFF",sustain:"--"},
+   od:{type:"METAL DS",drive:"75%",tone:"48%",level:"62%"},
+   mod:{type:"OFF",rate:"--",depth:"--",level:"--"},
+   delay:{type:"STANDARD",time:"55ms",feedback:"8%",elevel:"15%"},
+   reverb:{type:"ROOM",level:"10%"},
+   pedal:"WAH",pickup:"Bridge HB",vol:"10 (Full)",
+   tip:"TIGHT palm muting is everything! Pick close to bridge. Drop D tuning needed!"},
+  {id:10,song:"Livin On A Prayer",artist:"Bon Jovi",genre:"rock",bank:"U4-1",
+   preamp:{type:"X-CRUNCH",gain:"55%",bass:"48%",middle:"62%",treble:"50%",level:"62%"},
+   comp:{type:"COMP",sustain:"55%"},
+   od:{type:"BLUES OD",drive:"35%",tone:"50%",level:"55%"},
+   mod:{type:"CHORUS",rate:"35%",depth:"40%",level:"52%"},
+   delay:{type:"ANALOG",time:"360ms",feedback:"25%",elevel:"38%"},
+   reverb:{type:"HALL",level:"30%"},
+   pedal:"WAH",pickup:"Bridge HB",vol:"10 (Full)",
+   tip:"Slow WAH for talk box simulation on intro. Bridge HB for full chorus sections."},
+  {id:11,song:"You Give Love A Bad Name",artist:"Bon Jovi",genre:"rock",bank:"U4-3",
+   preamp:{type:"BRIT STACK",gain:"68%",bass:"47%",middle:"60%",treble:"52%",level:"65%"},
+   comp:{type:"OFF",sustain:"--"},
+   od:{type:"DISTORTION",drive:"65%",tone:"52%",level:"60%"},
+   mod:{type:"OFF",rate:"--",depth:"--",level:"--"},
+   delay:{type:"STANDARD",time:"80ms",feedback:"12%",elevel:"20%"},
+   reverb:{type:"ROOM",level:"15%"},
+   pedal:"WAH",pickup:"Bridge HB",vol:"10 (Full)",
+   tip:"Bridge HB. Tight aggressive pick attack. Palm mute on main riff."},
+  {id:12,song:"Wanted Dead Or Alive",artist:"Bon Jovi",genre:"ballad",bank:"U5-4",
+   preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"55%",treble:"52%",level:"58%"},
+   comp:{type:"COMP",sustain:"60%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"22%",depth:"25%",level:"45%"},
+   delay:{type:"ANALOG",time:"340ms",feedback:"22%",elevel:"35%"},
+   reverb:{type:"HALL",level:"35%"},
+   pedal:"WAH",pickup:"Neck SC",vol:"8",
+   tip:"Acoustic style clean. Neck pickup warm feel. Switch to bridge HB for solo."},
+  {id:13,song:"It's My Life",artist:"Bon Jovi",genre:"rock",bank:"U4-4",
+   preamp:{type:"BRIT STACK",gain:"62%",bass:"47%",middle:"62%",treble:"50%",level:"63%"},
+   comp:{type:"OFF",sustain:"--"},
+   od:{type:"OVERDRIVE",drive:"48%",tone:"52%",level:"58%"},
+   mod:{type:"OFF",rate:"--",depth:"--",level:"--"},
+   delay:{type:"STANDARD",time:"100ms",feedback:"15%",elevel:"22%"},
+   reverb:{type:"ROOM",level:"18%"},
+   pedal:"WAH",pickup:"Bridge HB",vol:"10 (Full)",
+   tip:"Driving powerful tone. Strong consistent pick attack throughout."},
+  {id:14,song:"Always",artist:"Bon Jovi",genre:"ballad",bank:"U5-1",
+   preamp:{type:"TWIN COMBO",gain:"28%",bass:"50%",middle:"55%",treble:"48%",level:"58%"},
+   comp:{type:"COMP",sustain:"58%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"45%"},
+   delay:{type:"WARM",time:"420ms",feedback:"28%",elevel:"40%"},
+   reverb:{type:"HALL",level:"38%"},
+   pedal:"WAH",pickup:"Neck SC",vol:"7",
+   tip:"Neck pickup emotional tone. Vol 7 verse, 10 for solo. Very emotional playing."},
+  {id:15,song:"Bed Of Roses",artist:"Bon Jovi",genre:"ballad",bank:"U5-2",
+   preamp:{type:"NATURAL",gain:"25%",bass:"50%",middle:"54%",treble:"48%",level:"56%"},
+   comp:{type:"COMP",sustain:"60%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"42%"},
+   delay:{type:"WARM",time:"440ms",feedback:"30%",elevel:"42%"},
+   reverb:{type:"HALL",level:"40%"},
+   pedal:"WAH",pickup:"Neck SC",vol:"7",
+   tip:"Softest warmest tone. Light pick attack. Let notes breathe."},
+  {id:16,song:"Thank You For Loving Me",artist:"Bon Jovi",genre:"ballad",bank:"U5-3",
+   preamp:{type:"NATURAL",gain:"22%",bass:"50%",middle:"54%",treble:"48%",level:"55%"},
+   comp:{type:"COMP",sustain:"62%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"18%",depth:"22%",level:"40%"},
+   delay:{type:"WARM",time:"460ms",feedback:"32%",elevel:"43%"},
+   reverb:{type:"HALL",level:"42%"},
+   pedal:"WAH",pickup:"Neck SC",vol:"7",
+   tip:"Softest clean possible. Very gentle pick attack. Emotional ballad tone."},
+  {id:17,song:"Faithfully",artist:"Journey",genre:"ballad",bank:"U9-3",
+   preamp:{type:"NATURAL",gain:"25%",bass:"52%",middle:"55%",treble:"47%",level:"57%"},
+   comp:{type:"COMP",sustain:"62%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"22%",depth:"30%",level:"48%"},
+   delay:{type:"WARM",time:"430ms",feedback:"30%",elevel:"42%"},
+   reverb:{type:"HALL",level:"40%"},
+   pedal:"WAH",pickup:"Neck SC",vol:"8",
+   tip:"Neck pickup always. Slow wide vibrato on held notes. Neal Schon warm singing tone."},
+  {id:18,song:"Hands In My Pocket",artist:"Alanis Morissette",genre:"alt",bank:"U2-1",
+   preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"57%",treble:"52%",level:"58%"},
+   comp:{type:"COMP",sustain:"60%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"28%",depth:"32%",level:"48%"},
+   delay:{type:"ANALOG",time:"350ms",feedback:"22%",elevel:"38%"},
+   reverb:{type:"ROOM",level:"28%"},
+   pedal:"WAH",pickup:"Middle SC",vol:"8",
+   tip:"Middle pickup jangly tone. Light strumming. Relaxed confident playing style."},
+  {id:19,song:"Moonlight Intro",artist:"Special FX",genre:"special",bank:"U9-3",
+   preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},
+   comp:{type:"SLOW GEAR",sustain:"85%"},
+   od:{type:"OFF",drive:"--",tone:"--",level:"--"},
+   mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},
+   delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},
+   reverb:{type:"HALL",level:"85%"},
+   pedal:"WAH",pickup:"Neck SC",vol:"7",
+   tip:"SLOW GEAR on COMP! Play Am-F-C-G slowly. Volume swell 0→8 each chord. Max HALL reverb!"}
 ];
 
-let songs = [];
-let nextId = 1;
+let songs=[],nid=1;
 
-function loadSongs() {
-  try {
-    const saved = localStorage.getItem('me90songs_v2');
-    if (saved) {
-      songs = JSON.parse(saved);
-      nextId = Math.max(...songs.map(s => s.id), 0) + 1;
-    } else {
-      songs = defaultSongs;
-      nextId = defaultSongs.length + 1;
-      saveSongs();
-    }
-  } catch(e) {
-    songs = defaultSongs;
-    nextId = defaultSongs.length + 1;
-  }
+function load(){
+  try{
+    const s=localStorage.getItem('me90v3');
+    if(s){songs=JSON.parse(s);nid=Math.max(...songs.map(x=>x.id),0)+1;}
+    else{songs=DEF;nid=DEF.length+1;save();}
+  }catch(e){songs=DEF;nid=DEF.length+1;}
 }
-
-function saveSongs() {
-  try { localStorage.setItem('me90songs_v2', JSON.stringify(songs)); } catch(e) {}
-}
-
-function updateStats() {
-  document.getElementById('totalCount').textContent = songs.length;
-  const banks = new Set(songs.map(s => s.bank.split('-')[0]));
-  document.getElementById('banksCount').textContent = banks.size;
-}
-
-function getGenreClass(g) {
-  return {rock:'genre-rock',metal:'genre-metal',ballad:'genre-ballad',funk:'genre-funk',alt:'genre-alt',special:'genre-special'}[g]||'genre-rock';
-}
-function getGenreLabel(g) {
-  return {rock:'ROCK',metal:'METAL',ballad:'BALLAD',funk:'FUNK',alt:'ALT',special:'SPECIAL'}[g]||(g||'').toUpperCase();
-}
-function valClass(v) {
-  if(!v||v==='--'||v==='OFF') return 'off';
+function save(){try{localStorage.setItem('me90v3',JSON.stringify(songs));}catch(e){}}
+function gc(g){return{rock:'g-rock',metal:'g-metal',ballad:'g-ballad',funk:'g-funk',alt:'g-alt',special:'g-special'}[g]||'g-rock';}
+function gl(g){return{rock:'ROCK',metal:'METAL',ballad:'BALLAD',funk:'FUNK',alt:'ALT',special:'SPECIAL'}[g]||(g||'').toUpperCase();}
+function vc(v){
+  if(!v||v==='--'||v==='OFF')return'off';
   const n=parseInt(v);
-  if(isNaN(n)) return 'highlight';
-  if(n>=65) return 'highlight';
-  if(n<=25) return 'warn';
-  return '';
+  if(isNaN(n))return'hi';
+  if(n>=65)return'hi';
+  if(n<=25)return'warn';
+  return'';
 }
 
-function renderSongs(list) {
-  const c = document.getElementById('songList');
-  if(!list.length) {
-    c.innerHTML = `<div class="no-results">🔍 No songs found.</div>`;
-    return;
-  }
-  c.innerHTML = list.map(s => `
-    <div class="song-card" id="card-${s.id}">
-      <div class="song-header" onclick="toggleCard(${s.id})">
-        <div class="bank-badge">${s.bank}</div>
-        <div class="song-info">
-          <div class="song-name">${s.song}</div>
-          <div class="song-artist">${s.artist}</div>
-        </div>
-        <div class="genre-tag ${getGenreClass(s.genre)}">${getGenreLabel(s.genre)}</div>
-        <button class="delete-btn" onclick="deleteSong(event,${s.id})">✕</button>
-        <div class="expand-icon">▼</div>
-      </div>
-      <div class="settings-panel">
-        <div class="stomp-tabs">
-          <div class="stomp-tab active" onclick="switchTab(event,${s.id},'preamp')">PREAMP</div>
-          <div class="stomp-tab" onclick="switchTab(event,${s.id},'od')">OD/DS</div>
-          <div class="stomp-tab" onclick="switchTab(event,${s.id},'mod')">MOD</div>
-          <div class="stomp-tab" onclick="switchTab(event,${s.id},'delay')">DELAY</div>
-          <div class="stomp-tab" onclick="switchTab(event,${s.id},'reverb')">REVERB</div>
-          <div class="stomp-tab" onclick="switchTab(event,${s.id},'guitar')">GUITAR</div>
-        </div>
-        <div class="stomp-content active" id="tab-${s.id}-preamp">
-          <div class="section-block">
-            <div class="section-title">◆ PREAMP</div>
-            <div class="param-row"><span class="param-name">TYPE</span><span class="param-value highlight">${s.preamp.type}</span></div>
-            <div class="param-row"><span class="param-name">GAIN</span><span class="param-value ${valClass(s.preamp.gain)}">${s.preamp.gain}</span></div>
-            <div class="param-row"><span class="param-name">BASS</span><span class="param-value">${s.preamp.bass}</span></div>
-            <div class="param-row"><span class="param-name">MIDDLE</span><span class="param-value ${valClass(s.preamp.middle)}">${s.preamp.middle}</span></div>
-            <div class="param-row"><span class="param-name">TREBLE</span><span class="param-value">${s.preamp.treble}</span></div>
-            <div class="param-row"><span class="param-name">LEVEL</span><span class="param-value">${s.preamp.level}</span></div>
-          </div>
-          <div class="section-block">
-            <div class="section-title">◆ COMP/FX1</div>
-            <div class="param-row"><span class="param-name">TYPE</span><span class="param-value ${s.comp==='OFF'?'off':'highlight'}">${s.comp||'COMP'}</span></div>
-          </div>
-        </div>
-        <div class="stomp-content" id="tab-${s.id}-od">
-          <div class="section-block">
-            <div class="section-title">◆ OD/DS</div>
-            <div class="param-row"><span class="param-name">TYPE</span><span class="param-value ${s.od.type==='OFF'?'off':'highlight'}">${s.od.type}</span></div>
-            <div class="param-row"><span class="param-name">DRIVE</span><span class="param-value ${valClass(s.od.drive)}">${s.od.drive}</span></div>
-            <div class="param-row"><span class="param-name">TONE</span><span class="param-value">${s.od.tone}</span></div>
-            <div class="param-row"><span class="param-name">LEVEL</span><span class="param-value">${s.od.level}</span></div>
-          </div>
-        </div>
-        <div class="stomp-content" id="tab-${s.id}-mod">
-          <div class="section-block">
-            <div class="section-title">◆ MOD</div>
-            <div class="param-row"><span class="param-name">TYPE</span><span class="param-value ${s.mod.type==='OFF'?'off':'highlight'}">${s.mod.type}</span></div>
-            <div class="param-row"><span class="param-name">RATE</span><span class="param-value">${s.mod.rate}</span></div>
-            <div class="param-row"><span class="param-name">DEPTH</span><span class="param-value ${valClass(s.mod.depth)}">${s.mod.depth}</span></div>
-            <div class="param-row"><span class="param-name">LEVEL</span><span class="param-value">${s.mod.level}</span></div>
-          </div>
-        </div>
-        <div class="stomp-content" id="tab-${s.id}-delay">
-          <div class="section-block">
-            <div class="section-title">◆ DELAY</div>
-            <div class="param-row"><span class="param-name">TYPE</span><span class="param-value highlight">${s.delay.type}</span></div>
-            <div class="param-row"><span class="param-name">TIME</span><span class="param-value">${s.delay.time}</span></div>
-            <div class="param-row"><span class="param-name">FEEDBACK</span><span class="param-value">${s.delay.feedback}</span></div>
-            <div class="param-row"><span class="param-name">E.LEVEL</span><span class="param-value">${s.delay.elevel}</span></div>
-          </div>
-        </div>
-        <div class="stomp-content" id="tab-${s.id}-reverb">
-          <div class="section-block">
-            <div class="section-title">◆ REVERB</div>
-            <div class="param-row"><span class="param-name">TYPE</span><span class="param-value highlight">${s.reverb.type}</span></div>
-            <div class="param-row"><span class="param-name">LEVEL</span><span class="param-value ${valClass(s.reverb.level)}">${s.reverb.level}</span></div>
-          </div>
-          <div class="section-block">
-            <div class="section-title">◆ PEDAL FX</div>
-            <div class="param-row"><span class="param-name">TYPE</span><span class="param-value highlight">${s.pedal}</span></div>
-          </div>
-        </div>
-        <div class="stomp-content" id="tab-${s.id}-guitar">
-          <div class="section-block">
-            <div class="section-title">◆ GUITAR SETUP</div>
-            <div class="param-row"><span class="param-name">PICKUP</span><span class="param-value highlight">${s.pickup}</span></div>
-            <div class="param-row"><span class="param-name">VOLUME</span><span class="param-value warn">${s.vol}</span></div>
-            <div class="param-row"><span class="param-name">BANK SLOT</span><span class="param-value highlight">${s.bank}</span></div>
-          </div>
-        </div>
-        ${s.tip?`<div class="tip-box">💡 ${s.tip}</div>`:''}
+function render(list){
+  const c=document.getElementById('slist');
+  if(!list.length){c.innerHTML='<div class="empty">🔍 No songs found.</div>';return;}
+  c.innerHTML=list.map(s=>`
+<div class="scard" id="c${s.id}">
+  <div class="shead" onclick="tog(${s.id})">
+    <div class="bbank">${s.bank}</div>
+    <div class="sinfo">
+      <div class="sname">${s.song}</div>
+      <div class="sartist">${s.artist}</div>
+    </div>
+    <div class="gtag ${gc(s.genre)}">${gl(s.genre)}</div>
+    <button class="delbtn" onclick="del(event,${s.id})">✕</button>
+    <div class="expi">▼</div>
+  </div>
+  <div class="spanel">
+    <div class="tabs">
+      <div class="tab on" onclick="stab(event,${s.id},'pre')">PREAMP</div>
+      <div class="tab" onclick="stab(event,${s.id},'comp')">COMP</div>
+      <div class="tab" onclick="stab(event,${s.id},'od')">OD/DS</div>
+      <div class="tab" onclick="stab(event,${s.id},'mod')">MOD</div>
+      <div class="tab" onclick="stab(event,${s.id},'dly')">DELAY</div>
+      <div class="tab" onclick="stab(event,${s.id},'rvb')">REVERB</div>
+      <div class="tab" onclick="stab(event,${s.id},'gtr')">GUITAR</div>
+    </div>
+    <div class="tc on" id="t${s.id}pre">
+      <div class="pblock">
+        <div class="ptitle">◆ PREAMP</div>
+        <div class="prow"><span class="pname">TYPE</span><span class="pval hi">${s.preamp.type}</span></div>
+        <div class="prow"><span class="pname">GAIN</span><span class="pval ${vc(s.preamp.gain)}">${s.preamp.gain}</span></div>
+        <div class="prow"><span class="pname">BASS</span><span class="pval">${s.preamp.bass}</span></div>
+        <div class="prow"><span class="pname">MIDDLE</span><span class="pval ${vc(s.preamp.middle)}">${s.preamp.middle}</span></div>
+        <div class="prow"><span class="pname">TREBLE</span><span class="pval">${s.preamp.treble}</span></div>
+        <div class="prow"><span class="pname">LEVEL</span><span class="pval">${s.preamp.level}</span></div>
       </div>
     </div>
-  `).join('');
+    <div class="tc" id="t${s.id}comp">
+      <div class="pblock">
+        <div class="ptitle">◆ COMP/FX1</div>
+        <div class="prow"><span class="pname">TYPE</span><span class="pval ${s.comp.type==='OFF'?'off':'hi'}">${s.comp.type}</span></div>
+        <div class="prow"><span class="pname">SUSTAIN</span><span class="pval ${vc(s.comp.sustain)}">${s.comp.sustain}</span></div>
+      </div>
+    </div>
+    <div class="tc" id="t${s.id}od">
+      <div class="pblock">
+        <div class="ptitle">◆ OD/DS</div>
+        <div class="prow"><span class="pname">TYPE</span><span class="pval ${s.od.type==='OFF'?'off':'hi'}">${s.od.type}</span></div>
+        <div class="prow"><span class="pname">DRIVE</span><span class="pval ${vc(s.od.drive)}">${s.od.drive}</span></div>
+        <div class="prow"><span class="pname">TONE</span><span class="pval">${s.od.tone}</span></div>
+        <div class="prow"><span class="pname">LEVEL</span><span class="pval">${s.od.level}</span></div>
+      </div>
+    </div>
+    <div class="tc" id="t${s.id}mod">
+      <div class="pblock">
+        <div class="ptitle">◆ MOD</div>
+        <div class="prow"><span class="pname">TYPE</span><span class="pval ${s.mod.type==='OFF'?'off':'hi'}">${s.mod.type}</span></div>
+        <div class="prow"><span class="pname">RATE</span><span class="pval">${s.mod.rate}</span></div>
+        <div class="prow"><span class="pname">DEPTH</span><span class="pval ${vc(s.mod.depth)}">${s.mod.depth}</span></div>
+        <div class="prow"><span class="pname">LEVEL</span><span class="pval">${s.mod.level}</span></div>
+      </div>
+    </div>
+    <div class="tc" id="t${s.id}dly">
+      <div class="pblock">
+        <div class="ptitle">◆ DELAY</div>
+        <div class="prow"><span class="pname">TYPE</span><span class="pval hi">${s.delay.type}</span></div>
+        <div class="prow"><span class="pname">TIME</span><span class="pval">${s.delay.time}</span></div>
+        <div class="prow"><span class="pname">FEEDBACK</span><span class="pval">${s.delay.feedback}</span></div>
+        <div class="prow"><span class="pname">E.LEVEL</span><span class="pval">${s.delay.elevel}</span></div>
+      </div>
+    </div>
+    <div class="tc" id="t${s.id}rvb">
+      <div class="pblock">
+        <div class="ptitle">◆ REVERB</div>
+        <div class="prow"><span class="pname">TYPE</span><span class="pval hi">${s.reverb.type}</span></div>
+        <div class="prow"><span class="pname">LEVEL</span><span class="pval ${vc(s.reverb.level)}">${s.reverb.level}</span></div>
+      </div>
+      <div class="pblock">
+        <div class="ptitle">◆ PEDAL FX</div>
+        <div class="prow"><span class="pname">TYPE</span><span class="pval hi">${s.pedal}</span></div>
+      </div>
+    </div>
+    <div class="tc" id="t${s.id}gtr">
+      <div class="pblock">
+        <div class="ptitle">◆ GUITAR SETUP</div>
+        <div class="prow"><span class="pname">PICKUP</span><span class="pval hi">${s.pickup}</span></div>
+        <div class="prow"><span class="pname">VOLUME</span><span class="pval warn">${s.vol}</span></div>
+        <div class="prow"><span class="pname">BANK</span><span class="pval hi">${s.bank}</span></div>
+        <div class="prow"><span class="pname">OUTPUT</span><span class="pval hi">LINE MODE</span></div>
+        <div class="prow"><span class="pname">AMP CH</span><span class="pval hi">CLEAN</span></div>
+      </div>
+    </div>
+    ${s.tip?`<div class="tip">💡 ${s.tip}</div>`:''}
+  </div>
+</div>`).join('');
 }
 
-function toggleCard(id) {
-  document.getElementById(`card-${id}`).classList.toggle('active');
+function tog(id){
+  const c=document.getElementById('c'+id);
+  c.classList.toggle('open');
 }
-
-function switchTab(e, id, tab) {
+function stab(e,id,tab){
   e.stopPropagation();
-  const card = document.getElementById(`card-${id}`);
-  card.querySelectorAll('.stomp-tab').forEach(t=>t.classList.remove('active'));
-  card.querySelectorAll('.stomp-content').forEach(c=>c.classList.remove('active'));
-  e.target.classList.add('active');
-  document.getElementById(`tab-${id}-${tab}`).classList.add('active');
+  const c=document.getElementById('c'+id);
+  c.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  c.querySelectorAll('.tc').forEach(t=>t.classList.remove('on'));
+  e.target.classList.add('on');
+  document.getElementById('t'+id+tab).classList.add('on');
 }
-
-function deleteSong(e, id) {
+function del(e,id){
   e.stopPropagation();
-  if(confirm('Delete this song?')) {
-    songs = songs.filter(s=>s.id!==id);
-    saveSongs();
-    filterSongs();
-    updateStats();
+  if(confirm('Delete this song?')){
+    songs=songs.filter(s=>s.id!==id);
+    save();doFilter();stats();
   }
 }
-
-function filterSongs() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  const filtered = q ? songs.filter(s=>
+function doFilter(){
+  const q=document.getElementById('srch').value.toLowerCase().trim();
+  const f=q?songs.filter(s=>
     s.song.toLowerCase().includes(q)||
     s.artist.toLowerCase().includes(q)||
     (s.genre||'').toLowerCase().includes(q)||
     s.bank.toLowerCase().includes(q)
-  ) : songs;
-  renderSongs(filtered);
-  updateStats();
+  ):songs;
+  render(f);stats();
 }
-
-function openModal() {
-  document.getElementById('modalOverlay').classList.add('open');
-  document.getElementById('modalOverlay').scrollTop = 0;
+function stats(){
+  document.getElementById('tcnt').textContent=songs.length;
+  document.getElementById('bcnt').textContent=new Set(songs.map(s=>s.bank.split('-')[0])).size;
 }
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
+function openM(){
+  document.getElementById('mov').classList.add('open');
+  document.getElementById('mov').scrollTop=0;
 }
-
-function saveSong() {
-  const song = document.getElementById('f_song').value.trim();
-  const artist = document.getElementById('f_artist').value.trim();
-  if(!song||!artist) { alert('Please enter song name and artist!'); return; }
-  const newSong = {
-    id: nextId++, song, artist,
-    genre: document.getElementById('f_genre').value,
-    bank: document.getElementById('f_bank').value,
-    comp: document.getElementById('f_comp').value,
-    preamp: {
-      type: document.getElementById('f_preamp_type').value,
-      gain: document.getElementById('f_gain').value||'50%',
-      bass: document.getElementById('f_bass').value||'50%',
-      middle: document.getElementById('f_middle').value||'50%',
-      treble: document.getElementById('f_treble').value||'50%',
-      level: document.getElementById('f_preamp_level').value||'60%'
-    },
-    od: {
-      type: document.getElementById('f_od_type').value,
-      drive: document.getElementById('f_drive').value||'--',
-      tone: document.getElementById('f_tone').value||'--',
-      level: document.getElementById('f_od_level').value||'--'
-    },
-    mod: {
-      type: document.getElementById('f_mod_type').value,
-      rate: document.getElementById('f_mod_rate').value||'--',
-      depth: document.getElementById('f_mod_depth').value||'--',
-      level: document.getElementById('f_mod_level').value||'--'
-    },
-    delay: {
-      type: document.getElementById('f_delay_type').value,
-      time: document.getElementById('f_delay_time').value||'350ms',
-      feedback: document.getElementById('f_feedback').value||'20%',
-      elevel: document.getElementById('f_elevel').value||'35%'
-    },
-    reverb: {
-      type: document.getElementById('f_reverb_type').value,
-      level: document.getElementById('f_reverb_level').value||'25%'
-    },
-    pedal: document.getElementById('f_pedal').value,
-    pickup: document.getElementById('f_pickup').value,
-    vol: document.getElementById('f_vol').value,
-    tip: document.getElementById('f_tip').value
+function closeM(){document.getElementById('mov').classList.remove('open');}
+function g(id){return document.getElementById(id);}
+function saveS(){
+  const song=g('fs').value.trim(),artist=g('fa').value.trim();
+  if(!song||!artist){alert('Please enter song name and artist!');return;}
+  const ns={
+    id:nid++,song,artist,
+    genre:g('fg2').value,bank:g('fbank').value,
+    preamp:{type:g('fpt').value,gain:g('fgain').value||'50%',bass:g('fbass').value||'50%',middle:g('fmid').value||'55%',treble:g('ftre').value||'48%',level:g('fplvl').value||'60%'},
+    comp:{type:g('fcomp').value,sustain:g('fsus').value||'55%'},
+    od:{type:g('fodt').value,drive:g('fdrv').value||'--',tone:g('fton').value||'--',level:g('fodlvl').value||'--'},
+    mod:{type:g('fmt').value,rate:g('fmr').value||'--',depth:g('fmd').value||'--',level:g('fml').value||'--'},
+    delay:{type:g('fdt').value,time:g('fdtime').value||'350ms',feedback:g('fdfb').value||'20%',elevel:g('fdel').value||'35%'},
+    reverb:{type:g('frt').value,level:g('frl').value||'25%'},
+    pedal:g('fpfx').value,pickup:g('fpick').value,vol:g('fvol').value,
+    tip:g('ftip').value
   };
-  songs.push(newSong);
-  saveSongs();
-  closeModal();
-  filterSongs();
-  updateStats();
-  ['f_song','f_artist','f_gain','f_bass','f_middle','f_treble','f_preamp_level',
-   'f_drive','f_tone','f_od_level','f_mod_rate','f_mod_depth','f_mod_level',
-   'f_delay_time','f_feedback','f_elevel','f_reverb_level','f_tip'].forEach(id=>{
-    document.getElementById(id).value='';
-  });
+  songs.push(ns);save();closeM();doFilter();stats();
+  ['fs','fa','fgain','fbass','fmid','ftre','fplvl','fsus','fdrv','fton','fodlvl','fmr','fmd','fml','fdtime','fdfb','fdel','frl','ftip'].forEach(id=>g(id).value='');
 }
-
-loadSongs();
-filterSongs();
-updateStats();
+document.getElementById('mov').addEventListener('click',function(e){if(e.target===this)closeM();});
+load();doFilter();stats();
 </script>
 
 </body>
