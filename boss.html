@@ -332,8 +332,32 @@ const ALL=[
 ];
 
 let songs=[],nid=1,parsedSong=null;
-function load(){try{const s=localStorage.getItem('me90v6');if(s){songs=JSON.parse(s);nid=Math.max(...songs.map(x=>x.id),0)+1;}else{songs=ALL;nid=ALL.length+1;save();}}catch(e){songs=ALL;nid=ALL.length+1;}}
-function save(){try{localStorage.setItem('me90v6',JSON.stringify(songs));}catch(e){}}
+function fixComp(p){
+  if(!p)return dp();
+  ['intro','verse','chorus','solo'].forEach(pn=>{
+    if(p[pn]&&p[pn].comp){
+      if(!p[pn].comp.attack)p[pn].comp.attack=p[pn].comp.type==='OFF'?'--':'35%';
+      if(!p[pn].comp.level)p[pn].comp.level=p[pn].comp.type==='OFF'?'--':'58%';
+    }
+  });
+  return p;
+}
+function load(){
+  try{
+    // Clear old versions to force fresh data
+    ['me90v3','me90v4','me90v5'].forEach(k=>localStorage.removeItem(k));
+    const s=localStorage.getItem('me90v7');
+    if(s){
+      songs=JSON.parse(s);
+      // Fix any missing comp fields
+      songs.forEach(song=>{song.parts=fixComp(song.parts);});
+      nid=Math.max(...songs.map(x=>x.id),0)+1;
+    }else{
+      songs=ALL;nid=ALL.length+1;save();
+    }
+  }catch(e){songs=ALL;nid=ALL.length+1;}
+}
+function save(){try{localStorage.setItem('me90v7',JSON.stringify(songs));}catch(e){}}
 function gc(g){return{rock:'g-rock',metal:'g-metal',ballad:'g-ballad',funk:'g-funk',alt:'g-alt',special:'g-special'}[g]||'g-rock';}
 function gl(g){return{rock:'ROCK',metal:'METAL',ballad:'BALLAD',funk:'FUNK',alt:'ALT',special:'SPECIAL'}[g]||(g||'').toUpperCase();}
 function vc(v){if(!v||v==='--'||v==='OFF')return'off';const n=parseInt(v);if(isNaN(n))return'hi';if(n>=65)return'hi';if(n<=25)return'warn';return'';}
