@@ -169,7 +169,7 @@ html,body{background:#0a0a0f!important;color:#e0e0f0;font-family:-apple-system,B
 </div>
 
 <script>
-function dp(){return{preamp:{type:"NATURAL",gain:"50%",bass:"50%",middle:"55%",treble:"48%",level:"60%"},comp:{type:"COMP",sustain:"55%",attack:"35%",level:"58%"},eq:{type:"EQ",bass:"48%",middle:"60%",treble:"48%",level:"60%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"ANALOG",time:"350ms",feedback:"20%",elevel:"35%"},reverb:{type:"ROOM",level:"25%"}};}
+function dp(){return{preamp:{type:"NATURAL",gain:"50%",bass:"50%",middle:"55%",treble:"48%",level:"60%"},comp:{type:"COMP",sustain:"55%",attack:"35%",level:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"ANALOG",time:"350ms",feedback:"20%",elevel:"35%"},reverb:{type:"ROOM",level:"25%"}};}
 
 // Helper to create 4 parts
 function mkp(i,v,c,s){return{intro:i,verse:v,chorus:c,solo:s};}
@@ -322,34 +322,25 @@ const ALL=[
     {preamp:{type:"BRIT STACK",gain:"58%",bass:"48%",middle:"62%",treble:"50%",level:"64%"},comp:{type:"COMP",sustain:"48%",attack:"35%",level:"58%"},od:{type:"CENTA OD",drive:"38%",tone:"50%",level:"56%"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"FLANGER",rate:"24%",depth:"28%",level:"43%"},delay:{type:"ANALOG",time:"390ms",feedback:"26%",elevel:"38%"},reverb:{type:"HALL",level:"32%"}},
     {preamp:{type:"NATURAL",gain:"58%",bass:"44%",middle:"67%",treble:"46%",level:"63%"},comp:{type:"COMP",sustain:"65%",attack:"35%",level:"58%"},od:{type:"T-SCREAM",drive:"30%",tone:"45%",level:"56%"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"CHORUS",rate:"18%",depth:"20%",level:"41%"},delay:{type:"ANALOG",time:"380ms",feedback:"24%",elevel:"37%"},reverb:{type:"HALL",level:"30%"}}
   )},
-
-  //john meyer
-  {id:24,song:"Gravity",artist:"John Mayer",genre:"ballad",bank:"U3-1",pickup:"Neck SC",vol:"8",pedal:"WAH",tip:"Neck pickup always. Very slow expressive vibrato. Let every note sing.",parts:mkp(
+  // SPECIAL
+  {id:24,song:"Moonlight Intro",artist:"Special FX",genre:"special",bank:"U9-3",pickup:"Neck SC",vol:"7",pedal:"WAH",tip:"SLOW GEAR on COMP! Play Am-F-C-G slowly. Volume swell 0→8 each chord. Max HALL reverb!",parts:mkp(
+    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%",attack:"50%",level:"65%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}},
+    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%",attack:"50%",level:"65%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}},
+    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%",attack:"50%",level:"65%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}},
+    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%",attack:"50%",level:"65%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}}
+  )}  ,
+  {id:25,song:"Gravity",artist:"John Mayer",genre:"ballad",bank:"U3-1",pickup:"Neck SC",vol:"8",pedal:"WAH",tip:"Neck pickup always. Very slow expressive vibrato. Let every note sing.",parts:mkp(
     {preamp:{type:"NATURAL",gain:"28%",bass:"52%",middle:"58%",treble:"48%",level:"58%"},comp:{type:"COMP",sustain:"62%",attack:"38%",level:"56%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"52%",middle:"60%",treble:"46%",level:"58%"},mod:{type:"CHORUS",rate:"18%",depth:"22%",level:"42%"},delay:{type:"ANALOG",time:"420ms",feedback:"25%",elevel:"38%"},reverb:{type:"HALL",level:"35%"}},
     {preamp:{type:"NATURAL",gain:"32%",bass:"52%",middle:"60%",treble:"48%",level:"60%"},comp:{type:"COMP",sustain:"65%",attack:"35%",level:"58%"},od:{type:"BLUES OD",drive:"22%",tone:"48%",level:"52%"},eq:{type:"EQ",bass:"52%",middle:"62%",treble:"46%",level:"60%"},mod:{type:"CHORUS",rate:"18%",depth:"22%",level:"42%"},delay:{type:"ANALOG",time:"400ms",feedback:"25%",elevel:"38%"},reverb:{type:"HALL",level:"35%"}},
     {preamp:{type:"NATURAL",gain:"40%",bass:"50%",middle:"62%",treble:"48%",level:"62%"},comp:{type:"COMP",sustain:"65%",attack:"33%",level:"60%"},od:{type:"BLUES OD",drive:"30%",tone:"48%",level:"55%"},eq:{type:"EQ",bass:"50%",middle:"63%",treble:"46%",level:"62%"},mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"44%"},delay:{type:"ANALOG",time:"390ms",feedback:"26%",elevel:"40%"},reverb:{type:"HALL",level:"35%"}},
     {preamp:{type:"NATURAL",gain:"48%",bass:"48%",middle:"67%",treble:"46%",level:"63%"},comp:{type:"COMP",sustain:"72%",attack:"28%",level:"62%"},od:{type:"BLUES OD",drive:"35%",tone:"46%",level:"57%"},eq:{type:"EQ",bass:"47%",middle:"68%",treble:"45%",level:"63%"},mod:{type:"CHORUS",rate:"15%",depth:"18%",level:"40%"},delay:{type:"ANALOG",time:"380ms",feedback:"27%",elevel:"40%"},reverb:{type:"HALL",level:"33%"}}
   )},
-
-  
-  // SPECIAL
-  {id:25,song:"Moonlight Intro",artist:"Special FX",genre:"special",bank:"U9-3",pickup:"Neck SC",vol:"7",pedal:"WAH",tip:"SLOW GEAR on COMP! Play Am-F-C-G slowly. Volume swell 0→8 each chord. Max HALL reverb!",parts:mkp(
-    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%",attack:"50%",level:"65%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}},
-    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%",attack:"50%",level:"65%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}},
-    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%",attack:"50%",level:"65%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}},
-    {preamp:{type:"NATURAL",gain:"10%",bass:"75%",middle:"40%",treble:"35%",level:"65%"},comp:{type:"SLOW GEAR",sustain:"85%",attack:"50%",level:"65%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"48%",level:"60%"},mod:{type:"CHORUS",rate:"40%",depth:"75%",level:"75%"},delay:{type:"SHIMMER",time:"75%",feedback:"75%",elevel:"75%"},reverb:{type:"HALL",level:"85%"}}
-  )}
-
-  ,
-   //foo fighters
   {id:26,song:"Monkey Wrench",artist:"Foo Fighters",genre:"rock",bank:"U2-2",pickup:"Bridge HB",vol:"10 (Full)",pedal:"WAH",tip:"Bridge humbucker full power. Aggressive pick attack. Dave Grohl raw energy!",parts:mkp(
     {preamp:{type:"X-CRUNCH",gain:"62%",bass:"48%",middle:"60%",treble:"52%",level:"62%"},comp:{type:"OFF",sustain:"--",attack:"--",level:"--"},od:{type:"DISTORTION",drive:"60%",tone:"52%",level:"58%"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"52%",level:"62%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"80ms",feedback:"10%",elevel:"18%"},reverb:{type:"ROOM",level:"15%"}},
     {preamp:{type:"X-CRUNCH",gain:"58%",bass:"48%",middle:"60%",treble:"52%",level:"61%"},comp:{type:"OFF",sustain:"--",attack:"--",level:"--"},od:{type:"DISTORTION",drive:"55%",tone:"52%",level:"57%"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"52%",level:"61%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"75ms",feedback:"10%",elevel:"16%"},reverb:{type:"ROOM",level:"14%"}},
     {preamp:{type:"X-CRUNCH",gain:"68%",bass:"47%",middle:"62%",treble:"52%",level:"65%"},comp:{type:"OFF",sustain:"--",attack:"--",level:"--"},od:{type:"DISTORTION",drive:"65%",tone:"52%",level:"60%"},eq:{type:"EQ",bass:"47%",middle:"63%",treble:"52%",level:"65%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"80ms",feedback:"12%",elevel:"20%"},reverb:{type:"ROOM",level:"15%"}},
     {preamp:{type:"NATURAL",gain:"65%",bass:"45%",middle:"68%",treble:"48%",level:"65%"},comp:{type:"COMP",sustain:"65%",attack:"30%",level:"62%"},od:{type:"T-SCREAM",drive:"35%",tone:"47%",level:"58%"},eq:{type:"EQ",bass:"45%",middle:"70%",treble:"47%",level:"65%"},mod:{type:"CHORUS",rate:"18%",depth:"18%",level:"40%"},delay:{type:"ANALOG",time:"370ms",feedback:"22%",elevel:"36%"},reverb:{type:"ROOM",level:"18%"}}
   )}
-
-  
 ];
 
 let songs=[],nid=1,parsedSong=null;
@@ -369,8 +360,8 @@ function fixComp(p){
 function load(){
   try{
     // Clear old versions to force fresh data
-    ['me90v3','me90v4','me90v5','me90v6','me90v7'].forEach(k=>localStorage.removeItem(k));
-    const s=localStorage.getItem('me90v8');
+    ['me90v3','me90v4','me90v5','me90v6','me90v7','me90v8'].forEach(k=>localStorage.removeItem(k));
+    const s=localStorage.getItem('me90v9');
     if(s){
       songs=JSON.parse(s);
       // Fix any missing comp fields
@@ -381,7 +372,7 @@ function load(){
     }
   }catch(e){songs=ALL;nid=ALL.length+1;}
 }
-function save(){try{localStorage.setItem('me90v8',JSON.stringify(songs));}catch(e){}}
+function save(){try{localStorage.setItem('me90v9',JSON.stringify(songs));}catch(e){}}
 function gc(g){return{rock:'g-rock',metal:'g-metal',ballad:'g-ballad',funk:'g-funk',alt:'g-alt',special:'g-special'}[g]||'g-rock';}
 function gl(g){return{rock:'ROCK',metal:'METAL',ballad:'BALLAD',funk:'FUNK',alt:'ALT',special:'SPECIAL'}[g]||(g||'').toUpperCase();}
 function vc(v){if(!v||v==='--'||v==='OFF')return'off';const n=parseInt(v);if(isNaN(n))return'hi';if(n>=65)return'hi';if(n<=25)return'warn';return'';}
