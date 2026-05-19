@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>BOSS ME-90 — Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:#0a0a0f;color:#e0e0f0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;min-height:100vh;-webkit-text-size-adjust:none}
+:root{--accent:#ff3333;--accent2:#ff8800;--accent3:#00ccff;--green:#00ff88;--card:#16161f;--border:#2a2a3a;--surface:#111118;--muted:#777790}
+/* LOGIN SCREEN */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 0 40px rgba(255,50,50,0.15)}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:20px;justify-content:center}
+.boss{background:var(--accent);color:#fff;font-size:12px;font-weight:900;padding:4px 10px;letter-spacing:2px;border-radius:3px}
+.atitle{font-size:15px;font-weight:800;color:#fff}
+.atitle span{color:var(--accent)}
+.admin-badge{background:rgba(255,50,50,0.15);border:1px solid rgba(255,50,50,0.3);color:var(--accent);font-size:11px;padding:4px 10px;border-radius:4px;text-align:center;margin-bottom:20px;font-family:'Courier New',monospace;letter-spacing:1px}
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.flabel{font-size:10px;color:var(--muted);letter-spacing:1px;font-family:'Courier New',monospace}
+.finput{background:var(--surface);border:1px solid var(--border);color:#e0e0f0;padding:11px 14px;font-size:14px;border-radius:6px;outline:none;width:100%;-webkit-appearance:none}
+.finput:focus{border-color:var(--accent3)}
+.btn-login{background:linear-gradient(135deg,var(--accent),#cc0000);border:none;color:#fff;font-size:14px;font-weight:700;padding:13px;border-radius:6px;width:100%;cursor:pointer;-webkit-appearance:none}
+.btn-login:disabled{opacity:0.6}
+.login-msg{display:none;padding:10px;border-radius:6px;font-size:12px;font-family:'Courier New',monospace;margin-top:10px;text-align:center}
+.login-msg.err{display:block;background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.3);color:var(--accent)}
+/* ADMIN PANEL */
+.admin-wrap{display:none}
+.hdr{background:#0d0005;border-bottom:2px solid var(--accent);padding:12px 14px;position:sticky;top:0;z-index:99;box-shadow:0 2px 20px rgba(255,50,50,0.3)}
+.hdr-inner{display:flex;align-items:center;gap:10px;max-width:700px;margin:0 auto}
+.hdr-title{font-size:14px;font-weight:800;color:#fff;font-variant:small-caps}
+.hdr-title span{color:var(--accent)}
+.logout-btn{margin-left:auto;background:none;border:1px solid rgba(255,50,50,0.4);color:var(--accent);font-size:11px;padding:6px 12px;border-radius:4px;cursor:pointer;-webkit-appearance:none}
+.main{padding:14px;max-width:700px;margin:0 auto}
+.section-title{font-family:'Courier New',monospace;font-size:10px;letter-spacing:2px;color:var(--accent3);margin:16px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--border);padding:8px 14px;border-radius:6px;font-size:12px;color:var(--muted);font-family:'Courier New',monospace}
+.stat b{color:var(--accent3);font-size:16px;display:block}
+/* REQUEST CARDS */
+.req-card{background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;overflow:hidden}
+.req-card.pending{border-left:3px solid var(--accent2)}
+.req-card.processing{border-left:3px solid var(--accent3)}
+.req-card.done{border-left:3px solid var(--green)}
+.req-head{padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.req-song{font-size:13px;font-weight:700;color:#fff}
+.req-artist{font-size:11px;color:var(--muted);margin-top:1px}
+.req-info{flex:1;min-width:0}
+.req-email{font-size:10px;color:var(--muted);font-family:'Courier New',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status-badge{font-size:9px;padding:3px 8px;border-radius:3px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:1px;white-space:nowrap;flex-shrink:0}
+.status-badge.pending{background:rgba(255,136,0,0.2);color:var(--accent2);border:1px solid rgba(255,136,0,0.3)}
+.status-badge.processing{background:rgba(0,200,255,0.2);color:var(--accent3);border:1px solid rgba(0,200,255,0.3)}
+.status-badge.done{background:rgba(0,255,136,0.2);color:var(--green);border:1px solid rgba(0,255,136,0.3)}
+.req-body{display:none;border-top:1px solid var(--border);padding:12px 14px}
+.req-body.open{display:block}
+.req-notes{font-size:12px;color:var(--muted);font-family:'Courier New',monospace;margin-bottom:12px;padding:8px 10px;background:var(--surface);border-radius:4px}
+.status-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.sbtn{border:none;font-size:11px;font-weight:700;padding:8px 14px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:1px;-webkit-appearance:none}
+.sbtn.pending{background:rgba(255,136,0,0.2);color:var(--accent2);border:1px solid rgba(255,136,0,0.4)}
+.sbtn.processing{background:rgba(0,200,255,0.2);color:var(--accent3);border:1px solid rgba(0,200,255,0.4)}
+.sbtn.done{background:rgba(0,255,136,0.2);color:var(--green);border:1px solid rgba(0,255,136,0.4)}
+.sbtn.active{opacity:1;font-weight:900}
+.sbtn:not(.active){opacity:0.5}
+.del-btn{background:rgba(255,50,50,0.1);color:var(--accent);border:1px solid rgba(255,50,50,0.3);font-size:11px;padding:8px 14px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;-webkit-appearance:none}
+.req-time{font-size:10px;color:var(--muted);font-family:'Courier New',monospace;margin-top:8px}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;font-family:'Courier New',monospace}
+.filter-tabs{display:flex;gap:4px;margin-bottom:12px}
+.ftab{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:6px 14px;font-size:11px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;-webkit-appearance:none}
+.ftab.on{background:var(--accent3);color:#000;border-color:var(--accent3);font-weight:700}
+</style>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+
+<div class="login-wrap" id="loginScreen">
+  <div class="login-box">
+    <div class="logo">
+      <div class="boss">BOSS</div>
+      <div class="atitle">ME-90 <span>ADMIN</span></div>
+    </div>
+    <div class="admin-badge">🔐 ADMIN ACCESS ONLY</div>
+    <div class="fg">
+      <label class="flabel">ADMIN EMAIL</label>
+      <input class="finput" id="adminEmail" type="email" placeholder="admin@email.com">
+    </div>
+    <div class="fg">
+      <label class="flabel">PASSWORD</label>
+      <input class="finput" id="adminPass" type="password" placeholder="••••••••">
+    </div>
+    <div class="login-msg" id="loginMsg"></div>
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">🔐 ADMIN LOGIN</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+
+<div class="admin-wrap" id="adminPanel">
+  <div class="hdr">
+    <div class="hdr-inner">
+      <div class="boss">BOSS</div>
+      <div class="hdr-title">ME-90 <span>ADMIN</span></div>
+      <button class="logout-btn" onclick="doLogout()">LOGOUT</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="stats">
+      <div class="stat"><b id="totalReqs">0</b>TOTAL</div>
+      <div class="stat"><b id="pendingReqs">0</b>PENDING</div>
+      <div class="stat"><b id="processingReqs">0</b>PROCESSING</div>
+      <div class="stat"><b id="doneReqs">0</b>DONE</div>
+    </div>
+    <div class="section-title">◆ SONG REQUESTS</div>
+    <div class="filter-tabs">
+      <div class="ftab on" onclick="setFilter('all',this)">ALL</div>
+      <div class="ftab" onclick="setFilter('PENDING',this)">PENDING</div>
+      <div class="ftab" onclick="setFilter('PROCESSING',this)">PROCESSING</div>
+      <div class="ftab" onclick="setFilter('DONE',this)">DONE</div>
+    </div>
+    <div id="reqList"></div>
+  </div>
+</div>
+
+<script>
+const ADMIN_EMAIL='murphy09cmyk@gmail.com';
+
+const firebaseConfig={
+  apiKey:"AIzaSyDjspj1rS3F3zt_VhCvY6ypDsU9IfAAvP0",
+  authDomain:"shipremit.firebaseapp.com",
+  databaseURL:"https://shipremit-default-rtdb.firebaseio.com",
+  projectId:"shipremit",
+  storageBucket:"shipremit.firebasestorage.app",
+  messagingSenderId:"516183209213",
+  appId:"1:516183209213:web:d2ffdaa25b14b96de17a94"
+};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.database();
+
+let allReqs={};
+let currentFilter='all';
+
+auth.onAuthStateChanged(function(user){
+  if(user&&user.email===ADMIN_EMAIL){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    loadRequests();
+  } else if(user){
+    auth.signOut();
+    showLoginMsg('❌ Not authorized as admin','err');
+  }
+});
+
+function showLoginMsg(txt,type){
+  const m=document.getElementById('loginMsg');
+  m.textContent=txt;
+  m.className='login-msg '+type;
+}
+
+function doLogin(){
+  const email=document.getElementById('adminEmail').value.trim();
+  const pass=document.getElementById('adminPass').value;
+  const btn=document.getElementById('loginBtn');
+  if(!email||!pass){showLoginMsg('⚠️ Please enter email and password','err');return;}
+  btn.disabled=true;btn.textContent='LOGGING IN...';
+  auth.signInWithEmailAndPassword(email,pass)
+    .catch(function(err){
+      showLoginMsg('❌ Login failed: '+err.message,'err');
+      btn.disabled=false;btn.textContent='🔐 ADMIN LOGIN';
+    });
+}
+
+function doLogout(){
+  auth.signOut().then(function(){
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('adminPanel').style.display='none';
+  });
+}
+
+function loadRequests(){
+  db.ref('me90/requests').on('value',function(snap){
+    allReqs=snap.val()||{};
+    renderRequests();
+    updateStats();
+  });
+}
+
+function updateStats(){
+  const reqs=Object.values(allReqs);
+  document.getElementById('totalReqs').textContent=reqs.length;
+  document.getElementById('pendingReqs').textContent=reqs.filter(r=>r.status==='PENDING').length;
+  document.getElementById('processingReqs').textContent=reqs.filter(r=>r.status==='PROCESSING').length;
+  document.getElementById('doneReqs').textContent=reqs.filter(r=>r.status==='DONE').length;
+}
+
+function setFilter(f,el){
+  currentFilter=f;
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  renderRequests();
+}
+
+function renderRequests(){
+  const list=document.getElementById('reqList');
+  let reqs=Object.entries(allReqs);
+  if(currentFilter!=='all'){
+    reqs=reqs.filter(([k,v])=>v.status===currentFilter);
+  }
+  reqs.sort((a,b)=>b[1].timestamp-a[1].timestamp);
+  if(!reqs.length){
+    list.innerHTML='<div class="empty">🎵 No requests found.</div>';
+    return;
+  }
+  list.innerHTML=reqs.map(([key,r])=>{
+    const st=(r.status||'PENDING').toLowerCase();
+    const d=new Date(r.timestamp);
+    const timeStr=d.toLocaleDateString()+' '+d.toLocaleTimeString();
+    return`<div class="req-card ${st}" id="card-${key}">
+  <div class="req-head" onclick="toggleReq('${key}')">
+    <div class="req-info">
+      <div class="req-song">${r.song}</div>
+      <div class="req-artist">${r.artist}</div>
+      <div class="req-email">${r.userEmail}</div>
+    </div>
+    <div class="status-badge ${st}">${r.status||'PENDING'}</div>
+  </div>
+  <div class="req-body" id="body-${key}">
+    ${r.notes?`<div class="req-notes">📝 "${r.notes}"</div>`:''}
+    <div class="status-btns">
+      <button class="sbtn pending ${r.status==='PENDING'?'active':''}" onclick="setStatus('${key}','PENDING')">⏳ PENDING</button>
+      <button class="sbtn processing ${r.status==='PROCESSING'?'active':''}" onclick="setStatus('${key}','PROCESSING')">⚙️ PROCESSING</button>
+      <button class="sbtn done ${r.status==='DONE'?'active':''}" onclick="setStatus('${key}','DONE')">✅ DONE</button>
+    </div>
+    <button class="del-btn" onclick="deleteReq('${key}')">🗑 DELETE REQUEST</button>
+    <div class="req-time">📅 ${timeStr}</div>
+  </div>
+</div>`;
+  }).join('');
+}
+
+function toggleReq(key){
+  const body=document.getElementById('body-'+key);
+  body.classList.toggle('open');
+}
+
+function setStatus(key,status){
+  db.ref('me90/requests/'+key).update({status:status})
+    .then(function(){
+      console.log('Status updated to '+status);
+    })
+    .catch(function(err){
+      alert('Error: '+err.message);
+    });
+}
+
+function deleteReq(key){
+  if(confirm('Delete this request?')){
+    db.ref('me90/requests/'+key).remove();
+  }
+}
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none'){
+    doLogin();
+  }
+});
+</script>
+
+</body>
+</html>
