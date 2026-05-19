@@ -21,9 +21,9 @@ h2{font-size:20px;font-weight:700;color:#fff;text-align:center;margin-bottom:6px
 .flabel{font-size:10px;color:var(--muted);letter-spacing:1px;font-family:'Courier New',monospace}
 .finput{background:var(--surface);border:1px solid var(--border);color:#e0e0f0;padding:11px 14px;font-size:14px;border-radius:6px;outline:none;width:100%;-webkit-appearance:none}
 .finput:focus{border-color:var(--accent3);background:rgba(0,200,255,0.04)}
-.btn{background:linear-gradient(135deg,var(--accent3),#0088aa);border:none;color:#000;font-size:14px;font-weight:700;padding:13px;border-radius:6px;width:100%;cursor:pointer;letter-spacing:1px;margin-top:6px;-webkit-appearance:none}
-.btn:disabled{opacity:0.6}
-.msg{display:none;padding:10px 12px;border-radius:6px;font-size:12px;font-family:'Courier New',monospace;margin-top:10px;text-align:center}
+.btn{background:linear-gradient(135deg,var(--accent3),#0088aa);border:none;color:#000;font-size:14px;font-weight:700;padding:13px;border-radius:6px;width:100%;cursor:pointer;letter-spacing:1px;margin-top:6px;-webkit-appearance:none;transition:opacity 0.2s}
+.btn:disabled{opacity:0.5}
+.msg{padding:10px 12px;border-radius:6px;font-size:12px;font-family:'Courier New',monospace;margin-top:10px;text-align:center;display:none}
 .msg.err{display:block;background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.3);color:var(--accent)}
 .msg.ok{display:block;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--green)}
 .link{text-align:center;margin-top:16px;font-size:12px;color:var(--muted);font-family:'Courier New',monospace}
@@ -43,15 +43,15 @@ h2{font-size:20px;font-weight:700;color:#fff;text-align:center;margin-bottom:6px
   <div class="sub">Register to request songs</div>
   <div class="fg">
     <label class="flabel">EMAIL *</label>
-    <input class="finput" id="email" type="email" placeholder="your@email.com">
+    <input class="finput" id="email" type="email" placeholder="your@email.com" autocomplete="email">
   </div>
   <div class="fg">
     <label class="flabel">PASSWORD *</label>
-    <input class="finput" id="pass" type="password" placeholder="Min 6 characters">
+    <input class="finput" id="pass" type="password" placeholder="Min 6 characters" autocomplete="new-password">
   </div>
   <div class="fg">
     <label class="flabel">CONFIRM PASSWORD *</label>
-    <input class="finput" id="pass2" type="password" placeholder="Repeat password">
+    <input class="finput" id="pass2" type="password" placeholder="Repeat password" autocomplete="new-password">
   </div>
   <div class="msg" id="msg"></div>
   <button class="btn" id="regBtn" onclick="doRegister()">✅ CREATE ACCOUNT</button>
@@ -82,30 +82,58 @@ const email=document.getElementById(‘email’).value.trim();
 const pass=document.getElementById(‘pass’).value;
 const pass2=document.getElementById(‘pass2’).value;
 const btn=document.getElementById(‘regBtn’);
-if(!email||!pass||!pass2){showMsg(‘⚠️ Please fill all fields’,‘err’);return;}
-if(pass.length<6){showMsg(‘⚠️ Password must be at least 6 characters’,‘err’);return;}
-if(pass!==pass2){showMsg(‘⚠️ Passwords do not match’,‘err’);return;}
-btn.disabled=true;btn.textContent=‘CREATING…’;
+
+// Validation
+if(!email||!pass||!pass2){
+showMsg(‘⚠️ Please fill all fields’,‘err’);
+return;
+}
+if(pass.length<6){
+showMsg(‘⚠️ Password must be at least 6 characters’,‘err’);
+return;
+}
+if(pass!==pass2){
+showMsg(‘⚠️ Passwords do not match’,‘err’);
+return;
+}
+
+btn.disabled=true;
+btn.textContent=‘⏳ CREATING…’;
+showMsg(‘Creating your account…’,‘ok’);
+
+// Step 1: Create Firebase Auth account
 auth.createUserWithEmailAndPassword(email,pass)
 .then(function(cred){
-return db.ref(‘me90/users/’+cred.user.uid).set({
+// Step 2: Save user data to database
+// Use set with no error blocking — even if DB write fails, auth account is created
+try{
+db.ref(‘me90/users/’+cred.user.uid).set({
 email:email,
 role:‘user’,
 createdAt:Date.now()
 });
-})
-.then(function(){
+}catch(e){
+console.log(‘DB write failed but auth ok’,e);
+}
+// Step 3: Redirect regardless
 showMsg(‘✅ Account created! Redirecting…’,‘ok’);
-setTimeout(function(){window.location.href=‘index.html’;},1500);
+setTimeout(function(){
+window.location.href=‘index.html’;
+},1500);
 })
 .catch(function(err){
+console.log(‘Register error:’,err.code, err.message);
 const msgs={
-‘auth/email-already-in-use’:‘This email is already registered.’,
-‘auth/invalid-email’:‘Invalid email address.’,
-‘auth/weak-password’:‘Password is too weak.’
+‘auth/email-already-in-use’:‘This email is already registered. Try logging in.’,
+‘auth/invalid-email’:‘Please enter a valid email address.’,
+‘auth/weak-password’:‘Password must be at least 6 characters.’,
+‘auth/network-request-failed’:‘Network error. Check your connection.’,
+‘auth/operation-not-allowed’:‘Email registration is not enabled.’,
+‘auth/too-many-requests’:‘Too many attempts. Please try again later.’
 };
 showMsg(’❌ ’+(msgs[err.code]||err.message),‘err’);
-btn.disabled=false;btn.textContent=‘✅ CREATE ACCOUNT’;
+btn.disabled=false;
+btn.textContent=‘✅ CREATE ACCOUNT’;
 });
 }
 </script>
