@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>BOSS ME-90 — Register</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:#0a0a0f;color:#e0e0f0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;-webkit-text-size-adjust:none}
+:root{--accent:#ff3333;--accent3:#00ccff;--green:#00ff88;--card:#16161f;--border:#2a2a3a;--surface:#111118;--muted:#777790}
+.box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 24px;width:100%;max-width:380px;box-shadow:0 0 40px rgba(0,200,255,0.1)}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:24px;justify-content:center}
+.boss{background:var(--accent);color:#fff;font-size:13px;font-weight:900;padding:5px 11px;letter-spacing:2px;border-radius:3px}
+.title{font-size:16px;font-weight:800;color:#fff;letter-spacing:1px}
+.title span{color:var(--accent3)}
+h2{font-size:20px;font-weight:700;color:#fff;text-align:center;margin-bottom:6px}
+.sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px;font-family:'Courier New',monospace}
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.flabel{font-size:10px;color:var(--muted);letter-spacing:1px;font-family:'Courier New',monospace}
+.finput{background:var(--surface);border:1px solid var(--border);color:#e0e0f0;padding:11px 14px;font-size:14px;border-radius:6px;outline:none;width:100%;-webkit-appearance:none}
+.finput:focus{border-color:var(--accent3);background:rgba(0,200,255,0.04)}
+.btn{background:linear-gradient(135deg,var(--accent3),#0088aa);border:none;color:#000;font-size:14px;font-weight:700;padding:13px;border-radius:6px;width:100%;cursor:pointer;letter-spacing:1px;margin-top:6px;-webkit-appearance:none}
+.btn:disabled{opacity:0.6}
+.msg{display:none;padding:10px 12px;border-radius:6px;font-size:12px;font-family:'Courier New',monospace;margin-top:10px;text-align:center}
+.msg.err{display:block;background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.3);color:var(--accent)}
+.msg.ok{display:block;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--green)}
+.link{text-align:center;margin-top:16px;font-size:12px;color:var(--muted);font-family:'Courier New',monospace}
+.link a{color:var(--accent3);text-decoration:none}
+</style>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+<div class="box">
+  <div class="logo">
+    <div class="boss">BOSS</div>
+    <div class="title">ME-90 <span>SETTINGS</span></div>
+  </div>
+  <h2>Create Account</h2>
+  <div class="sub">Register to request songs</div>
+  <div class="fg">
+    <label class="flabel">EMAIL *</label>
+    <input class="finput" id="email" type="email" placeholder="your@email.com">
+  </div>
+  <div class="fg">
+    <label class="flabel">PASSWORD *</label>
+    <input class="finput" id="pass" type="password" placeholder="Min 6 characters">
+  </div>
+  <div class="fg">
+    <label class="flabel">CONFIRM PASSWORD *</label>
+    <input class="finput" id="pass2" type="password" placeholder="Repeat password">
+  </div>
+  <div class="msg" id="msg"></div>
+  <button class="btn" id="regBtn" onclick="doRegister()">✅ CREATE ACCOUNT</button>
+  <div class="link">Already have an account? <a href="login.html">Login here</a></div>
+</div>
+<script>
+const firebaseConfig={
+  apiKey:"AIzaSyDjspj1rS3F3zt_VhCvY6ypDsU9IfAAvP0",
+  authDomain:"shipremit.firebaseapp.com",
+  databaseURL:"https://shipremit-default-rtdb.firebaseio.com",
+  projectId:"shipremit",
+  storageBucket:"shipremit.firebasestorage.app",
+  messagingSenderId:"516183209213",
+  appId:"1:516183209213:web:d2ffdaa25b14b96de17a94"
+};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.database();
+
+function showMsg(txt,type){
+const m=document.getElementById(‘msg’);
+m.textContent=txt;
+m.className=’msg ’+type;
+}
+
+function doRegister(){
+const email=document.getElementById(‘email’).value.trim();
+const pass=document.getElementById(‘pass’).value;
+const pass2=document.getElementById(‘pass2’).value;
+const btn=document.getElementById(‘regBtn’);
+if(!email||!pass||!pass2){showMsg(‘⚠️ Please fill all fields’,‘err’);return;}
+if(pass.length<6){showMsg(‘⚠️ Password must be at least 6 characters’,‘err’);return;}
+if(pass!==pass2){showMsg(‘⚠️ Passwords do not match’,‘err’);return;}
+btn.disabled=true;btn.textContent=‘CREATING…’;
+auth.createUserWithEmailAndPassword(email,pass)
+.then(function(cred){
+return db.ref(‘me90/users/’+cred.user.uid).set({
+email:email,
+role:‘user’,
+createdAt:Date.now()
+});
+})
+.then(function(){
+showMsg(‘✅ Account created! Redirecting…’,‘ok’);
+setTimeout(function(){window.location.href=‘index.html’;},1500);
+})
+.catch(function(err){
+const msgs={
+‘auth/email-already-in-use’:‘This email is already registered.’,
+‘auth/invalid-email’:‘Invalid email address.’,
+‘auth/weak-password’:‘Password is too weak.’
+};
+showMsg(’❌ ’+(msgs[err.code]||err.message),‘err’);
+btn.disabled=false;btn.textContent=‘✅ CREATE ACCOUNT’;
+});
+}
+</script>
+
+</body>
+</html>
