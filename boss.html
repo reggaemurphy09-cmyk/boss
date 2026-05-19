@@ -340,15 +340,13 @@ const ALL=[
     {preamp:{type:"X-CRUNCH",gain:"58%",bass:"48%",middle:"60%",treble:"52%",level:"61%"},comp:{type:"OFF",sustain:"--",attack:"--",level:"--"},od:{type:"DISTORTION",drive:"55%",tone:"52%",level:"57%"},eq:{type:"EQ",bass:"48%",middle:"62%",treble:"52%",level:"61%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"75ms",feedback:"10%",elevel:"16%"},reverb:{type:"ROOM",level:"14%"}},
     {preamp:{type:"X-CRUNCH",gain:"68%",bass:"47%",middle:"62%",treble:"52%",level:"65%"},comp:{type:"OFF",sustain:"--",attack:"--",level:"--"},od:{type:"DISTORTION",drive:"65%",tone:"52%",level:"60%"},eq:{type:"EQ",bass:"47%",middle:"63%",treble:"52%",level:"65%"},mod:{type:"OFF",rate:"--",depth:"--",level:"--"},delay:{type:"STANDARD",time:"80ms",feedback:"12%",elevel:"20%"},reverb:{type:"ROOM",level:"15%"}},
     {preamp:{type:"NATURAL",gain:"65%",bass:"45%",middle:"68%",treble:"48%",level:"65%"},comp:{type:"COMP",sustain:"65%",attack:"30%",level:"62%"},od:{type:"T-SCREAM",drive:"35%",tone:"47%",level:"58%"},eq:{type:"EQ",bass:"45%",middle:"70%",treble:"47%",level:"65%"},mod:{type:"CHORUS",rate:"18%",depth:"18%",level:"40%"},delay:{type:"ANALOG",time:"370ms",feedback:"22%",elevel:"36%"},reverb:{type:"ROOM",level:"18%"}}
-  )}
-  ,
+  )},
   {id:27,song:"Cliffs of Dover",artist:"Eric Johnson",genre:"rock",bank:"U3-2",pickup:"Neck SC",vol:"9",pedal:"WAH",tip:"Neck pickup always. Eric Johnson tone is warm and singing. Very precise picking. Keep gain low and let COMP do the sustain work!",parts:mkp(
     {preamp:{type:"NATURAL",gain:"25%",bass:"50%",middle:"60%",treble:"48%",level:"58%"},comp:{type:"COMP",sustain:"65%",attack:"32%",level:"58%"},od:{type:"OFF",drive:"--",tone:"--",level:"--"},eq:{type:"EQ",bass:"50%",middle:"62%",treble:"46%",level:"58%"},mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"45%"},delay:{type:"ANALOG",time:"380ms",feedback:"24%",elevel:"38%"},reverb:{type:"HALL",level:"32%"}},
     {preamp:{type:"NATURAL",gain:"28%",bass:"50%",middle:"62%",treble:"48%",level:"60%"},comp:{type:"COMP",sustain:"68%",attack:"30%",level:"60%"},od:{type:"BLUES OD",drive:"18%",tone:"46%",level:"50%"},eq:{type:"EQ",bass:"50%",middle:"63%",treble:"46%",level:"60%"},mod:{type:"CHORUS",rate:"22%",depth:"28%",level:"45%"},delay:{type:"ANALOG",time:"370ms",feedback:"24%",elevel:"38%"},reverb:{type:"HALL",level:"32%"}},
     {preamp:{type:"NATURAL",gain:"32%",bass:"48%",middle:"63%",treble:"47%",level:"62%"},comp:{type:"COMP",sustain:"70%",attack:"28%",level:"62%"},od:{type:"BLUES OD",drive:"22%",tone:"46%",level:"52%"},eq:{type:"EQ",bass:"48%",middle:"64%",treble:"46%",level:"62%"},mod:{type:"CHORUS",rate:"24%",depth:"30%",level:"47%"},delay:{type:"ANALOG",time:"360ms",feedback:"25%",elevel:"40%"},reverb:{type:"HALL",level:"33%"}},
     {preamp:{type:"NATURAL",gain:"38%",bass:"46%",middle:"67%",treble:"46%",level:"63%"},comp:{type:"COMP",sustain:"72%",attack:"27%",level:"63%"},od:{type:"BLUES OD",drive:"25%",tone:"45%",level:"54%"},eq:{type:"EQ",bass:"46%",middle:"68%",treble:"45%",level:"63%"},mod:{type:"CHORUS",rate:"20%",depth:"25%",level:"43%"},delay:{type:"ANALOG",time:"375ms",feedback:"26%",elevel:"40%"},reverb:{type:"HALL",level:"30%"}}
   )}
-
 ];
 
 let songs=[],nid=1,parsedSong=null;
@@ -368,8 +366,8 @@ function fixComp(p){
 function load(){
   try{
     // Clear old versions to force fresh data
-    ['me90v3','me90v4','me90v5','me90v6','me90v7','me90v8'].forEach(k=>localStorage.removeItem(k));
-    const s=localStorage.getItem('me90v9');
+    ['me90v3','me90v4','me90v5','me90v6','me90v7','me90v8','me90v9'].forEach(k=>localStorage.removeItem(k));
+    const s=localStorage.getItem('me90v10');
     if(s){
       songs=JSON.parse(s);
       // Fix any missing comp fields
@@ -380,7 +378,7 @@ function load(){
     }
   }catch(e){songs=ALL;nid=ALL.length+1;}
 }
-function save(){try{localStorage.setItem('me90v9',JSON.stringify(songs));}catch(e){}}
+function save(){try{localStorage.setItem('me90v10',JSON.stringify(songs));}catch(e){}}
 function gc(g){return{rock:'g-rock',metal:'g-metal',ballad:'g-ballad',funk:'g-funk',alt:'g-alt',special:'g-special'}[g]||'g-rock';}
 function gl(g){return{rock:'ROCK',metal:'METAL',ballad:'BALLAD',funk:'FUNK',alt:'ALT',special:'SPECIAL'}[g]||(g||'').toUpperCase();}
 function vc(v){if(!v||v==='--'||v==='OFF')return'off';const n=parseInt(v);if(isNaN(n))return'hi';if(n>=65)return'hi';if(n<=25)return'warn';return'';}
