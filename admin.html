@@ -1,73 +1,97 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>BOSS ME-90 — Admin</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>ME-90 Admin</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:#0a0a0f;color:#e0e0f0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;min-height:100vh;-webkit-text-size-adjust:none}
-:root{--accent:#ff3333;--accent2:#ff8800;--accent3:#00ccff;--green:#00ff88;--card:#16161f;--border:#2a2a3a;--surface:#111118;--muted:#777790}
-/* LOGIN SCREEN */
+
+/* LOGIN */
 .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-.login-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 0 40px rgba(255,50,50,0.15)}
-.logo{display:flex;align-items:center;gap:10px;margin-bottom:20px;justify-content:center}
-.boss{background:var(--accent);color:#fff;font-size:12px;font-weight:900;padding:4px 10px;letter-spacing:2px;border-radius:3px}
-.atitle{font-size:15px;font-weight:800;color:#fff}
-.atitle span{color:var(--accent)}
-.admin-badge{background:rgba(255,50,50,0.15);border:1px solid rgba(255,50,50,0.3);color:var(--accent);font-size:11px;padding:4px 10px;border-radius:4px;text-align:center;margin-bottom:20px;font-family:'Courier New',monospace;letter-spacing:1px}
+.login-box{background:#16161f;border:1px solid #2a2a3a;border-top:3px solid #ff3333;border-radius:12px;padding:30px 24px;width:100%;max-width:360px;box-shadow:0 0 40px rgba(255,50,50,0.15)}
+.login-logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:22px}
+.boss-badge{background:#ff3333;color:#fff;font-size:13px;font-weight:900;padding:5px 11px;letter-spacing:2px;border-radius:3px}
+.login-title{font-size:16px;font-weight:800;color:#fff}
+.login-title span{color:#ff3333}
+.admin-tag{background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.3);color:#ff3333;font-size:10px;padding:5px 12px;border-radius:4px;text-align:center;margin-bottom:22px;font-family:'Courier New',monospace;letter-spacing:2px}
 .fg{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.flabel{font-size:10px;color:var(--muted);letter-spacing:1px;font-family:'Courier New',monospace}
-.finput{background:var(--surface);border:1px solid var(--border);color:#e0e0f0;padding:11px 14px;font-size:14px;border-radius:6px;outline:none;width:100%;-webkit-appearance:none}
-.finput:focus{border-color:var(--accent3)}
-.btn-login{background:linear-gradient(135deg,var(--accent),#cc0000);border:none;color:#fff;font-size:14px;font-weight:700;padding:13px;border-radius:6px;width:100%;cursor:pointer;-webkit-appearance:none}
-.btn-login:disabled{opacity:0.6}
-.login-msg{display:none;padding:10px;border-radius:6px;font-size:12px;font-family:'Courier New',monospace;margin-top:10px;text-align:center}
-.login-msg.err{display:block;background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.3);color:var(--accent)}
+.flabel{font-size:10px;color:#777790;letter-spacing:1px;font-family:'Courier New',monospace}
+.finput{background:#111118;border:1px solid #2a2a3a;color:#e0e0f0;padding:11px 14px;font-size:14px;border-radius:6px;outline:none;width:100%;-webkit-appearance:none}
+.finput:focus{border-color:#00ccff}
+.login-btn{background:linear-gradient(135deg,#ff3333,#cc0000);border:none;color:#fff;font-size:14px;font-weight:700;padding:13px;border-radius:6px;width:100%;cursor:pointer;letter-spacing:1px;margin-top:6px;-webkit-appearance:none}
+.login-btn:disabled{opacity:0.5}
+.login-msg{display:none;padding:10px 12px;border-radius:6px;font-size:12px;font-family:'Courier New',monospace;margin-top:10px;text-align:center}
+.login-msg.err{display:block;background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.3);color:#ff3333}
+.login-msg.ok{display:block;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:#00ff88}
+
 /* ADMIN PANEL */
 .admin-wrap{display:none}
-.hdr{background:#0d0005;border-bottom:2px solid var(--accent);padding:12px 14px;position:sticky;top:0;z-index:99;box-shadow:0 2px 20px rgba(255,50,50,0.3)}
+.hdr{background:#0d0005;border-bottom:2px solid #ff3333;padding:12px 14px;position:sticky;top:0;z-index:99;box-shadow:0 2px 20px rgba(255,50,50,0.3)}
 .hdr-inner{display:flex;align-items:center;gap:10px;max-width:700px;margin:0 auto}
 .hdr-title{font-size:14px;font-weight:800;color:#fff;font-variant:small-caps}
-.hdr-title span{color:var(--accent)}
-.logout-btn{margin-left:auto;background:none;border:1px solid rgba(255,50,50,0.4);color:var(--accent);font-size:11px;padding:6px 12px;border-radius:4px;cursor:pointer;-webkit-appearance:none}
+.hdr-title span{color:#ff3333}
+.logout-btn{margin-left:auto;background:none;border:1px solid rgba(255,50,50,0.4);color:#ff3333;font-size:11px;padding:6px 12px;border-radius:4px;cursor:pointer;-webkit-appearance:none;font-family:'Courier New',monospace}
 .main{padding:14px;max-width:700px;margin:0 auto}
-.section-title{font-family:'Courier New',monospace;font-size:10px;letter-spacing:2px;color:var(--accent3);margin:16px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--border)}
-.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.stat{background:var(--card);border:1px solid var(--border);padding:8px 14px;border-radius:6px;font-size:12px;color:var(--muted);font-family:'Courier New',monospace}
-.stat b{color:var(--accent3);font-size:16px;display:block}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.stat-card{background:#16161f;border:1px solid #2a2a3a;border-radius:6px;padding:10px 8px;text-align:center}
+.stat-num{font-size:22px;font-weight:900;font-family:'Courier New',monospace}
+.stat-num.total{color:#00ccff}
+.stat-num.pending{color:#ff8800}
+.stat-num.processing{color:#00ccff}
+.stat-num.done{color:#00ff88}
+.stat-label{font-size:9px;color:#777790;letter-spacing:1px;font-family:'Courier New',monospace;margin-top:3px}
+
+/* FILTER TABS */
+.ftabs{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ftab{background:#111118;border:1px solid #2a2a3a;color:#777790;padding:7px 14px;font-size:10px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:1px;white-space:nowrap;-webkit-appearance:none;flex-shrink:0}
+.ftab.on{font-weight:700}
+.ftab.all.on{background:#2a2a3a;color:#e0e0f0;border-color:#555}
+.ftab.pending.on{background:rgba(255,136,0,0.2);color:#ff8800;border-color:#ff8800}
+.ftab.processing.on{background:rgba(0,200,255,0.2);color:#00ccff;border-color:#00ccff}
+.ftab.done.on{background:rgba(0,255,136,0.2);color:#00ff88;border-color:#00ff88}
+
 /* REQUEST CARDS */
-.req-card{background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;overflow:hidden}
-.req-card.pending{border-left:3px solid var(--accent2)}
-.req-card.processing{border-left:3px solid var(--accent3)}
-.req-card.done{border-left:3px solid var(--green)}
+.section-title{font-family:'Courier New',monospace;font-size:10px;letter-spacing:2px;color:#00ccff;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #2a2a3a}
+.req-list{display:flex;flex-direction:column;gap:8px}
+.req-card{background:#16161f;border:1px solid #2a2a3a;border-radius:8px;overflow:hidden}
+.req-card.pending{border-left:3px solid #ff8800}
+.req-card.processing{border-left:3px solid #00ccff}
+.req-card.done{border-left:3px solid #00ff88}
 .req-head{padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
-.req-song{font-size:13px;font-weight:700;color:#fff}
-.req-artist{font-size:11px;color:var(--muted);margin-top:1px}
 .req-info{flex:1;min-width:0}
-.req-email{font-size:10px;color:var(--muted);font-family:'Courier New',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.status-badge{font-size:9px;padding:3px 8px;border-radius:3px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:1px;white-space:nowrap;flex-shrink:0}
-.status-badge.pending{background:rgba(255,136,0,0.2);color:var(--accent2);border:1px solid rgba(255,136,0,0.3)}
-.status-badge.processing{background:rgba(0,200,255,0.2);color:var(--accent3);border:1px solid rgba(0,200,255,0.3)}
-.status-badge.done{background:rgba(0,255,136,0.2);color:var(--green);border:1px solid rgba(0,255,136,0.3)}
-.req-body{display:none;border-top:1px solid var(--border);padding:12px 14px}
+.req-song{font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.req-artist{font-size:11px;color:#777790;margin-top:2px}
+.req-email{font-size:10px;color:#555;font-family:'Courier New',monospace;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status-pill{font-size:9px;padding:3px 8px;border-radius:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:1px;white-space:nowrap;flex-shrink:0}
+.status-pill.pending{background:rgba(255,136,0,0.15);color:#ff8800;border:1px solid rgba(255,136,0,0.4)}
+.status-pill.processing{background:rgba(0,200,255,0.15);color:#00ccff;border:1px solid rgba(0,200,255,0.4)}
+.status-pill.done{background:rgba(0,255,136,0.15);color:#00ff88;border:1px solid rgba(0,255,136,0.4)}
+.chevron{color:#777790;font-size:11px;flex-shrink:0;transition:transform 0.2s}
+.chevron.open{transform:rotate(180deg)}
+
+/* REQUEST BODY */
+.req-body{display:none;border-top:1px solid #2a2a3a;padding:12px 14px}
 .req-body.open{display:block}
-.req-notes{font-size:12px;color:var(--muted);font-family:'Courier New',monospace;margin-bottom:12px;padding:8px 10px;background:var(--surface);border-radius:4px}
-.status-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.sbtn{border:none;font-size:11px;font-weight:700;padding:8px 14px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:1px;-webkit-appearance:none}
-.sbtn.pending{background:rgba(255,136,0,0.2);color:var(--accent2);border:1px solid rgba(255,136,0,0.4)}
-.sbtn.processing{background:rgba(0,200,255,0.2);color:var(--accent3);border:1px solid rgba(0,200,255,0.4)}
-.sbtn.done{background:rgba(0,255,136,0.2);color:var(--green);border:1px solid rgba(0,255,136,0.4)}
-.sbtn.active{opacity:1;font-weight:900}
-.sbtn:not(.active){opacity:0.5}
-.del-btn{background:rgba(255,50,50,0.1);color:var(--accent);border:1px solid rgba(255,50,50,0.3);font-size:11px;padding:8px 14px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;-webkit-appearance:none}
-.req-time{font-size:10px;color:var(--muted);font-family:'Courier New',monospace;margin-top:8px}
-.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;font-family:'Courier New',monospace}
-.filter-tabs{display:flex;gap:4px;margin-bottom:12px}
-.ftab{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:6px 14px;font-size:11px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;-webkit-appearance:none}
-.ftab.on{background:var(--accent3);color:#000;border-color:var(--accent3);font-weight:700}
+.req-notes-box{background:#111118;border-radius:4px;padding:8px 10px;font-size:12px;color:#777790;font-family:'Courier New',monospace;margin-bottom:12px;line-height:1.5}
+.req-time{font-size:10px;color:#444;font-family:'Courier New',monospace;margin-bottom:12px}
+
+/* STATUS BUTTONS */
+.status-btns{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.sbtn{border:none;font-size:10px;font-weight:700;padding:8px 14px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:1px;-webkit-appearance:none;opacity:0.4;transition:opacity 0.2s}
+.sbtn.active{opacity:1}
+.sbtn.pending{background:rgba(255,136,0,0.2);color:#ff8800;border:1px solid rgba(255,136,0,0.5)}
+.sbtn.processing{background:rgba(0,200,255,0.2);color:#00ccff;border:1px solid rgba(0,200,255,0.5)}
+.sbtn.done{background:rgba(0,255,136,0.2);color:#00ff88;border:1px solid rgba(0,255,136,0.5)}
+.del-btn{background:rgba(255,50,50,0.1);color:#ff3333;border:1px solid rgba(255,50,50,0.3);font-size:10px;padding:8px 14px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;-webkit-appearance:none}
+
+.empty{text-align:center;padding:50px 20px;color:#777790;font-size:13px;font-family:'Courier New',monospace}
+.loading{text-align:center;padding:40px;color:#00ccff;font-family:'Courier New',monospace;font-size:12px;letter-spacing:2px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -76,199 +100,218 @@ html,body{background:#0a0a0f;color:#e0e0f0;font-family:-apple-system,BlinkMacSys
 <body>
 
 <!-- LOGIN SCREEN -->
-
 <div class="login-wrap" id="loginScreen">
   <div class="login-box">
-    <div class="logo">
-      <div class="boss">BOSS</div>
-      <div class="atitle">ME-90 <span>ADMIN</span></div>
+    <div class="login-logo">
+      <div class="boss-badge">BOSS</div>
+      <div class="login-title">ME-90 <span>ADMIN</span></div>
     </div>
-    <div class="admin-badge">🔐 ADMIN ACCESS ONLY</div>
+    <div class="admin-tag">🔐 ADMIN ACCESS ONLY</div>
     <div class="fg">
-      <label class="flabel">ADMIN EMAIL</label>
-      <input class="finput" id="adminEmail" type="email" placeholder="admin@email.com">
+      <label class="flabel">EMAIL</label>
+      <input class="finput" id="adminEmail" type="email" placeholder="admin@email.com" autocomplete="email">
     </div>
     <div class="fg">
       <label class="flabel">PASSWORD</label>
-      <input class="finput" id="adminPass" type="password" placeholder="••••••••">
+      <input class="finput" id="adminPass" type="password" placeholder="••••••••" autocomplete="current-password">
     </div>
     <div class="login-msg" id="loginMsg"></div>
-    <button class="btn-login" id="loginBtn" onclick="doLogin()">🔐 ADMIN LOGIN</button>
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">🔐 LOGIN</button>
   </div>
 </div>
 
 <!-- ADMIN PANEL -->
-
 <div class="admin-wrap" id="adminPanel">
   <div class="hdr">
     <div class="hdr-inner">
-      <div class="boss">BOSS</div>
+      <div class="boss-badge">BOSS</div>
       <div class="hdr-title">ME-90 <span>ADMIN</span></div>
       <button class="logout-btn" onclick="doLogout()">LOGOUT</button>
     </div>
   </div>
   <div class="main">
     <div class="stats">
-      <div class="stat"><b id="totalReqs">0</b>TOTAL</div>
-      <div class="stat"><b id="pendingReqs">0</b>PENDING</div>
-      <div class="stat"><b id="processingReqs">0</b>PROCESSING</div>
-      <div class="stat"><b id="doneReqs">0</b>DONE</div>
+      <div class="stat-card"><div class="stat-num total" id="statTotal">0</div><div class="stat-label">TOTAL</div></div>
+      <div class="stat-card"><div class="stat-num pending" id="statPending">0</div><div class="stat-label">PENDING</div></div>
+      <div class="stat-card"><div class="stat-num processing" id="statProcessing">0</div><div class="stat-label">PROCESSING</div></div>
+      <div class="stat-card"><div class="stat-num done" id="statDone">0</div><div class="stat-label">DONE</div></div>
+    </div>
+    <div class="ftabs">
+      <button class="ftab all on" onclick="setFilter('all',this)">ALL</button>
+      <button class="ftab pending" onclick="setFilter('PENDING',this)">⏳ PENDING</button>
+      <button class="ftab processing" onclick="setFilter('PROCESSING',this)">⚙️ PROCESSING</button>
+      <button class="ftab done" onclick="setFilter('DONE',this)">✅ DONE</button>
     </div>
     <div class="section-title">◆ SONG REQUESTS</div>
-    <div class="filter-tabs">
-      <div class="ftab on" onclick="setFilter('all',this)">ALL</div>
-      <div class="ftab" onclick="setFilter('PENDING',this)">PENDING</div>
-      <div class="ftab" onclick="setFilter('PROCESSING',this)">PROCESSING</div>
-      <div class="ftab" onclick="setFilter('DONE',this)">DONE</div>
-    </div>
-    <div id="reqList"></div>
+    <div class="req-list" id="reqList"><div class="loading">LOADING...</div></div>
   </div>
 </div>
 
 <script>
-const ADMIN_EMAIL='murphy09cmyk@gmail.com';
+const ADMIN_EMAIL = 'murphy09cmyk@gmail.com';
 
-const firebaseConfig={
-  apiKey:"AIzaSyDjspj1rS3F3zt_VhCvY6ypDsU9IfAAvP0",
-  authDomain:"shipremit.firebaseapp.com",
-  databaseURL:"https://shipremit-default-rtdb.firebaseio.com",
-  projectId:"shipremit",
-  storageBucket:"shipremit.firebasestorage.app",
-  messagingSenderId:"516183209213",
-  appId:"1:516183209213:web:d2ffdaa25b14b96de17a94"
+const firebaseConfig = {
+  apiKey: "AIzaSyDjspj1rS3F3zt_VhCvY6ypDsU9IfAAvP0",
+  authDomain: "shipremit.firebaseapp.com",
+  databaseURL: "https://shipremit-default-rtdb.firebaseio.com",
+  projectId: "shipremit",
+  storageBucket: "shipremit.firebasestorage.app",
+  messagingSenderId: "516183209213",
+  appId: "1:516183209213:web:d2ffdaa25b14b96de17a94"
 };
-if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const db=firebase.database();
 
-let allReqs={};
-let currentFilter='all';
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
 
-auth.onAuthStateChanged(function(user){
-  if(user&&user.email===ADMIN_EMAIL){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('adminPanel').style.display='block';
+let allRequests = {};
+let currentFilter = 'all';
+
+// Auth state
+auth.onAuthStateChanged(function(user) {
+  if(user && user.email === ADMIN_EMAIL) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
     loadRequests();
-  } else if(user){
+  } else if(user) {
     auth.signOut();
-    showLoginMsg('❌ Not authorized as admin','err');
+    showLoginMsg('Not authorized as admin!', 'err');
   }
 });
 
-function showLoginMsg(txt,type){
-  const m=document.getElementById('loginMsg');
-  m.textContent=txt;
-  m.className='login-msg '+type;
+function showLoginMsg(txt, type) {
+  const m = document.getElementById('loginMsg');
+  m.textContent = txt;
+  m.className = 'login-msg ' + type;
 }
 
-function doLogin(){
-  const email=document.getElementById('adminEmail').value.trim();
-  const pass=document.getElementById('adminPass').value;
-  const btn=document.getElementById('loginBtn');
-  if(!email||!pass){showLoginMsg('⚠️ Please enter email and password','err');return;}
-  btn.disabled=true;btn.textContent='LOGGING IN...';
-  auth.signInWithEmailAndPassword(email,pass)
-    .catch(function(err){
-      showLoginMsg('❌ Login failed: '+err.message,'err');
-      btn.disabled=false;btn.textContent='🔐 ADMIN LOGIN';
+function doLogin() {
+  const email = document.getElementById('adminEmail').value.trim();
+  const pass = document.getElementById('adminPass').value;
+  const btn = document.getElementById('loginBtn');
+  if(!email || !pass) { showLoginMsg('Please enter email and password!', 'err'); return; }
+  btn.disabled = true;
+  btn.textContent = 'LOGGING IN...';
+  auth.signInWithEmailAndPassword(email, pass)
+    .catch(function(err) {
+      const msgs = {
+        'auth/user-not-found': 'No account found.',
+        'auth/wrong-password': 'Incorrect password.',
+        'auth/invalid-email': 'Invalid email.',
+        'auth/too-many-requests': 'Too many attempts. Try later.'
+      };
+      showLoginMsg('❌ ' + (msgs[err.code] || err.message), 'err');
+      btn.disabled = false;
+      btn.textContent = '🔐 LOGIN';
     });
 }
 
-function doLogout(){
-  auth.signOut().then(function(){
-    document.getElementById('loginScreen').style.display='flex';
-    document.getElementById('adminPanel').style.display='none';
+function doLogout() {
+  auth.signOut().then(function() {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('reqList').innerHTML = '<div class="loading">LOADING...</div>';
   });
 }
 
-function loadRequests(){
-  db.ref('me90/requests').on('value',function(snap){
-    allReqs=snap.val()||{};
-    renderRequests();
+// Load requests realtime
+function loadRequests() {
+  db.ref('me90/requests').on('value', function(snap) {
+    allRequests = snap.val() || {};
     updateStats();
+    renderRequests();
   });
 }
 
-function updateStats(){
-  const reqs=Object.values(allReqs);
-  document.getElementById('totalReqs').textContent=reqs.length;
-  document.getElementById('pendingReqs').textContent=reqs.filter(r=>r.status==='PENDING').length;
-  document.getElementById('processingReqs').textContent=reqs.filter(r=>r.status==='PROCESSING').length;
-  document.getElementById('doneReqs').textContent=reqs.filter(r=>r.status==='DONE').length;
+function updateStats() {
+  const reqs = Object.values(allRequests);
+  document.getElementById('statTotal').textContent = reqs.length;
+  document.getElementById('statPending').textContent = reqs.filter(r => r.status === 'PENDING').length;
+  document.getElementById('statProcessing').textContent = reqs.filter(r => r.status === 'PROCESSING').length;
+  document.getElementById('statDone').textContent = reqs.filter(r => r.status === 'DONE').length;
 }
 
-function setFilter(f,el){
-  currentFilter=f;
-  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('on'));
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.remove('on'));
   el.classList.add('on');
   renderRequests();
 }
 
-function renderRequests(){
-  const list=document.getElementById('reqList');
-  let reqs=Object.entries(allReqs);
-  if(currentFilter!=='all'){
-    reqs=reqs.filter(([k,v])=>v.status===currentFilter);
+function renderRequests() {
+  const list = document.getElementById('reqList');
+  let entries = Object.entries(allRequests);
+
+  // Filter
+  if(currentFilter !== 'all') {
+    entries = entries.filter(([k,v]) => v.status === currentFilter);
   }
-  reqs.sort((a,b)=>b[1].timestamp-a[1].timestamp);
-  if(!reqs.length){
-    list.innerHTML='<div class="empty">🎵 No requests found.</div>';
+
+  // Sort newest first
+  entries.sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+  if(!entries.length) {
+    list.innerHTML = '<div class="empty">🎵 No requests found.</div>';
     return;
   }
-  list.innerHTML=reqs.map(([key,r])=>{
-    const st=(r.status||'PENDING').toLowerCase();
-    const d=new Date(r.timestamp);
-    const timeStr=d.toLocaleDateString()+' '+d.toLocaleTimeString();
-    return`<div class="req-card ${st}" id="card-${key}">
-  <div class="req-head" onclick="toggleReq('${key}')">
+
+  list.innerHTML = entries.map(([key, r]) => {
+    const st = (r.status || 'PENDING').toLowerCase();
+    const date = r.timestamp ? new Date(r.timestamp).toLocaleString() : 'Unknown time';
+    return `
+<div class="req-card ${st}" id="card-${key}">
+  <div class="req-head" onclick="toggleCard('${key}')">
     <div class="req-info">
-      <div class="req-song">${r.song}</div>
-      <div class="req-artist">${r.artist}</div>
-      <div class="req-email">${r.userEmail}</div>
+      <div class="req-song">🎵 ${r.song||'Unknown'}</div>
+      <div class="req-artist">${r.artist||'Unknown'}</div>
+      <div class="req-email">👤 ${r.userEmail||'Anonymous'}</div>
     </div>
-    <div class="status-badge ${st}">${r.status||'PENDING'}</div>
+    <div class="status-pill ${st}">${r.status||'PENDING'}</div>
+    <div class="chevron" id="chev-${key}">▼</div>
   </div>
   <div class="req-body" id="body-${key}">
-    ${r.notes?`<div class="req-notes">📝 "${r.notes}"</div>`:''}
+    ${r.notes ? `<div class="req-notes-box">📝 "${r.notes}"</div>` : ''}
+    <div class="req-time">📅 ${date}</div>
     <div class="status-btns">
       <button class="sbtn pending ${r.status==='PENDING'?'active':''}" onclick="setStatus('${key}','PENDING')">⏳ PENDING</button>
       <button class="sbtn processing ${r.status==='PROCESSING'?'active':''}" onclick="setStatus('${key}','PROCESSING')">⚙️ PROCESSING</button>
       <button class="sbtn done ${r.status==='DONE'?'active':''}" onclick="setStatus('${key}','DONE')">✅ DONE</button>
     </div>
-    <button class="del-btn" onclick="deleteReq('${key}')">🗑 DELETE REQUEST</button>
-    <div class="req-time">📅 ${timeStr}</div>
+    <button class="del-btn" onclick="deleteReq('${key}')">🗑 DELETE</button>
   </div>
 </div>`;
   }).join('');
 }
 
-function toggleReq(key){
-  const body=document.getElementById('body-'+key);
-  body.classList.toggle('open');
-}
-
-function setStatus(key,status){
-  db.ref('me90/requests/'+key).update({status:status})
-    .then(function(){
-      console.log('Status updated to '+status);
-    })
-    .catch(function(err){
-      alert('Error: '+err.message);
-    });
-}
-
-function deleteReq(key){
-  if(confirm('Delete this request?')){
-    db.ref('me90/requests/'+key).remove();
+function toggleCard(key) {
+  const body = document.getElementById('body-' + key);
+  const chev = document.getElementById('chev-' + key);
+  const isOpen = body.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.req-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.chevron').forEach(c => c.classList.remove('open'));
+  // Open this one if it was closed
+  if(!isOpen) {
+    body.classList.add('open');
+    chev.classList.add('open');
   }
 }
 
-document.addEventListener('keydown',function(e){
-  if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none'){
-    doLogin();
+function setStatus(key, status) {
+  db.ref('me90/requests/' + key).update({ status: status })
+    .catch(function(err) { alert('Error: ' + err.message); });
+}
+
+function deleteReq(key) {
+  if(confirm('Delete this request?')) {
+    db.ref('me90/requests/' + key).remove()
+      .catch(function(err) { alert('Error: ' + err.message); });
   }
+}
+
+document.addEventListener('keydown', function(e) {
+  if(e.key === 'Enter') doLogin();
 });
 </script>
-
 </body>
 </html>
