@@ -98,8 +98,6 @@ html,body{background:#0a0a0f!important;color:#e0e0f0;font-family:-apple-system,B
 .format-box{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-top:12px;font-size:10px;color:var(--muted);font-family:'Courier New',monospace;line-height:1.9}
 .format-box .fc{color:var(--accent3)}.format-box .fp{color:var(--accent2)}
 </style>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 <div class="hdr">
@@ -336,11 +334,6 @@ document.getElementById('mov').addEventListener('click',function(e){if(e.target=
 function openReq(){document.getElementById('reqmov').classList.add('open');document.getElementById('reqmov').scrollTop=0;}
 function closeReq(){document.getElementById('reqmov').classList.remove('open');document.getElementById('req_song').value='';document.getElementById('req_artist').value='';document.getElementById('req_notes').value='';document.getElementById('req_msg').style.display='none';}
 function showReqMsg(txt,type){const m=document.getElementById('req_msg');m.style.display='block';m.style.background=type==='ok'?'rgba(0,255,136,0.1)':'rgba(255,50,50,0.1)';m.style.border=type==='ok'?'1px solid rgba(0,255,136,0.3)':'1px solid rgba(255,50,50,0.3)';m.style.color=type==='ok'?'#00ff88':'#ff3333';m.textContent=txt;}
-// Firebase init
-const firebaseConfig={apiKey:"AIzaSyDjspj1rS3F3zt_VhCvY6ypDsU9IfAAvP0",authDomain:"shipremit.firebaseapp.com",databaseURL:"https://shipremit-default-rtdb.firebaseio.com",projectId:"shipremit",storageBucket:"shipremit.firebasestorage.app",messagingSenderId:"516183209213",appId:"1:516183209213:web:d2ffdaa25b14b96de17a94"};
-if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
-
 function sendReq(){
   const song=document.getElementById('req_song').value.trim();
   const artist=document.getElementById('req_artist').value.trim();
@@ -349,24 +342,30 @@ function sendReq(){
   if(!song||!artist){showReqMsg('Please enter song title and artist!','err');return;}
   btn.disabled=true;
   btn.textContent='SENDING...';
-  db.ref('me90/requests').push({
-    song:song,
-    artist:artist,
-    notes:notes||'',
-    status:'PENDING',
-    timestamp:Date.now()
-  }).then(function(){
-    showReqMsg('Request sent to admin!','ok');
-    btn.textContent='SENT!';
-    setTimeout(function(){
-      closeReq();
-      btn.disabled=false;
-      btn.textContent='SEND REQUEST';
-    },2000);
-  }).catch(function(err){
+  fetch('https://formspree.io/f/mzdweobl',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({
+      song:song,
+      artist:artist,
+      notes:notes||'',
+      date:new Date().toLocaleString()
+    })
+  })
+  .then(function(res){return res.json();})
+  .then(function(data){
+    if(data.ok){
+      showReqMsg('Request sent! Admin will add settings soon.','ok');
+      btn.textContent='SENT!';
+      setTimeout(function(){closeReq();btn.disabled=false;btn.textContent='SEND REQUEST';},2000);
+    } else {
+      showReqMsg('Error sending request. Try again!','err');
+      btn.disabled=false;btn.textContent='SEND REQUEST';
+    }
+  })
+  .catch(function(err){
     showReqMsg('Error: '+err.message,'err');
-    btn.disabled=false;
-    btn.textContent='SEND REQUEST';
+    btn.disabled=false;btn.textContent='SEND REQUEST';
   });
 }
 document.getElementById('reqmov').addEventListener('click',function(e){if(e.target===this)closeReq();});
