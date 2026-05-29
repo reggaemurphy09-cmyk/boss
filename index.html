@@ -11,14 +11,14 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:#0a0a0f!important;color:#e0e0f0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;min-height:100vh;-webkit-text-size-adjust:none;overflow-x:hidden}
 :root{--bg:#0a0a0f;--surface:#111118;--card:#16161f;--border:#2a2a3a;--accent:#ff3333;--accent2:#ff8800;--accent3:#00ccff;--green:#00ff88;--text:#e0e0f0;--muted:#777790}
-.hdr{background:#0d0005;border-bottom:2px solid var(--accent);padding:12px 14px;position:sticky;top:0;z-index:999;box-shadow:0 2px 20px rgba(255,50,50,0.3)}
+.hdr{background:#0d0005;border-bottom:2px solid #ff3333;padding:12px 14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(255,50,50,0.3)}
 .hdr-top{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .boss{background:var(--accent);color:#fff;font-size:11px;font-weight:900;padding:4px 9px;letter-spacing:2px;border-radius:2px;flex-shrink:0}
 .htitle{font-size:14px;font-weight:800;color:#fff;letter-spacing:1px;font-variant:small-caps}
 .htitle span{color:#00ccff}
 .hbtns{margin-left:auto;display:flex;gap:6px;flex-shrink:0}
 
-.addbtn{background:#ff3333;border:none;color:#fff;font-size:11px;font-weight:700;padding:8px 12px;border-radius:4px;cursor:pointer;-webkit-appearance:none}.reqbtn{background:#ff8800;border:none;color:#fff;font-size:11px;font-weight:700;padding:8px 12px;border-radius:4px;cursor:pointer;-webkit-appearance:none}.pastebtn{background:#00ccff;border:none;color:#000;font-size:11px;font-weight:700;padding:8px 12px;border-radius:4px;cursor:pointer;-webkit-appearance:none}
+.addbtn{background:#ff3333;border:none;color:#fff;font-size:11px;font-weight:700;padding:10px 14px;border-radius:4px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation}.reqbtn{background:#ff8800;border:none;color:#fff;font-size:11px;font-weight:700;padding:10px 14px;border-radius:4px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;-webkit-tap-highlight-color:rgba(255,136,0,0.3)}.pastebtn{background:#00ccff;border:none;color:#000;font-size:11px;font-weight:700;padding:10px 14px;border-radius:4px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation}
 .srchwrap{position:relative}
 .srchwrap input{width:100%;background:rgba(255,255,255,0.08);border:1px solid var(–border);border-radius:8px;padding:10px 14px 10px 36px;color:var(–text);font-size:14px;outline:none;-webkit-appearance:none}
 .srchwrap input::placeholder{color:var(–muted)}
