@@ -341,17 +341,20 @@ function openReq(){document.getElementById('reqmov').classList.add('open');docum
 function closeReq(){document.getElementById('reqmov').classList.remove('open');document.getElementById('req_song').value='';document.getElementById('req_artist').value='';document.getElementById('req_notes').value='';document.getElementById('req_msg').style.display='none';}
 function showReqMsg(txt,type){const m=document.getElementById('req_msg');m.style.display='block';m.style.background=type==='ok'?'rgba(0,255,136,0.1)':'rgba(255,50,50,0.1)';m.style.border=type==='ok'?'1px solid rgba(0,255,136,0.3)':'1px solid rgba(255,50,50,0.3)';m.style.color=type==='ok'?'#00ff88':'#ff3333';m.textContent=txt;}
 // Firebase init
-const firebaseConfig={
-  apiKey:"AIzaSyDjspj1rS3F3zt_VhCvY6ypDsU9IfAAvP0",
-  authDomain:"shipremit.firebaseapp.com",
-  databaseURL:"https://shipremit-default-rtdb.firebaseio.com",
-  projectId:"shipremit",
-  storageBucket:"shipremit.firebasestorage.app",
-  messagingSenderId:"516183209213",
-  appId:"1:516183209213:web:d2ffdaa25b14b96de17a94"
-};
-if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
+var db=null;
+try{
+  var firebaseConfig={
+    apiKey:"AIzaSyDjspj1rS3F3zt_VhCvY6ypDsU9IfAAvP0",
+    authDomain:"shipremit.firebaseapp.com",
+    databaseURL:"https://shipremit-default-rtdb.firebaseio.com",
+    projectId:"shipremit",
+    storageBucket:"shipremit.firebasestorage.app",
+    messagingSenderId:"516183209213",
+    appId:"1:516183209213:web:d2ffdaa25b14b96de17a94"
+  };
+  if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+  db=firebase.database();
+}catch(e){console.log('Firebase init error:',e);}
 
 function sendReq(){
 const song=document.getElementById(‘req_song’).value.trim();
@@ -361,6 +364,7 @@ const btn=document.getElementById(‘req_sendbtn’);
 if(!song||!artist){showReqMsg(‘Please enter song title and artist!’,‘err’);return;}
 btn.disabled=true;
 btn.textContent=‘SENDING…’;
+if(!db){showReqMsg(‘Firebase not connected. Check internet!’,‘err’);btn.disabled=false;btn.textContent=‘SEND REQUEST’;return;}
 db.ref(‘me90/requests’).push({
 song:song,
 artist:artist,
