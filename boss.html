@@ -1,29 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ME-90 USB Test</title>
+</head>
+<body>
+
+    <h2>Boss ME-90 USB Test</h2>
+
+    <button onclick="connect()">Connect ME-90</button>
+
+    <pre id="log">Waiting...</pre>
+
 <script>
 async function connect() {
-  try {
-    const device = await navigator.usb.requestDevice({
-      filters: [{ vendorId: 0x0582 }]
-    });
 
-    let log = document.getElementById('log');
+    const log = document.getElementById('log');
 
-    log.textContent = "Connected: " + device.productName;
+    try {
 
-    await device.open();
+        const device = await navigator.usb.requestDevice({
+            filters: [{ vendorId: 0x0582 }]
+        });
 
-    log.textContent += "\nUSB Opened Successfully";
+        log.textContent =
+            "Connected: " + device.productName;
 
-    if (device.configuration === null) {
-      await device.selectConfiguration(1);
+        await device.open();
+
+        log.textContent +=
+            "\nUSB Opened Successfully";
+
+        if (device.configuration === null) {
+            await device.selectConfiguration(1);
+        }
+
+        log.textContent +=
+            "\nConfiguration Selected";
+
+        await device.claimInterface(3);
+
+        log.textContent +=
+            "\nInterface 3 Claimed Successfully";
+
     }
+    catch (e) {
 
-    await device.claimInterface(3);
-
-    log.textContent += "\nInterface 3 Claimed Successfully";
-
-  } catch (e) {
-    document.getElementById('log').textContent +=
-      "\nERROR: " + e.message;
-  }
+        log.textContent +=
+            "\nERROR: " + e.message;
+    }
 }
 </script>
+
+</body>
+</html>
