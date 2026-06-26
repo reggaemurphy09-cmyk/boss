@@ -1,57 +1,65 @@
 <!DOCTYPE html>
 <html>
 <body>
-<button onclick="test()">Test</button>
+
+<button onclick="test()">Test ME-90</button>
+
 <pre id="log"></pre>
 
 <script>
 async function test() {
 
-const log = document.getElementById("log");
+  const log = document.getElementById("log");
 
-const device = await navigator.usb.requestDevice({
-filters:[{vendorId:0x0582}]
-});
+  try {
 
-await device.open();
+    const device = await navigator.usb.requestDevice({
+      filters: [{ vendorId: 0x0582 }]
+    });
 
-if(!device.configuration){
-await device.selectConfiguration(1);
-}
+    await device.open();
 
-log.textContent="";
+    if (!device.configuration) {
+      await device.selectConfiguration(1);
+    }
 
-for(const iface of device.configuration.interfaces){
+    log.textContent = "Device Opened\n";
 
-log.textContent +=
-"\nINTERFACE " + iface.interfaceNumber + "\n";
+    try {
 
-for(const alt of iface.alternates){
+      await device.selectAlternateInterface(3, 1);
 
-log.textContent +=
-" Alternate: " + alt.alternateSetting + "\n";
+      log.textContent +=
+        "Alternate Interface 3:1 Selected\n";
 
-log.textContent +=
-" Class: " + alt.interfaceClass + "\n";
+    } catch (e) {
 
-log.textContent +=
-" Subclass: " + alt.interfaceSubclass + "\n";
+      log.textContent +=
+        "Alternate Select Failed:\n" +
+        e.message + "\n";
+    }
 
-log.textContent +=
-" Protocol: " + alt.interfaceProtocol + "\n";
+    try {
 
-for(const ep of alt.endpoints){
+      await device.claimInterface(3);
 
-log.textContent +=
-" Endpoint " +
-ep.endpointNumber +
-" " +
-ep.direction +
-"\n";
-}
-}
-}
+      log.textContent +=
+        "Interface 3 Claimed\n";
+
+    } catch (e) {
+
+      log.textContent +=
+        "Claim Failed:\n" +
+        e.message + "\n";
+    }
+
+  } catch (e) {
+
+    log.textContent +=
+      "Error:\n" + e.message;
+  }
 }
 </script>
+
 </body>
 </html>
