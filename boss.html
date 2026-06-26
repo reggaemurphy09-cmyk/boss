@@ -1,31 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>ME-90 USB Test</title>
-</head>
-<body>
-  <button onclick="connect()">Connect ME-90</button>
-  <pre id="log"></pre>
+<script>
+async function connect() {
+  try {
+    const device = await navigator.usb.requestDevice({
+      filters: [{ vendorId: 0x0582 }]
+    });
 
-  <script>
-    async function connect() {
-      try {
-        const device = await navigator.usb.requestDevice({
-          filters: [{ vendorId: 0x0582 }]
-        });
+    let log = document.getElementById('log');
 
-        document.getElementById('log').textContent =
-          "Connected: " + device.productName;
+    log.textContent = "Connected: " + device.productName;
 
-        await device.open();
+    await device.open();
 
-        document.getElementById('log').textContent +=
-          "\nUSB Opened Successfully";
-      } catch (e) {
-        document.getElementById('log').textContent =
-          "Error: " + e;
-      }
+    log.textContent += "\nUSB Opened Successfully";
+
+    if (device.configuration === null) {
+      await device.selectConfiguration(1);
     }
-  </script>
-</body>
-</html>
+
+    await device.claimInterface(3);
+
+    log.textContent += "\nInterface 3 Claimed Successfully";
+
+  } catch (e) {
+    document.getElementById('log').textContent +=
+      "\nERROR: " + e.message;
+  }
+}
+</script>
