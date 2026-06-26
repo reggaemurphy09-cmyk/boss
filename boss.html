@@ -2,107 +2,88 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ME-90 Interface Scanner</title>
+<title>ME-90 Interface Claim Tester</title>
 <style>
 body{
-    font-family:Arial,sans-serif;
-    padding:20px;
+  font-family:Arial,sans-serif;
+  padding:20px;
 }
 button{
-    padding:10px 20px;
-    font-size:16px;
+  padding:12px;
+  font-size:16px;
 }
 pre{
-    margin-top:20px;
-    white-space:pre-wrap;
-    border:1px solid #ccc;
-    padding:10px;
+  white-space:pre-wrap;
+  border:1px solid #ccc;
+  padding:10px;
+  margin-top:20px;
 }
 </style>
 </head>
 <body>
 
-<h2>Boss ME-90 Interface Scanner</h2>
+<h2>Boss ME-90 Interface Tester</h2>
 
-<button onclick="connect()">Connect ME-90</button>
+<button onclick="test()">Connect ME-90</button>
 
-<pre id="log">Waiting...</pre>
+<pre id="log">Ready...</pre>
 
 <script>
+async function test() {
 
-async function connect() {
+  const log = document.getElementById("log");
 
-    const log = document.getElementById("log");
+  try {
 
-    try {
+    const device = await navigator.usb.requestDevice({
+      filters: [{ vendorId: 0x0582 }]
+    });
 
-        const device = await navigator.usb.requestDevice({
-            filters: [{ vendorId: 0x0582 }]
-        });
+    log.textContent = "Connected: " + device.productName;
 
-        log.textContent =
-            "Connected: " + device.productName;
+    await device.open();
 
-        await device.open();
+    log.textContent += "\nUSB Opened Successfully";
 
-        log.textContent +=
-            "\nUSB Opened Successfully";
-
-        if (device.configuration === null) {
-            await device.selectConfiguration(1);
-        }
-
-        log.textContent +=
-            "\nConfiguration Selected";
-
-        log.textContent +=
-            "\n\nInterfaces Found:\n";
-
-        for (const iface of device.configuration.interfaces) {
-
-            log.textContent +=
-                "\nInterface Number: " +
-                iface.interfaceNumber;
-
-            for (const alternate of iface.alternates) {
-
-                log.textContent +=
-                    "\n  Class: " +
-                    alternate.interfaceClass;
-
-                log.textContent +=
-                    "\n  Subclass: " +
-                    alternate.interfaceSubclass;
-
-                log.textContent +=
-                    "\n  Protocol: " +
-                    alternate.interfaceProtocol;
-
-                if (alternate.endpoints) {
-
-                    for (const ep of alternate.endpoints) {
-
-                        log.textContent +=
-                            "\n    Endpoint: " +
-                            ep.endpointNumber +
-                            " (" +
-                            ep.direction +
-                            ")";
-
-                    }
-                }
-
-                log.textContent += "\n";
-            }
-        }
-
-    } catch (e) {
-
-        log.textContent +=
-            "\n\nERROR:\n" + e.message;
+    if (!device.configuration) {
+      await device.selectConfiguration(1);
     }
-}
 
+    log.textContent += "\nConfiguration Selected\n";
+
+    for (const iface of device.configuration.interfaces) {
+
+      log.textContent +=
+        "\nTesting Interface " +
+        iface.interfaceNumber;
+
+      try {
+
+        await device.claimInterface(
+          iface.interfaceNumber
+        );
+
+        log.textContent +=
+          "\n  SUCCESS";
+
+        await device.releaseInterface(
+          iface.interfaceNumber
+        );
+
+      } catch (err) {
+
+        log.textContent +=
+          "\n  FAILED: " +
+          err.message;
+      }
+    }
+
+  } catch (e) {
+
+    log.textContent +=
+      "\nERROR:\n" + e.message;
+  }
+}
 </script>
 
 </body>
