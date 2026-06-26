@@ -1,65 +1,545 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>ME-90 · Manual MIDI</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0d0f11;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 12px;
+      color: #e8edf2;
+      touch-action: manipulation;
+    }
+    .app {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #1a1e22;
+      border-radius: 28px;
+      padding: 20px 16px;
+      border: 1px solid #2a2f35;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #282d33;
+      margin-bottom: 16px;
+    }
+    .header h1 { font-size: 20px; }
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+    .led {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #3a4149;
+      transition: 0.2s;
+    }
+    .led.on { background: #22c55e; box-shadow: 0 0 12px #22c55e66; }
+    .led.error { background: #ef4444; box-shadow: 0 0 12px #ef444466; }
+    .section {
+      background: #14181c;
+      border-radius: 20px;
+      padding: 14px;
+      margin-bottom: 14px;
+      border: 1px solid #262c32;
+    }
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #7e8892;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+    }
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+    .btn-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .btn {
+      background: #1f242a;
+      border: 1px solid #313840;
+      border-radius: 30px;
+      padding: 14px 6px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      color: #aab3bd;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: inset 0 -3px 0 #0d1013;
+      transition: all 0.06s;
+    }
+    .btn:active { transform: scale(0.92); box-shadow: inset 0 -1px 0 #0d1013; }
+    .btn.active { background: #3b82f6; border-color: #60a5fa; color: white; box-shadow: inset 0 -3px 0 #1d4ed8; }
+    .btn.on { background: #1a3d66; border-color: #3b82f6; color: white; }
+    .btn.primary { background: #2a4b74; border-color: #3b82f6; color: white; box-shadow: inset 0 -3px 0 #1a365d; }
+    .btn-danger { background: #742a2a; border-color: #f63b3b; color: white; box-shadow: inset 0 -3px 0 #5a1a1a; }
+
+    .slider-group { display: flex; flex-direction: column; gap: 12px; }
+    .slider-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .slider-item label { width: 48px; font-size: 12px; color: #9aa4ae; }
+    .slider-item input[type="range"] {
+      flex: 1;
+      height: 4px;
+      -webkit-appearance: none;
+      background: #252b32;
+      border-radius: 10px;
+      outline: none;
+      border: 1px solid #31383f;
+    }
+    .slider-item input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      background: #c8d2dd;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1px solid #5a6672;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .slider-value { min-width: 30px; text-align: right; font-weight: 600; font-size: 13px; color: #bcc6d0; }
+
+    .port-selector {
+      background: #0d1013;
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #21262c;
+    }
+    .port-selector select {
+      width: 100%;
+      background: #1a1e22;
+      color: #e8edf2;
+      border: 1px solid #313840;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 14px;
+      outline: none;
+    }
+    .port-selector select option { background: #1a1e22; }
+
+    .log {
+      background: #0d1013;
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-family: monospace;
+      color: #6b757f;
+      border: 1px solid #21262c;
+      min-height: 36px;
+      margin-top: 8px;
+      word-break: break-all;
+    }
+    .refresh-btn {
+      background: #2a2f35;
+      border: none;
+      color: #aab3bd;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+  </style>
+</head>
 <body>
+<div class="app" id="app">
+  <div class="header">
+    <h1>🎛️ ME-90</h1>
+    <div class="status">
+      <span id="statusText">offline</span>
+      <span class="led" id="statusLed"></span>
+      <button class="refresh-btn" id="btnRefresh">⟳</button>
+    </div>
+  </div>
 
-<button onclick="test()">Test ME-90</button>
+  <!-- Port Selector -->
+  <div class="section">
+    <div class="section-title">🔌 MIDI Port</div>
+    <div class="port-selector">
+      <select id="portSelect">
+        <option value="">— Select MIDI output —</option>
+      </select>
+      <div style="margin-top: 6px; font-size: 11px; color: #5a636d;">
+        <span id="portInfo">No devices found. Plug in ME-90 and tap refresh.</span>
+      </div>
+    </div>
+  </div>
 
-<pre id="log"></pre>
+  <!-- Bank -->
+  <div class="section">
+    <div class="section-title">📁 Bank</div>
+    <div class="btn-grid">
+      <button class="btn" data-bank="0">1</button>
+      <button class="btn" data-bank="1">2</button>
+      <button class="btn" data-bank="2">3</button>
+      <button class="btn" data-bank="3">4</button>
+      <button class="btn" data-bank="4">5</button>
+    </div>
+  </div>
+
+  <!-- FX -->
+  <div class="section">
+    <div class="section-title">🎚️ Effects</div>
+    <div class="btn-grid-3">
+      <button class="btn" data-fx="od">OD</button>
+      <button class="btn" data-fx="ds">DS</button>
+      <button class="btn" data-fx="mod">MOD</button>
+      <button class="btn" data-fx="delay">DELAY</button>
+      <button class="btn" data-fx="reverb">REVERB</button>
+      <button class="btn" data-fx="chorus">CHORUS</button>
+    </div>
+  </div>
+
+  <!-- Params -->
+  <div class="section">
+    <div class="section-title">🎛️ Parameters</div>
+    <div class="slider-group">
+      <div class="slider-item"><label>GAIN</label><input type="range" min="0" max="127" value="60" id="param-gain"><span class="slider-value" id="val-gain">60</span></div>
+      <div class="slider-item"><label>TONE</label><input type="range" min="0" max="127" value="64" id="param-tone"><span class="slider-value" id="val-tone">64</span></div>
+      <div class="slider-item"><label>LEVEL</label><input type="range" min="0" max="127" value="80" id="param-level"><span class="slider-value" id="val-level">80</span></div>
+      <div class="slider-item"><label>TIME</label><input type="range" min="0" max="127" value="50" id="param-time"><span class="slider-value" id="val-time">50</span></div>
+      <div class="slider-item"><label>DEPTH</label><input type="range" min="0" max="127" value="40" id="param-depth"><span class="slider-value" id="val-depth">40</span></div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="btn-grid-3" style="margin-bottom: 12px;">
+    <button class="btn" id="btnTap">⏱ TAP</button>
+    <button class="btn primary" id="btnSave">💾 SAVE</button>
+    <button class="btn btn-danger" id="btnReset">↺ RESET</button>
+  </div>
+
+  <div class="log" id="logArea">🔌 Tap refresh to scan for MIDI devices</div>
+</div>
 
 <script>
-async function test() {
+  (function() {
+    'use strict';
 
-  const log = document.getElementById("log");
+    // ----- STATE -----
+    const state = {
+      bank: 0,
+      fx: { od: false, ds: false, mod: false, delay: false, reverb: false, chorus: false },
+      params: { gain: 60, tone: 64, level: 80, time: 50, depth: 40 }
+    };
 
-  try {
+    let midiOutput = null;
+    let selectedPortId = null;
 
-    const device = await navigator.usb.requestDevice({
-      filters: [{ vendorId: 0x0582 }]
-    });
+    // ----- CC MAP -----
+    const CC = {
+      GAIN: 1, TONE: 2, LEVEL: 3, TIME: 4, DEPTH: 5,
+      OD: 16, DS: 17, MOD: 18, DELAY: 19, REVERB: 20, CHORUS: 21,
+      TAP: 64
+    };
 
-    await device.open();
+    // ----- DOM -----
+    const logArea = document.getElementById('logArea');
+    const statusText = document.getElementById('statusText');
+    const statusLed = document.getElementById('statusLed');
+    const portSelect = document.getElementById('portSelect');
+    const portInfo = document.getElementById('portInfo');
+    const bankBtns = document.querySelectorAll('[data-bank]');
+    const fxBtns = document.querySelectorAll('[data-fx]');
+    const sliders = {
+      gain: document.getElementById('param-gain'),
+      tone: document.getElementById('param-tone'),
+      level: document.getElementById('param-level'),
+      time: document.getElementById('param-time'),
+      depth: document.getElementById('param-depth')
+    };
+    const valLabels = {
+      gain: document.getElementById('val-gain'),
+      tone: document.getElementById('val-tone'),
+      level: document.getElementById('val-level'),
+      time: document.getElementById('val-time'),
+      depth: document.getElementById('val-depth')
+    };
 
-    if (!device.configuration) {
-      await device.selectConfiguration(1);
+    // ----- LOG -----
+    function log(msg) {
+      logArea.textContent = '📋 ' + msg;
+      console.log('[ME-90]', msg);
     }
 
-    log.textContent = "Device Opened\n";
-
-    try {
-
-      await device.selectAlternateInterface(3, 1);
-
-      log.textContent +=
-        "Alternate Interface 3:1 Selected\n";
-
-    } catch (e) {
-
-      log.textContent +=
-        "Alternate Select Failed:\n" +
-        e.message + "\n";
+    // ----- SEND MIDI -----
+    function sendMIDI(data) {
+      if (!midiOutput) {
+        log('❌ No output selected');
+        return false;
+      }
+      try {
+        midiOutput.send(data);
+        return true;
+      } catch(e) {
+        log('❌ Send error: ' + e.message);
+        return false;
+      }
     }
 
-    try {
-
-      await device.claimInterface(3);
-
-      log.textContent +=
-        "Interface 3 Claimed\n";
-
-    } catch (e) {
-
-      log.textContent +=
-        "Claim Failed:\n" +
-        e.message + "\n";
+    function sendCC(channel, cc, value) {
+      const status = 0xB0 | (channel & 0x0F);
+      return sendMIDI([status, cc, Math.min(127, Math.max(0, value))]);
     }
 
-  } catch (e) {
+    function sendPC(channel, program) {
+      const status = 0xC0 | (channel & 0x0F);
+      return sendMIDI([status, Math.min(127, Math.max(0, program))]);
+    }
 
-    log.textContent +=
-      "Error:\n" + e.message;
-  }
-}
+    // ----- SCAN PORTS -----
+    async function scanPorts() {
+      try {
+        if (!navigator.requestMIDIAccess) {
+          log('❌ Web MIDI not supported. Use Chrome.');
+          statusText.textContent = 'unsupported';
+          statusLed.className = 'led error';
+          return;
+        }
+
+        const access = await navigator.requestMIDIAccess({ sysex: false });
+        log('🔍 Scanning MIDI ports...');
+
+        const outputs = access.outputs;
+        const inputs = access.inputs;
+
+        // Clear select
+        portSelect.innerHTML = '<option value="">— Select MIDI output —</option>';
+
+        let foundCount = 0;
+        let outputList = [];
+
+        // List all outputs
+        outputs.forEach((output, key) => {
+          const name = output.name || 'Unnamed';
+          const displayName = name + ' (' + key + ')';
+          outputList.push({ id: key, name: displayName, rawName: name, output: output });
+          foundCount++;
+        });
+
+        // List all inputs too (for debugging)
+        inputs.forEach((input, key) => {
+          const name = input.name || 'Unnamed';
+          log(`📥 Input: ${name} (${key})`);
+        });
+
+        if (foundCount === 0) {
+          portInfo.textContent = '❌ No MIDI outputs found. Plug in ME-90 and tap refresh.';
+          log('❌ No MIDI outputs found');
+          statusText.textContent = 'no device';
+          statusLed.className = 'led error';
+          return;
+        }
+
+        // Populate dropdown
+        outputList.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item.id;
+          opt.textContent = item.name;
+          // Auto-select if it looks like BOSS
+          if (item.rawName && (item.rawName.includes('ME-90') || item.rawName.includes('BOSS') || item.rawName.includes('0582'))) {
+            opt.selected = true;
+            selectedPortId = item.id;
+          }
+          portSelect.appendChild(opt);
+        });
+
+        portInfo.textContent = `✅ ${foundCount} output(s) found. Select your device.`;
+        log(`✅ Found ${foundCount} MIDI output(s)`);
+
+        // If we auto-selected, connect
+        if (selectedPortId) {
+          const selected = outputList.find(item => item.id === selectedPortId);
+          if (selected) {
+            midiOutput = selected.output;
+            updateStatus(true, selected.rawName);
+            log(`✅ Auto-connected to: ${selected.rawName}`);
+            setTimeout(sendAllState, 300);
+          }
+        } else {
+          statusText.textContent = 'select port';
+          statusLed.className = 'led';
+        }
+
+      } catch (err) {
+        log('❌ Scan error: ' + err.message);
+        statusText.textContent = 'error';
+        statusLed.className = 'led error';
+      }
+    }
+
+    // ----- CONNECT TO SELECTED PORT -----
+    async function connectToSelected() {
+      const selected = portSelect.value;
+      if (!selected) {
+        log('⚠️ Please select a MIDI port');
+        return;
+      }
+
+      try {
+        const access = await navigator.requestMIDIAccess({ sysex: false });
+        const output = access.outputs.get(selected);
+        if (output) {
+          midiOutput = output;
+          selectedPortId = selected;
+          updateStatus(true, output.name || 'Connected');
+          log(`✅ Connected to: ${output.name || 'Selected port'}`);
+          setTimeout(sendAllState, 300);
+        } else {
+          log('❌ Could not connect to selected port');
+        }
+      } catch (err) {
+        log('❌ Connection error: ' + err.message);
+      }
+    }
+
+    // ----- STATUS UPDATE -----
+    function updateStatus(connected, name) {
+      if (connected) {
+        statusText.textContent = 'online';
+        statusLed.className = 'led on';
+      } else {
+        statusText.textContent = 'offline';
+        statusLed.className = 'led';
+      }
+    }
+
+    // ----- SEND STATE -----
+    function sendAllState() {
+      if (!midiOutput) {
+        log('⚠️ Not connected');
+        return;
+      }
+
+      sendPC(0, state.bank);
+      log(`📁 Bank ${state.bank + 1}`);
+
+      const fxMap = { od: CC.OD, ds: CC.DS, mod: CC.MOD, delay: CC.DELAY, reverb: CC.REVERB, chorus: CC.CHORUS };
+      Object.keys(fxMap).forEach(fx => {
+        const val = state.fx[fx] ? 127 : 0;
+        sendCC(0, fxMap[fx], val);
+      });
+
+      const paramMap = { gain: CC.GAIN, tone: CC.TONE, level: CC.LEVEL, time: CC.TIME, depth: CC.DEPTH };
+      Object.keys(paramMap).forEach(param => {
+        sendCC(0, paramMap[param], state.params[param]);
+      });
+
+      log('✅ State sent');
+    }
+
+    // ----- UI UPDATES -----
+    function updateUI() {
+      bankBtns.forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === state.bank);
+      });
+      fxBtns.forEach(btn => {
+        const fx = btn.dataset.fx;
+        btn.classList.toggle('on', state.fx[fx]);
+      });
+      ['gain', 'tone', 'level', 'time', 'depth'].forEach(name => {
+        const val = state.params[name];
+        sliders[name].value = val;
+        valLabels[name].textContent = val;
+      });
+    }
+
+    // ----- INIT UI -----
+    function initUI() {
+      // Bank
+      bankBtns.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          state.bank = idx;
+          updateUI();
+          sendPC(0, idx);
+          log(`📁 Bank ${idx + 1}`);
+        });
+        btn.addEventListener('touchend', e => { e.preventDefault(); btn.click(); });
+      });
+
+      // FX
+      fxBtns.forEach(btn => {
+        const fx = btn.dataset.fx;
+        btn.addEventListener('click', () => {
+          state.fx[fx] = !state.fx[fx];
+          updateUI();
+          const val = state.fx[fx] ? 127 : 0;
+          sendCC(0, CC[fx.toUpperCase()], val);
+          log(`🎚️ ${fx.toUpperCase()} ${state.fx[fx] ? 'ON' : 'OFF'}`);
+        });
+        btn.addEventListener('touchend', e => { e.preventDefault(); btn.click(); });
+      });
+
+      // Sliders
+      ['gain', 'tone', 'level', 'time', 'depth'].forEach(name => {
+        const slider = sliders[name];
+        slider.addEventListener('input', () => {
+          const val = parseInt(slider.value);
+          state.params[name] = val;
+          valLabels[name].textContent = val;
+          sendCC(0, CC[name.toUpperCase()], val);
+        });
+      });
+
+      // Buttons
+      document.getElementById('btnTap').addEventListener('click', () => {
+        sendCC(0, CC.TAP, 127);
+        setTimeout(() => sendCC(0, CC.TAP, 0), 20);
+        log('⏱ TAP');
+      });
+
+      document.getElementById('btnSave').addEventListener('click', () => {
+        sendCC(0, 80, 127);
+        setTimeout(() => sendCC(0, 80, 0), 20);
+        log('💾 Saved');
+      });
+
+      document.getElementById('btnReset').addEventListener('click', () => {
+        state.bank = 0;
+        state.fx = { od: false, ds: false, mod: false, delay: false, reverb: false, chorus: false };
+        state.params = { gain: 60, tone: 64, level: 80, time: 50, depth: 40 };
+        updateUI();
+        sendAllState();
+        log('↺ Reset');
+      });
+
+      // Port select
+      portSelect.addEventListener('change', connectToSelected);
+
+      // Refresh
+      document.getElementById('btnRefresh').addEventListener('click', () => {
+        scanPorts();
+      });
+    }
+
+    // ----- START -----
+    function init() {
+      initUI();
+      // Auto-scan after 500ms
+      setTimeout(scanPorts, 500);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  })();
 </script>
-
 </body>
 </html>
