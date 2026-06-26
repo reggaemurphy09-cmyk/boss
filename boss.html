@@ -1,90 +1,57 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>ME-90 Interface Claim Tester</title>
-<style>
-body{
-  font-family:Arial,sans-serif;
-  padding:20px;
-}
-button{
-  padding:12px;
-  font-size:16px;
-}
-pre{
-  white-space:pre-wrap;
-  border:1px solid #ccc;
-  padding:10px;
-  margin-top:20px;
-}
-</style>
-</head>
 <body>
-
-<h2>Boss ME-90 Interface Tester</h2>
-
-<button onclick="test()">Connect ME-90</button>
-
-<pre id="log">Ready...</pre>
+<button onclick="test()">Test</button>
+<pre id="log"></pre>
 
 <script>
 async function test() {
 
-  const log = document.getElementById("log");
+const log = document.getElementById("log");
 
-  try {
+const device = await navigator.usb.requestDevice({
+filters:[{vendorId:0x0582}]
+});
 
-    const device = await navigator.usb.requestDevice({
-      filters: [{ vendorId: 0x0582 }]
-    });
+await device.open();
 
-    log.textContent = "Connected: " + device.productName;
+if(!device.configuration){
+await device.selectConfiguration(1);
+}
 
-    await device.open();
+log.textContent="";
 
-    log.textContent += "\nUSB Opened Successfully";
+for(const iface of device.configuration.interfaces){
 
-    if (!device.configuration) {
-      await device.selectConfiguration(1);
-    }
+log.textContent +=
+"\nINTERFACE " + iface.interfaceNumber + "\n";
 
-    log.textContent += "\nConfiguration Selected\n";
+for(const alt of iface.alternates){
 
-    for (const iface of device.configuration.interfaces) {
+log.textContent +=
+" Alternate: " + alt.alternateSetting + "\n";
 
-      log.textContent +=
-        "\nTesting Interface " +
-        iface.interfaceNumber;
+log.textContent +=
+" Class: " + alt.interfaceClass + "\n";
 
-      try {
+log.textContent +=
+" Subclass: " + alt.interfaceSubclass + "\n";
 
-        await device.claimInterface(
-          iface.interfaceNumber
-        );
+log.textContent +=
+" Protocol: " + alt.interfaceProtocol + "\n";
 
-        log.textContent +=
-          "\n  SUCCESS";
+for(const ep of alt.endpoints){
 
-        await device.releaseInterface(
-          iface.interfaceNumber
-        );
-
-      } catch (err) {
-
-        log.textContent +=
-          "\n  FAILED: " +
-          err.message;
-      }
-    }
-
-  } catch (e) {
-
-    log.textContent +=
-      "\nERROR:\n" + e.message;
-  }
+log.textContent +=
+" Endpoint " +
+ep.endpointNumber +
+" " +
+ep.direction +
+"\n";
+}
+}
+}
 }
 </script>
-
 </body>
 </html>
