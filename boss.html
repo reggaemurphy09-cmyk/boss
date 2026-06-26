@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ME-90 USB Test</title>
+<meta charset="UTF-8">
+<title>ME-90 Interface Scanner</title>
+<style>
+body{
+    font-family:Arial,sans-serif;
+    padding:20px;
+}
+button{
+    padding:10px 20px;
+    font-size:16px;
+}
+pre{
+    margin-top:20px;
+    white-space:pre-wrap;
+    border:1px solid #ccc;
+    padding:10px;
+}
+</style>
 </head>
 <body>
 
-    <h2>Boss ME-90 USB Test</h2>
+<h2>Boss ME-90 Interface Scanner</h2>
 
-    <button onclick="connect()">Connect ME-90</button>
+<button onclick="connect()">Connect ME-90</button>
 
-    <pre id="log">Waiting...</pre>
+<pre id="log">Waiting...</pre>
 
 <script>
+
 async function connect() {
 
-    const log = document.getElementById('log');
+    const log = document.getElementById("log");
 
     try {
 
@@ -37,18 +55,54 @@ async function connect() {
         log.textContent +=
             "\nConfiguration Selected";
 
-        await device.claimInterface(3);
+        log.textContent +=
+            "\n\nInterfaces Found:\n";
+
+        for (const iface of device.configuration.interfaces) {
+
+            log.textContent +=
+                "\nInterface Number: " +
+                iface.interfaceNumber;
+
+            for (const alternate of iface.alternates) {
+
+                log.textContent +=
+                    "\n  Class: " +
+                    alternate.interfaceClass;
+
+                log.textContent +=
+                    "\n  Subclass: " +
+                    alternate.interfaceSubclass;
+
+                log.textContent +=
+                    "\n  Protocol: " +
+                    alternate.interfaceProtocol;
+
+                if (alternate.endpoints) {
+
+                    for (const ep of alternate.endpoints) {
+
+                        log.textContent +=
+                            "\n    Endpoint: " +
+                            ep.endpointNumber +
+                            " (" +
+                            ep.direction +
+                            ")";
+
+                    }
+                }
+
+                log.textContent += "\n";
+            }
+        }
+
+    } catch (e) {
 
         log.textContent +=
-            "\nInterface 3 Claimed Successfully";
-
-    }
-    catch (e) {
-
-        log.textContent +=
-            "\nERROR: " + e.message;
+            "\n\nERROR:\n" + e.message;
     }
 }
+
 </script>
 
 </body>
