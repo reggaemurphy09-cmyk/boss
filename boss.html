@@ -1,32 +1,43 @@
-<button onclick="scan()">Scan Endpoints</button>
+<button onclick="connect()">Connect</button>
+<button onclick="send()">Send Test</button>
 <pre id="log"></pre>
 
 <script>
+let device;
 const log = m => document.getElementById("log").textContent += m + "\n";
 
-async function scan() {
-  const device = await navigator.usb.requestDevice({
-    filters: [{ vendorId: 0x0582, productId: 0x02e0 }]
-  });
+async function connect() {
+  try {
+    device = await navigator.usb.requestDevice({
+      filters: [{ vendorId: 0x0582, productId: 0x02e0 }]
+    });
 
-  await device.open();
-  await device.selectConfiguration(1);
+    await device.open();
+    await device.selectConfiguration(1);
 
-  for (const iface of device.configuration.interfaces) {
-    log("Interface " + iface.interfaceNumber);
+    await device.claimInterface(3);
+    log("Interface 3 claimed");
 
-    for (const alt of iface.alternates) {
-      log("  Alt " + alt.alternateSetting);
+    await device.selectAlternateInterface(3, 0);
+    log("Alt 0 selected");
 
-      for (const ep of alt.endpoints) {
-        log(
-          "    endpointNumber: " + ep.endpointNumber +
-          " | direction: " + ep.direction +
-          " | type: " + ep.type +
-          " | packetSize: " + ep.packetSize
-        );
-      }
-    }
+  } catch (e) {
+    log("CONNECT ERROR: " + e.message);
+  }
+}
+
+async function send() {
+  try {
+    const data = new Uint8Array([0xC0, 0x00]);
+
+    await device.transferOut(3, data);
+    log("Sent to bulk OUT endpoint 3");
+
+    const result = await device.transferIn(4, 512);
+    log("Read from bulk IN endpoint 4: " + result.data.byteLength + " bytes");
+
+  } catch (e) {
+    log("SEND ERROR: " + e.message);
   }
 }
 </script>
