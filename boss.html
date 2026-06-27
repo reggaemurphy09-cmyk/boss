@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>ME-90 · Manual MIDI</title>
+  <title>ME-90 · WebUSB Direct</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -45,6 +45,8 @@
     }
     .led.on { background: #22c55e; box-shadow: 0 0 12px #22c55e66; }
     .led.error { background: #ef4444; box-shadow: 0 0 12px #ef444466; }
+    .led.blink { animation: blink 0.5s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
     .section {
       background: #14181c;
       border-radius: 20px;
@@ -88,7 +90,17 @@
     .btn.on { background: #1a3d66; border-color: #3b82f6; color: white; }
     .btn.primary { background: #2a4b74; border-color: #3b82f6; color: white; box-shadow: inset 0 -3px 0 #1a365d; }
     .btn-danger { background: #742a2a; border-color: #f63b3b; color: white; box-shadow: inset 0 -3px 0 #5a1a1a; }
-
+    .btn-connect {
+      background: #1a4b2a;
+      border-color: #22c55e;
+      color: white;
+      box-shadow: inset 0 -3px 0 #0d331a;
+      padding: 16px;
+      font-size: 16px;
+      width: 100%;
+      border-radius: 30px;
+      border: 1px solid #22c55e66;
+    }
     .slider-group { display: flex; flex-direction: column; gap: 12px; }
     .slider-item {
       display: flex;
@@ -116,26 +128,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.6);
     }
     .slider-value { min-width: 30px; text-align: right; font-weight: 600; font-size: 13px; color: #bcc6d0; }
-
-    .port-selector {
-      background: #0d1013;
-      border-radius: 12px;
-      padding: 10px;
-      margin-top: 8px;
-      border: 1px solid #21262c;
-    }
-    .port-selector select {
-      width: 100%;
-      background: #1a1e22;
-      color: #e8edf2;
-      border: 1px solid #313840;
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 14px;
-      outline: none;
-    }
-    .port-selector select option { background: #1a1e22; }
-
     .log {
       background: #0d1013;
       border-radius: 12px;
@@ -144,43 +136,40 @@
       font-family: monospace;
       color: #6b757f;
       border: 1px solid #21262c;
-      min-height: 36px;
+      min-height: 40px;
       margin-top: 8px;
       word-break: break-all;
+      max-height: 80px;
+      overflow-y: auto;
     }
-    .refresh-btn {
-      background: #2a2f35;
-      border: none;
-      color: #aab3bd;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 11px;
-      cursor: pointer;
-      margin-left: 8px;
+    .info-box {
+      background: #0d1013;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #8a939d;
+      border: 1px solid #21262c;
+      margin-bottom: 12px;
     }
+    .info-box strong { color: #bcc6d0; }
   </style>
 </head>
 <body>
 <div class="app" id="app">
   <div class="header">
-    <h1>🎛️ ME-90</h1>
+    <h1>🎛️ ME-90 <span style="font-size:12px;color:#7e8892;">WebUSB</span></h1>
     <div class="status">
-      <span id="statusText">offline</span>
+      <span id="statusText">disconnected</span>
       <span class="led" id="statusLed"></span>
-      <button class="refresh-btn" id="btnRefresh">⟳</button>
     </div>
   </div>
 
-  <!-- Port Selector -->
-  <div class="section">
-    <div class="section-title">🔌 MIDI Port</div>
-    <div class="port-selector">
-      <select id="portSelect">
-        <option value="">— Select MIDI output —</option>
-      </select>
-      <div style="margin-top: 6px; font-size: 11px; color: #5a636d;">
-        <span id="portInfo">No devices found. Plug in ME-90 and tap refresh.</span>
-      </div>
+  <!-- Connect -->
+  <div class="section" style="padding: 12px;">
+    <button class="btn-connect" id="btnConnect">🔌 CONNECT TO ME-90</button>
+    <div class="info-box" style="margin-top: 10px;">
+      <strong>VID:</strong> 0582 (BOSS) &nbsp;|&nbsp; <strong>PID:</strong> 02e0 (ME-90)<br>
+      <span id="deviceInfo">Click connect to pair with your pedal</span>
     </div>
   </div>
 
@@ -228,7 +217,7 @@
     <button class="btn btn-danger" id="btnReset">↺ RESET</button>
   </div>
 
-  <div class="log" id="logArea">🔌 Tap refresh to scan for MIDI devices</div>
+  <div class="log" id="logArea">🔌 Press CONNECT to pair with your ME-90</div>
 </div>
 
 <script>
@@ -242,8 +231,13 @@
       params: { gain: 60, tone: 64, level: 80, time: 50, depth: 40 }
     };
 
-    let midiOutput = null;
-    let selectedPortId = null;
+    let usbDevice = null;
+    let usbInterface = null;
+    let usbEndpointOut = null;
+
+    // ----- USB CONSTANTS -----
+    const BOSS_VID = 0x0582;
+    const ME90_PID = 0x02e0;
 
     // ----- CC MAP -----
     const CC = {
@@ -256,8 +250,7 @@
     const logArea = document.getElementById('logArea');
     const statusText = document.getElementById('statusText');
     const statusLed = document.getElementById('statusLed');
-    const portSelect = document.getElementById('portSelect');
-    const portInfo = document.getElementById('portInfo');
+    const deviceInfo = document.getElementById('deviceInfo');
     const bankBtns = document.querySelectorAll('[data-bank]');
     const fxBtns = document.querySelectorAll('[data-fx]');
     const sliders = {
@@ -277,171 +270,167 @@
 
     // ----- LOG -----
     function log(msg) {
+      const time = new Date().toLocaleTimeString();
       logArea.textContent = '📋 ' + msg;
       console.log('[ME-90]', msg);
     }
 
-    // ----- SEND MIDI -----
-    function sendMIDI(data) {
-      if (!midiOutput) {
-        log('❌ No output selected');
+    // ----- SEND USB MIDI -----
+    async function sendUSB(data) {
+      if (!usbDevice || !usbEndpointOut) {
+        log('❌ Not connected');
         return false;
       }
       try {
-        midiOutput.send(data);
+        // MIDI over USB uses 4-byte packets: [status, data1, data2, 0]
+        const packet = new Uint8Array(4);
+        packet[0] = data[0] || 0;
+        packet[1] = data[1] || 0;
+        packet[2] = data[2] || 0;
+        packet[3] = 0; // Always 0 for MIDI
+
+        await usbDevice.transferOut(usbEndpointOut, packet);
         return true;
       } catch(e) {
-        log('❌ Send error: ' + e.message);
+        log('❌ USB send error: ' + e.message);
         return false;
       }
     }
 
-    function sendCC(channel, cc, value) {
+    async function sendCC(channel, cc, value) {
       const status = 0xB0 | (channel & 0x0F);
-      return sendMIDI([status, cc, Math.min(127, Math.max(0, value))]);
+      return await sendUSB([status, cc, Math.min(127, Math.max(0, value))]);
     }
 
-    function sendPC(channel, program) {
+    async function sendPC(channel, program) {
       const status = 0xC0 | (channel & 0x0F);
-      return sendMIDI([status, Math.min(127, Math.max(0, program))]);
+      return await sendUSB([status, Math.min(127, Math.max(0, program))]);
     }
 
-    // ----- SCAN PORTS -----
-    async function scanPorts() {
+    // ----- CONNECT USB -----
+    async function connectUSB() {
       try {
-        if (!navigator.requestMIDIAccess) {
-          log('❌ Web MIDI not supported. Use Chrome.');
+        if (!navigator.usb) {
+          log('❌ WebUSB not supported. Use Chrome on Android.');
           statusText.textContent = 'unsupported';
           statusLed.className = 'led error';
           return;
         }
 
-        const access = await navigator.requestMIDIAccess({ sysex: false });
-        log('🔍 Scanning MIDI ports...');
+        log('🔍 Requesting USB device...');
 
-        const outputs = access.outputs;
-        const inputs = access.inputs;
-
-        // Clear select
-        portSelect.innerHTML = '<option value="">— Select MIDI output —</option>';
-
-        let foundCount = 0;
-        let outputList = [];
-
-        // List all outputs
-        outputs.forEach((output, key) => {
-          const name = output.name || 'Unnamed';
-          const displayName = name + ' (' + key + ')';
-          outputList.push({ id: key, name: displayName, rawName: name, output: output });
-          foundCount++;
+        // Request device with BOSS VID/PID
+        const device = await navigator.usb.requestDevice({
+          filters: [
+            { vendorId: BOSS_VID, productId: ME90_PID }
+          ]
         });
 
-        // List all inputs too (for debugging)
-        inputs.forEach((input, key) => {
-          const name = input.name || 'Unnamed';
-          log(`📥 Input: ${name} (${key})`);
-        });
+        log(`✅ Found: ${device.productName || 'ME-90'}`);
+        deviceInfo.textContent = `Connected to: ${device.productName || 'ME-90'} (${device.vendorId.toString(16)}:${device.productId.toString(16)})`;
 
-        if (foundCount === 0) {
-          portInfo.textContent = '❌ No MIDI outputs found. Plug in ME-90 and tap refresh.';
-          log('❌ No MIDI outputs found');
-          statusText.textContent = 'no device';
-          statusLed.className = 'led error';
+        await device.open();
+
+        // Find the MIDI interface (Interface #5 from your USB info)
+        // Interface #5 has endpoints for MIDI
+        let midiInterface = null;
+        let outEndpoint = null;
+
+        for (const config of device.configurations) {
+          for (const iface of config.interfaces) {
+            // Interface 5 is the MIDI interface (from your USB dump)
+            // But let's find any interface with BULK endpoints
+            const alt = iface.alternate;
+            if (alt.interfaceNumber === 5) {
+              // This is the MIDI interface
+              midiInterface = iface;
+              break;
+            }
+          }
+        }
+
+        // If not found, try to find any interface with endpoints
+        if (!midiInterface) {
+          for (const config of device.configurations) {
+            for (const iface of config.interfaces) {
+              const alt = iface.alternate;
+              if (alt.endpoints && alt.endpoints.length > 0) {
+                // Check if it has an OUT endpoint (likely MIDI)
+                for (const ep of alt.endpoints) {
+                  if (ep.direction === 'out') {
+                    midiInterface = iface;
+                    break;
+                  }
+                }
+                if (midiInterface) break;
+              }
+            }
+          }
+        }
+
+        if (!midiInterface) {
+          log('❌ Could not find MIDI interface');
           return;
         }
 
-        // Populate dropdown
-        outputList.forEach(item => {
-          const opt = document.createElement('option');
-          opt.value = item.id;
-          opt.textContent = item.name;
-          // Auto-select if it looks like BOSS
-          if (item.rawName && (item.rawName.includes('ME-90') || item.rawName.includes('BOSS') || item.rawName.includes('0582'))) {
-            opt.selected = true;
-            selectedPortId = item.id;
-          }
-          portSelect.appendChild(opt);
-        });
+        // Claim the interface
+        await device.claimInterface(midiInterface.interfaceNumber);
+        log(`✅ Claimed interface #${midiInterface.interfaceNumber}`);
 
-        portInfo.textContent = `✅ ${foundCount} output(s) found. Select your device.`;
-        log(`✅ Found ${foundCount} MIDI output(s)`);
-
-        // If we auto-selected, connect
-        if (selectedPortId) {
-          const selected = outputList.find(item => item.id === selectedPortId);
-          if (selected) {
-            midiOutput = selected.output;
-            updateStatus(true, selected.rawName);
-            log(`✅ Auto-connected to: ${selected.rawName}`);
-            setTimeout(sendAllState, 300);
+        // Find OUT endpoint
+        for (const ep of midiInterface.alternate.endpoints) {
+          if (ep.direction === 'out') {
+            outEndpoint = ep.endpointNumber;
+            log(`✅ OUT endpoint: ${outEndpoint}`);
           }
-        } else {
-          statusText.textContent = 'select port';
-          statusLed.className = 'led';
         }
 
-      } catch (err) {
-        log('❌ Scan error: ' + err.message);
-        statusText.textContent = 'error';
-        statusLed.className = 'led error';
-      }
-    }
-
-    // ----- CONNECT TO SELECTED PORT -----
-    async function connectToSelected() {
-      const selected = portSelect.value;
-      if (!selected) {
-        log('⚠️ Please select a MIDI port');
-        return;
-      }
-
-      try {
-        const access = await navigator.requestMIDIAccess({ sysex: false });
-        const output = access.outputs.get(selected);
-        if (output) {
-          midiOutput = output;
-          selectedPortId = selected;
-          updateStatus(true, output.name || 'Connected');
-          log(`✅ Connected to: ${output.name || 'Selected port'}`);
-          setTimeout(sendAllState, 300);
-        } else {
-          log('❌ Could not connect to selected port');
+        if (!outEndpoint) {
+          log('❌ No OUT endpoint found');
+          return;
         }
-      } catch (err) {
-        log('❌ Connection error: ' + err.message);
-      }
-    }
 
-    // ----- STATUS UPDATE -----
-    function updateStatus(connected, name) {
-      if (connected) {
-        statusText.textContent = 'online';
+        usbDevice = device;
+        usbInterface = midiInterface;
+        usbEndpointOut = outEndpoint;
+
+        statusText.textContent = 'connected';
         statusLed.className = 'led on';
-      } else {
-        statusText.textContent = 'offline';
-        statusLed.className = 'led';
+        log('✅ USB connection established!');
+
+        // Send initial state
+        setTimeout(sendAllState, 300);
+
+      } catch (err) {
+        if (err.message && err.message.includes('cancelled')) {
+          log('⛔ Connection cancelled');
+        } else {
+          log('❌ Connection error: ' + err.message);
+          statusText.textContent = 'error';
+          statusLed.className = 'led error';
+        }
       }
     }
 
     // ----- SEND STATE -----
-    function sendAllState() {
-      if (!midiOutput) {
+    async function sendAllState() {
+      if (!usbDevice) {
         log('⚠️ Not connected');
         return;
       }
 
-      sendPC(0, state.bank);
+      await sendPC(0, state.bank);
       log(`📁 Bank ${state.bank + 1}`);
 
       const fxMap = { od: CC.OD, ds: CC.DS, mod: CC.MOD, delay: CC.DELAY, reverb: CC.REVERB, chorus: CC.CHORUS };
-      Object.keys(fxMap).forEach(fx => {
+      Object.keys(fxMap).forEach(async (fx) => {
         const val = state.fx[fx] ? 127 : 0;
-        sendCC(0, fxMap[fx], val);
+        await sendCC(0, fxMap[fx], val);
       });
 
       const paramMap = { gain: CC.GAIN, tone: CC.TONE, level: CC.LEVEL, time: CC.TIME, depth: CC.DEPTH };
-      Object.keys(paramMap).forEach(param => {
-        sendCC(0, paramMap[param], state.params[param]);
+      Object.keys(paramMap).forEach(async (param) => {
+        await sendCC(0, paramMap[param], state.params[param]);
       });
 
       log('✅ State sent');
@@ -465,12 +454,15 @@
 
     // ----- INIT UI -----
     function initUI() {
+      // Connect button
+      document.getElementById('btnConnect').addEventListener('click', connectUSB);
+
       // Bank
       bankBtns.forEach((btn, idx) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
           state.bank = idx;
           updateUI();
-          sendPC(0, idx);
+          await sendPC(0, idx);
           log(`📁 Bank ${idx + 1}`);
         });
         btn.addEventListener('touchend', e => { e.preventDefault(); btn.click(); });
@@ -479,11 +471,11 @@
       // FX
       fxBtns.forEach(btn => {
         const fx = btn.dataset.fx;
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
           state.fx[fx] = !state.fx[fx];
           updateUI();
           const val = state.fx[fx] ? 127 : 0;
-          sendCC(0, CC[fx.toUpperCase()], val);
+          await sendCC(0, CC[fx.toUpperCase()], val);
           log(`🎚️ ${fx.toUpperCase()} ${state.fx[fx] ? 'ON' : 'OFF'}`);
         });
         btn.addEventListener('touchend', e => { e.preventDefault(); btn.click(); });
@@ -492,50 +484,48 @@
       // Sliders
       ['gain', 'tone', 'level', 'time', 'depth'].forEach(name => {
         const slider = sliders[name];
-        slider.addEventListener('input', () => {
+        slider.addEventListener('input', async () => {
           const val = parseInt(slider.value);
           state.params[name] = val;
           valLabels[name].textContent = val;
-          sendCC(0, CC[name.toUpperCase()], val);
+          await sendCC(0, CC[name.toUpperCase()], val);
         });
       });
 
       // Buttons
-      document.getElementById('btnTap').addEventListener('click', () => {
-        sendCC(0, CC.TAP, 127);
-        setTimeout(() => sendCC(0, CC.TAP, 0), 20);
+      document.getElementById('btnTap').addEventListener('click', async () => {
+        await sendCC(0, CC.TAP, 127);
+        setTimeout(async () => await sendCC(0, CC.TAP, 0), 20);
         log('⏱ TAP');
       });
 
-      document.getElementById('btnSave').addEventListener('click', () => {
-        sendCC(0, 80, 127);
-        setTimeout(() => sendCC(0, 80, 0), 20);
+      document.getElementById('btnSave').addEventListener('click', async () => {
+        await sendCC(0, 80, 127);
+        setTimeout(async () => await sendCC(0, 80, 0), 20);
         log('💾 Saved');
       });
 
-      document.getElementById('btnReset').addEventListener('click', () => {
+      document.getElementById('btnReset').addEventListener('click', async () => {
         state.bank = 0;
         state.fx = { od: false, ds: false, mod: false, delay: false, reverb: false, chorus: false };
         state.params = { gain: 60, tone: 64, level: 80, time: 50, depth: 40 };
         updateUI();
-        sendAllState();
+        await sendAllState();
         log('↺ Reset');
-      });
-
-      // Port select
-      portSelect.addEventListener('change', connectToSelected);
-
-      // Refresh
-      document.getElementById('btnRefresh').addEventListener('click', () => {
-        scanPorts();
       });
     }
 
     // ----- START -----
     function init() {
       initUI();
-      // Auto-scan after 500ms
-      setTimeout(scanPorts, 500);
+      // Check if WebUSB is available
+      if (!navigator.usb) {
+        log('❌ WebUSB not supported. Use Chrome.');
+        statusText.textContent = 'unsupported';
+        statusLed.className = 'led error';
+      } else {
+        log('🔌 Press CONNECT to pair with your ME-90');
+      }
     }
 
     document.addEventListener('DOMContentLoaded', init);
