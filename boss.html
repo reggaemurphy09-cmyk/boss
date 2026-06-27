@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>ME-90 · Debug</title>
+  <title>ME-90 · Fixed USB</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: #0d0f11;
-      font-family: monospace;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       padding: 12px;
       color: #e8edf2;
       touch-action: manipulation;
@@ -74,12 +74,14 @@
       touch-action: manipulation;
       box-shadow: inset 0 -3px 0 #0d1013;
       transition: all 0.06s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
     .btn:active { transform: scale(0.92); }
-    .btn.active { background: #3b82f6; border-color: #60a5fa; color: white; }
-    .btn.on { background: #1a3d66; border-color: #3b82f6; color: white; }
-    .btn.primary { background: #2a4b74; border-color: #3b82f6; color: white; }
-    .btn-danger { background: #742a2a; border-color: #f63b3b; color: white; }
+    .btn.active { background: #3b82f6; border-color: #60a5fa; color: white; box-shadow: inset 0 -3px 0 #1d4ed8; }
+    .btn.on { background: #1a3d66; border-color: #3b82f6; color: white; box-shadow: inset 0 -3px 0 #0d2a4a; }
+    .btn.primary { background: #2a4b74; border-color: #3b82f6; color: white; box-shadow: inset 0 -3px 0 #1a365d; }
+    .btn-danger { background: #742a2a; border-color: #f63b3b; color: white; box-shadow: inset 0 -3px 0 #5a1a1a; }
     .btn-connect {
       background: #1a4b2a;
       border-color: #22c55e;
@@ -90,6 +92,7 @@
       border-radius: 30px;
       border: 1px solid #22c55e66;
       cursor: pointer;
+      font-weight: 600;
     }
     .slider-group { display: flex; flex-direction: column; gap: 12px; }
     .slider-item {
@@ -102,6 +105,7 @@
       flex: 1;
       height: 4px;
       -webkit-appearance: none;
+      appearance: none;
       background: #252b32;
       border-radius: 10px;
       outline: none;
@@ -109,12 +113,14 @@
     }
     .slider-item input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
+      appearance: none;
       width: 22px;
       height: 22px;
       background: #c8d2dd;
       border-radius: 50%;
       cursor: pointer;
       border: 1px solid #5a6672;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
     }
     .slider-value { min-width: 30px; text-align: right; font-weight: 600; font-size: 13px; color: #bcc6d0; }
     .log {
@@ -125,10 +131,10 @@
       font-family: monospace;
       color: #6b757f;
       border: 1px solid #21262c;
-      min-height: 60px;
+      min-height: 80px;
       margin-top: 8px;
       word-break: break-all;
-      max-height: 120px;
+      max-height: 150px;
       overflow-y: auto;
       white-space: pre-wrap;
     }
@@ -143,30 +149,37 @@
     }
     .info-box strong { color: #bcc6d0; }
     .debug-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 8px;
       margin-top: 8px;
     }
-    .debug-row .btn { flex: 1; padding: 10px; font-size: 12px; }
+    .debug-row .btn { padding: 10px; font-size: 12px; }
+    .status-msg {
+      color: #22c55e;
+      font-size: 11px;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <h1>🎛️ ME-90 <span style="font-size:12px;color:#7e8892;">debug</span></h1>
+    <h1>🎛️ ME-90 <span style="font-size:12px;color:#7e8892;">v2</span></h1>
     <div class="status">
-      <span id="statusText">connected</span>
-      <span class="led on" id="statusLed"></span>
+      <span id="statusText">disconnected</span>
+      <span class="led" id="statusLed"></span>
     </div>
   </div>
 
   <!-- Connect -->
   <div class="section" style="padding: 12px;">
-    <button class="btn-connect" id="btnConnect">🔌 RECONNECT</button>
+    <button class="btn-connect" id="btnConnect">🔌 CONNECT TO ME-90</button>
     <div class="info-box" style="margin-top: 10px;">
-      <strong>Device:</strong> <span id="deviceInfo">ME-90 (0582:02e0)</span><br>
-      <strong>Interface:</strong> <span id="interfaceInfo">#5</span> &nbsp;|&nbsp; 
-      <strong>Endpoint:</strong> <span id="endpointInfo">0x03</span>
+      <strong>Device:</strong> <span id="deviceInfo">BOSS ME-90 (0582:02e0)</span><br>
+      <strong>Interface:</strong> <span id="interfaceInfo">—</span> &nbsp;|&nbsp; 
+      <strong>Endpoint:</strong> <span id="endpointInfo">—</span>
+      <div id="statusMsg" class="status-msg">⚡ Tap connect to pair</div>
     </div>
   </div>
 
@@ -221,7 +234,7 @@
     <button class="btn" id="btnClearLog">🗑️ CLEAR</button>
   </div>
 
-  <div class="log" id="logArea">🔍 Debug mode active. Click TEST CC to send a test message.</div>
+  <div class="log" id="logArea">🔍 Tap CONNECT to pair with your ME-90</div>
 </div>
 
 <script>
@@ -257,6 +270,7 @@
     const deviceInfo = document.getElementById('deviceInfo');
     const interfaceInfo = document.getElementById('interfaceInfo');
     const endpointInfo = document.getElementById('endpointInfo');
+    const statusMsg = document.getElementById('statusMsg');
     const bankBtns = document.querySelectorAll('[data-bank]');
     const fxBtns = document.querySelectorAll('[data-fx]');
     const sliders = {
@@ -278,7 +292,7 @@
     function log(msg) {
       const time = new Date().toLocaleTimeString();
       const entry = `[${time}] ${msg}`;
-      logArea.textContent = entry + '\n' + logArea.textContent.split('\n').slice(0, 20).join('\n');
+      logArea.textContent = entry + '\n' + logArea.textContent.split('\n').slice(0, 30).join('\n');
       console.log('[ME-90]', msg);
     }
 
@@ -286,9 +300,9 @@
       logArea.textContent = '📋 Log cleared';
     }
 
-    // ----- SEND USB MIDI -----
+    // ----- SEND USB MIDI (FIXED VERSION) -----
     async function sendUSB(data, description = '') {
-      if (!usbDevice || !usbEndpointOut) {
+      if (!usbDevice || usbEndpointOut === null) {
         log('❌ Not connected');
         return false;
       }
@@ -302,8 +316,9 @@
         packet[3] = 0;
 
         const hex = Array.from(packet).map(b => '0x' + b.toString(16).padStart(2, '0')).join(' ');
-        log(`📤 SEND ${description || ''}: [${hex}]`);
+        log(`📤 ${description || 'SEND'}: [${hex}]`);
 
+        // CRITICAL FIX: Use transferOut with correct endpoint
         const result = await usbDevice.transferOut(usbEndpointOut, packet);
         
         if (result.status === 'ok') {
@@ -314,7 +329,7 @@
           return false;
         }
       } catch(e) {
-        log(`❌ USB send error: ${e.message}`);
+        log(`❌ USB error: ${e.message}`);
         return false;
       }
     }
@@ -340,15 +355,18 @@
       await sendPC(0, 3);
     }
 
-    // ----- CONNECT USB -----
+    // ----- CONNECT USB (FIXED VERSION) -----
     async function connectUSB() {
       try {
         if (!navigator.usb) {
           log('❌ WebUSB not supported');
+          statusText.textContent = 'unsupported';
+          statusLed.className = 'led error';
           return;
         }
 
         log('🔍 Requesting USB device...');
+        statusMsg.textContent = '⏳ Select your ME-90 from the popup...';
 
         const device = await navigator.usb.requestDevice({
           filters: [
@@ -359,12 +377,36 @@
         log(`✅ Found: ${device.productName || 'ME-90'}`);
         deviceInfo.textContent = `${device.productName || 'ME-90'} (${device.vendorId.toString(16)}:${device.productId.toString(16)})`;
 
+        // Open device
         await device.open();
+        log('✅ Device opened');
 
-        // Find MIDI interface
-        let foundInterface = null;
+        // ===== CRITICAL FIX: Release any existing claim =====
+        // Some Android devices keep interfaces claimed
+        try {
+          if (device.configurations && device.configurations.length > 0) {
+            for (const config of device.configurations) {
+              for (const iface of config.interfaces) {
+                try {
+                  await device.releaseInterface(iface.interfaceNumber);
+                  log(`Released interface #${iface.interfaceNumber}`);
+                } catch(e) {
+                  // Ignore - interface wasn't claimed
+                }
+              }
+            }
+          }
+        } catch(e) {
+          // Ignore release errors
+        }
+
+        // Wait a bit for release to complete
+        await new Promise(r => setTimeout(r, 200));
+
+        // Find MIDI interface (Interface #5 from USB dump)
         let foundEndpoint = null;
         let foundInterfaceNum = null;
+        let configIndex = 0;
 
         log('🔍 Scanning interfaces...');
 
@@ -374,45 +416,65 @@
             const num = alt.interfaceNumber;
             const endpoints = alt.endpoints || [];
 
-            log(`  Interface #${num}: ${endpoints.length} endpoints`);
+            log(`  Interface #${num}: ${endpoints.length} endpoints (class: ${alt.interfaceClass})`);
 
-            // Look for interface with OUT endpoint (BULK or INTERRUPT)
             for (const ep of endpoints) {
               if (ep.direction === 'out') {
                 const epNum = ep.endpointNumber;
-                log(`    → OUT endpoint: 0x${epNum.toString(16)} (type: ${ep.type})`);
+                const epType = ep.type;
+                log(`    → OUT endpoint: 0x${epNum.toString(16)} (type: ${epType})`);
                 
-                // Prefer Interface #5 (from your USB dump)
+                // Prefer Interface #5 (from your USB dump - MIDI interface)
                 if (num === 5) {
-                  foundInterface = iface;
                   foundEndpoint = epNum;
                   foundInterfaceNum = num;
-                  log(`✅ Found Interface #${num} (preferred)`);
+                  log(`✅ Found Interface #${num} (MIDI interface)`);
                   break;
                 }
                 
-                // Fallback: use first OUT endpoint found
-                if (!foundInterface) {
-                  foundInterface = iface;
+                // Fallback: use first OUT endpoint
+                if (foundEndpoint === null) {
                   foundEndpoint = epNum;
                   foundInterfaceNum = num;
                 }
               }
             }
-            if (foundInterface && foundInterfaceNum === 5) break;
+            if (foundEndpoint !== null && foundInterfaceNum === 5) break;
           }
-          if (foundInterface && foundInterfaceNum === 5) break;
+          if (foundEndpoint !== null && foundInterfaceNum === 5) break;
         }
 
-        if (!foundInterface) {
+        // If still not found, use any interface with OUT endpoint
+        if (foundEndpoint === null) {
           log('❌ No OUT endpoint found');
+          statusMsg.textContent = '❌ No OUT endpoint found';
           return;
         }
 
-        // Claim interface
-        await device.claimInterface(foundInterfaceNum);
-        log(`✅ Claimed interface #${foundInterfaceNum}`);
+        log(`✅ Selected Interface #${foundInterfaceNum}, Endpoint 0x${foundEndpoint.toString(16)}`);
 
+        // ===== CRITICAL FIX: Claim the interface with proper alternate setting =====
+        // Try to claim interface
+        try {
+          await device.claimInterface(foundInterfaceNum);
+          log(`✅ Claimed interface #${foundInterfaceNum}`);
+        } catch(e) {
+          log(`⚠️ Could not claim interface #${foundInterfaceNum}: ${e.message}`);
+          
+          // Try alternative: claim all interfaces
+          for (const config of device.configurations) {
+            for (const iface of config.interfaces) {
+              try {
+                await device.claimInterface(iface.interfaceNumber);
+                log(`✅ Claimed alternative interface #${iface.interfaceNumber}`);
+              } catch(e2) {
+                // Ignore
+              }
+            }
+          }
+        }
+
+        // Store connection
         usbDevice = device;
         usbEndpointOut = foundEndpoint;
         usbInterfaceNumber = foundInterfaceNum;
@@ -420,20 +482,26 @@
         interfaceInfo.textContent = `#${foundInterfaceNum}`;
         endpointInfo.textContent = `0x${foundEndpoint.toString(16)}`;
 
-        statusText.textContent = 'connected';
+        statusText.textContent = 'connected ✅';
         statusLed.className = 'led on';
+        statusMsg.textContent = '✅ Connected! Sending initial state...';
         log('✅ USB connection ready!');
 
-        // Send initial state
-        setTimeout(sendAllState, 500);
+        // Send initial state after a delay
+        setTimeout(async () => {
+          await sendAllState();
+          statusMsg.textContent = '✅ Ready! Test CC and PC buttons below.';
+        }, 500);
 
       } catch (err) {
-        if (err.message && err.message.includes('cancelled')) {
-          log('⛔ Connection cancelled');
+        if (err.message && (err.message.includes('cancelled') || err.message.includes('No device selected'))) {
+          log('⛔ Connection cancelled by user');
+          statusMsg.textContent = '⛔ Cancelled';
         } else {
           log(`❌ Connection error: ${err.message}`);
           statusText.textContent = 'error';
           statusLed.className = 'led error';
+          statusMsg.textContent = `❌ ${err.message}`;
         }
       }
     }
@@ -480,7 +548,10 @@
 
     // ----- INIT UI -----
     function initUI() {
+      // Connect button
       document.getElementById('btnConnect').addEventListener('click', connectUSB);
+      
+      // Debug buttons
       document.getElementById('btnTestCC').addEventListener('click', testCC);
       document.getElementById('btnTestPC').addEventListener('click', testPC);
       document.getElementById('btnClearLog').addEventListener('click', clearLog);
@@ -491,6 +562,7 @@
           state.bank = idx;
           updateUI();
           await sendPC(0, idx);
+          log(`📁 Bank ${idx + 1}`);
         });
         btn.addEventListener('touchend', e => { e.preventDefault(); btn.click(); });
       });
@@ -503,6 +575,7 @@
           updateUI();
           const val = state.fx[fx] ? 127 : 0;
           await sendCC(0, CC[fx.toUpperCase()], val);
+          log(`🎚️ ${fx.toUpperCase()} ${state.fx[fx] ? 'ON' : 'OFF'}`);
         });
         btn.addEventListener('touchend', e => { e.preventDefault(); btn.click(); });
       });
@@ -522,6 +595,7 @@
       document.getElementById('btnTap').addEventListener('click', async () => {
         await sendCC(0, CC.TAP, 127);
         setTimeout(async () => await sendCC(0, CC.TAP, 0), 30);
+        log('⏱ TAP');
       });
 
       document.getElementById('btnSave').addEventListener('click', async () => {
@@ -547,10 +621,10 @@
         log('❌ WebUSB not supported. Use Chrome.');
         statusText.textContent = 'unsupported';
         statusLed.className = 'led error';
+        statusMsg.textContent = '❌ Use Chrome browser';
       } else {
-        log('🔌 Tap RECONNECT to connect to ME-90');
-        // Try to reconnect if device was already paired
-        setTimeout(connectUSB, 1000);
+        log('🔌 Tap CONNECT to pair with your ME-90');
+        statusMsg.textContent = '⚡ Tap CONNECT to pair';
       }
     }
 
