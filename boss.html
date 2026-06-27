@@ -1,40 +1,32 @@
-<button onclick="connect()">Connect</button>
-<button onclick="send()">Send Test</button>
-
+<button onclick="scan()">Scan Endpoints</button>
 <pre id="log"></pre>
 
 <script>
-let device;
 const log = m => document.getElementById("log").textContent += m + "\n";
 
-async function connect() {
-  device = await navigator.usb.requestDevice({
+async function scan() {
+  const device = await navigator.usb.requestDevice({
     filters: [{ vendorId: 0x0582, productId: 0x02e0 }]
   });
 
   await device.open();
-  log("Opened");
-
   await device.selectConfiguration(1);
-  log("Config selected");
 
-  // IMPORTANT FIX
-  await device.claimInterface(3);
-  log("Interface 3 claimed");
+  for (const iface of device.configuration.interfaces) {
+    log("Interface " + iface.interfaceNumber);
 
-  await device.selectAlternateInterface(3, 0);
-  log("Alt 3:0 selected");
-}
+    for (const alt of iface.alternates) {
+      log("  Alt " + alt.alternateSetting);
 
-async function send() {
-  try {
-    const data = new Uint8Array([0xC0, 0x00]); // test patch change
-
-    await device.transferOut(3, data);
-
-    log("Sent test data");
-  } catch (e) {
-    log("ERROR: " + e.message);
+      for (const ep of alt.endpoints) {
+        log(
+          "    endpointNumber: " + ep.endpointNumber +
+          " | direction: " + ep.direction +
+          " | type: " + ep.type +
+          " | packetSize: " + ep.packetSize
+        );
+      }
+    }
   }
 }
 </script>
