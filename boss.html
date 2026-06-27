@@ -1,83 +1,121 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ME-90 USB Direct</title>
+<title>ME-90 USB Test v2</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #0d0f11; font-family: system-ui; padding: 12px; color: #e8edf2; }
-  .app { max-width: 500px; margin: 0 auto; background: #1a1e22; border-radius: 28px; padding: 20px; }
-  .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #282d33; margin-bottom: 16px; }
-  .btn { background: #1f242a; border: 1px solid #313840; border-radius: 30px; padding: 14px; text-align: center; font-weight: 600; color: #aab3bd; cursor: pointer; }
-  .btn:active { transform: scale(0.92); }
-  .btn.primary { background: #2a4b74; border-color: #3b82f6; color: white; }
-  .log { background: #0d1013; border-radius: 12px; padding: 8px 12px; font-size: 11px; font-family: monospace; color: #6b757f; border: 1px solid #21262c; min-height: 60px; margin-top: 8px; white-space: pre-wrap; }
+body{font-family:monospace;background:#0a0a0f;color:#0f0;padding:16px;margin:0}
+button{background:#ff3333;color:#fff;border:none;padding:14px 20px;font-size:15px;border-radius:6px;width:100%;margin-bottom:10px}
+button:active{background:#cc0000}
+button.alt{background:#00ccff;color:#000}
+pre{white-space:pre-wrap;word-break:break-all;font-size:12px;line-height:1.5;background:#111;padding:12px;border-radius:6px;border:1px solid #333}
+h2{color:#0cf;font-size:15px}
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="header">
-    <h1>🎛️ ME-90 <span style="font-size:12px;color:#7e8892;">direct</span></h1>
-  </div>
-  
-  <button class="btn primary" id="btnConnect" style="width:100%;margin-bottom:14px;">🔌 CONNECT</button>
-  
-  <div class="log" id="logArea">Press CONNECT to try direct USB access</div>
-  
-  <div style="margin-top:14px;font-size:12px;color:#7e8892;text-align:center;">
-    ⚠️ Android may block direct USB access without root.<br>
-    Try BOSS TONE STUDIO app instead!
-  </div>
-</div>
+
+<h2>BOSS ME-90 — Interface 1/Alt 1 Test</h2>
+<button onclick="connectAndClaim()">1. Connect + Claim Interface 1</button>
+<button class="alt" onclick="trySend()">2. Try Send Test SysEx</button>
+<button onclick="clearLog()" style="background:#444">Clear Log</button>
+
+<pre id="log">Step 1: Tap "Connect + Claim Interface 1"
+This targets interface 1 (MIDIStreaming class,
+subclass 2, protocol 2) confirmed from your
+device dump - alternate setting 1 has the
+endpoint, alternate 0 is empty/idle.</pre>
 
 <script>
-document.getElementById('btnConnect').addEventListener('click', async function() {
-  const log = document.getElementById('logArea');
-  log.textContent = '🔍 Requesting USB device...';
-  
+let logEl = document.getElementById("log");
+let dev = null;
+let outEndpoint = null;
+
+function append(text) {
+  logEl.textContent += "\n" + text;
+}
+function clearLog() {
+  logEl.textContent = "";
+}
+
+async function connectAndClaim() {
+  clearLog();
   try {
-    if (!navigator.usb) {
-      log.textContent = '❌ WebUSB not supported';
-      return;
-    }
-    
-    const device = await navigator.usb.requestDevice({
-      filters: [{ vendorId: 0x0582, productId: 0x02e0 }]
+    dev = await navigator.usb.requestDevice({
+      filters: [{ vendorId: 0x0582 }] // BOSS, decimal 1410
     });
-    
-    log.textContent = `✅ Found: ${device.productName}`;
-    
-    await device.open();
-    log.textContent += '\n✅ Device opened';
-    
-    // Try to claim all interfaces
-    let claimed = false;
-    for (const config of device.configurations) {
-      for (const iface of config.interfaces) {
-        try {
-          await device.claimInterface(iface.interfaceNumber);
-          log.textContent += `\n✅ Claimed interface #${iface.interfaceNumber}`;
-          claimed = true;
-        } catch(e) {
-          log.textContent += `\n❌ Failed to claim #${iface.interfaceNumber}: ${e.message}`;
-        }
+    append("Selected: " + dev.productName);
+
+    await dev.open();
+    append("✅ Opened");
+
+    if (!dev.configuration) {
+      await dev.selectConfiguration(1);
+    }
+    append("✅ Configuration set: " + dev.configuration.configurationValue);
+
+    // Claim interface 1 (the MIDIStreaming one)
+    await dev.claimInterface(1);
+    append("✅ Claimed interface 1");
+
+    // Switch to alternate setting 1 (the one with the actual endpoint)
+    await dev.selectAlternateInterface(1, 1);
+    append("✅ Selected alternate setting 1 on interface 1");
+
+    // Find the interface object to inspect its endpoints
+    const iface = dev.configuration.interfaces.find(i => i.interfaceNumber === 1);
+    const alt = iface.alternates.find(a => a.alternateSetting === 1);
+
+    append("\nEndpoints on Interface 1 / Alt 1:");
+    for (const ep of alt.endpoints) {
+      append("  EP" + ep.endpointNumber +
+        " dir=" + ep.direction +
+        " type=" + ep.type +
+        " packetSize=" + ep.packetSize);
+      if (ep.direction === "out") {
+        outEndpoint = ep.endpointNumber;
       }
     }
-    
-    if (!claimed) {
-      log.textContent += '\n\n❌ Could not claim any interface';
-      log.textContent += '\n📱 This usually requires root on Android';
-      log.textContent += '\n💡 Try BOSS TONE STUDIO app instead!';
-    }
-    
-  } catch(e) {
-    if (e.message && e.message.includes('cancelled')) {
-      log.textContent = '⛔ Cancelled';
+
+    if (outEndpoint) {
+      append("\n✅ Found OUT endpoint: " + outEndpoint);
+      append("Ready for step 2 — try sending test data.");
     } else {
-      log.textContent = `❌ ${e.message}`;
+      append("\n⚠️ No OUT endpoint found on this alt setting.");
+      append("This interface might be INPUT only (device->phone).");
+      append("Check other interfaces (0, 2, 3, 4...) similarly.");
     }
+
+  } catch (e) {
+    append("❌ Error: " + e.message);
   }
-});
+}
+
+async function trySend() {
+  if (!dev || !outEndpoint) {
+    append("\n⚠️ Run step 1 first and confirm an OUT endpoint exists.");
+    return;
+  }
+
+  try {
+    // USB-MIDI packets are 4 bytes per event (USB-MIDI Event Packet format):
+    // [Cable+CodeIndexNumber, MIDI byte0, MIDI byte1, MIDI byte2]
+    // Test: send a single Note On (just as a "is anything happening" probe)
+    // CIN 0x09 = Note On, channel 0, note 60, velocity 100
+    const testPacket = new Uint8Array([0x09, 0x90, 0x3C, 0x64]);
+
+    append("\nSending test USB-MIDI packet: " +
+      Array.from(testPacket).map(b => b.toString(16).padStart(2,"0")).join(" "));
+
+    const result = await dev.transferOut(outEndpoint, testPacket);
+    append("✅ transferOut result: status=" + result.status +
+      " bytesWritten=" + result.bytesWritten);
+
+  } catch (e) {
+    append("❌ Send failed: " + e.message);
+  }
+}
 </script>
+
 </body>
 </html>
