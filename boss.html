@@ -1,31 +1,40 @@
-<button onclick="scan()">Scan ME-90</button>
+<button onclick="connect()">Connect</button>
+<button onclick="send()">Send Test</button>
+
 <pre id="log"></pre>
 
 <script>
+let device;
 const log = m => document.getElementById("log").textContent += m + "\n";
 
-async function scan() {
-  const device = await navigator.usb.requestDevice({
+async function connect() {
+  device = await navigator.usb.requestDevice({
     filters: [{ vendorId: 0x0582, productId: 0x02e0 }]
   });
 
   await device.open();
   log("Opened");
 
-  for (const config of device.configurations) {
-    log("\nCONFIG " + config.configurationValue);
+  await device.selectConfiguration(1);
+  log("Config selected");
 
-    for (const iface of config.interfaces) {
-      log(
-        "Interface number: " + iface.interfaceNumber +
-        " | Alternate: " + iface.alternates.length
-      );
+  // IMPORTANT FIX
+  await device.claimInterface(3);
+  log("Interface 3 claimed");
 
-      for (const alt of iface.alternates) {
-        log("  Alt " + alt.alternateSetting +
-            " endpoints: " + alt.endpoints.length);
-      }
-    }
+  await device.selectAlternateInterface(3, 0);
+  log("Alt 3:0 selected");
+}
+
+async function send() {
+  try {
+    const data = new Uint8Array([0xC0, 0x00]); // test patch change
+
+    await device.transferOut(3, data);
+
+    log("Sent test data");
+  } catch (e) {
+    log("ERROR: " + e.message);
   }
 }
 </script>
