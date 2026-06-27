@@ -59,6 +59,9 @@ async function connectAndScan() {
     append("✅ Configuration: " + dev.configuration.configurationValue);
 
     append("\n--- SCANNING ALL INTERFACES ---");
+    append("Total interfaces found: " + dev.configuration.interfaces.length);
+    append("Interface numbers: " + dev.configuration.interfaces.map(i => i.interfaceNumber).join(", "));
+    append("");
 
     for (const iface of dev.configuration.interfaces) {
       const num = iface.interfaceNumber;
@@ -75,7 +78,6 @@ async function connectAndScan() {
             " endpoints=" + eps.length);
 
           if (eps.length > 0) {
-            // try selecting this alternate to access its endpoints
             try {
               if (alt.alternateSetting !== 0) {
                 await dev.selectAlternateInterface(num, alt.alternateSetting);
@@ -87,7 +89,6 @@ async function connectAndScan() {
                   " type=" + ep.type +
                   " size=" + ep.packetSize);
 
-                // remember first usable BULK out/in pair
                 if (ep.type === "bulk") {
                   if (ep.direction === "out" && !outEndpoint) {
                     outEndpoint = ep.endpointNumber;
@@ -104,8 +105,12 @@ async function connectAndScan() {
           }
         }
 
-        await dev.releaseInterface(num);
-        append("   (released)");
+        try {
+          await dev.releaseInterface(num);
+          append("   (released)");
+        } catch (eRelease) {
+          append("   ⚠️ release failed (non-fatal): " + eRelease.message);
+        }
 
       } catch (e) {
         append("❌ Interface " + num + " FAILED: " + e.message);
