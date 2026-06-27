@@ -1,36 +1,65 @@
-<h2>ME-90 MIDI TEST</h2>
+<!DOCTYPE html>
+<html>
+<body>
 
-<button onclick="connect()">CONNECT ME-90</button>
-<button onclick="test()">SEND TEST</button>
+<button onclick="test()">Test ME-90</button>
+
+<pre id="log"></pre>
 
 <script>
-let output;
+async function test() {
 
-async function connect() {
-  const midi = await navigator.requestMIDIAccess({ sysex: false });
+  const log = document.getElementById("log");
 
-  for (let o of midi.outputs.values()) {
-    console.log(o.name);
-    if (o.name.toLowerCase().includes("boss") ||
-        o.name.toLowerCase().includes("me")) {
-      output = o;
+  try {
+
+    const device = await navigator.usb.requestDevice({
+      filters: [{ vendorId: 0x0582 }]
+    });
+
+    await device.open();
+
+    if (!device.configuration) {
+      await device.selectConfiguration(1);
     }
+
+    log.textContent = "Device Opened\n";
+
+    try {
+
+      await device.selectAlternateInterface(3, 1);
+
+      log.textContent +=
+        "Alternate Interface 3:1 Selected\n";
+
+    } catch (e) {
+
+      log.textContent +=
+        "Alternate Select Failed:\n" +
+        e.message + "\n";
+    }
+
+    try {
+
+      await device.claimInterface(3);
+
+      log.textContent +=
+        "Interface 3 Claimed\n";
+
+    } catch (e) {
+
+      log.textContent +=
+        "Claim Failed:\n" +
+        e.message + "\n";
+    }
+
+  } catch (e) {
+
+    log.textContent +=
+      "Error:\n" + e.message;
   }
-
-  if (output) {
-    alert("Connected: " + output.name);
-  } else {
-    alert("ME-90 not found");
-  }
-}
-
-// TEST MESSAGE (Program Change 0)
-function test() {
-  if (!output) return alert("Not connected");
-
-  // Program Change channel 1
-  output.send([0xC0, 0x00]);
-
-  alert("Test sent");
 }
 </script>
+
+</body>
+</html>
