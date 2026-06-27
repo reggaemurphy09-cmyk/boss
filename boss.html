@@ -5,12 +5,11 @@
 <pre id="log"></pre>
 
 <script>
-let device;
-const log = msg => document.getElementById("log").textContent += msg + "\n";
+const log = m => document.getElementById("log").textContent += m + "\n";
 
 async function test() {
   try {
-    device = await navigator.usb.requestDevice({
+    const device = await navigator.usb.requestDevice({
       filters: [{ vendorId: 0x0582, productId: 0x02e0 }]
     });
 
@@ -22,14 +21,16 @@ async function test() {
       log("Configuration selected");
     }
 
-    await device.claimInterface(5);
-    log("Interface 5 Claimed");
+    await device.claimInterface(3);
+    log("Interface ID 3 claimed");
 
-    // Test bulk send to endpoint 3
-    const data = new Uint8Array([0xC0, 0x00]); // MIDI Program Change test
+    await device.selectAlternateInterface(3, 0);
+    log("Alternate 3:0 selected");
+
+    const data = new Uint8Array([0xC0, 0x00]);
     await device.transferOut(3, data);
 
-    log("Data sent to endpoint 3");
+    log("Data sent to OUT endpoint 3");
 
   } catch (e) {
     log("ERROR: " + e.message);
