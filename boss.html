@@ -3,88 +3,341 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ME-90 Live</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#05080c;color:white;font-family:Arial,sans-serif}
-.app{max-width:760px;margin:auto;min-height:100vh;padding:16px 16px 90px;background:linear-gradient(#05080c,#071017)}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.logo{font-size:26px;font-weight:900;letter-spacing:1px}
-.status{color:#65e841;font-weight:bold}
-.card{background:#0b1117;border:1px solid #27323b;border-radius:14px;padding:18px;margin-bottom:14px}
-.patchGrid{display:grid;grid-template-columns:1fr 2fr 1fr;text-align:center;gap:10px}
-.label{color:#aab0b8;font-size:13px;letter-spacing:1px}
-.bank{font-size:46px;color:#2f9bff;font-weight:900}
-.patchName{font-size:42px;font-weight:900}
-.patchNo{font-size:54px;font-weight:900}
-.meta{display:flex;justify-content:space-around;border-top:1px solid #27323b;margin-top:16px;padding-top:14px;font-size:18px}
-.blue{color:#2f9bff}.green{color:#55e63d}
-.chain{display:flex;align-items:center;gap:12px;overflow-x:auto;padding-bottom:8px}
-.fx{min-width:95px;height:120px;border:2px solid #333;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900}
-.fx.on{border-color:#55e63d;color:#55e63d}
-.fx.selected{border-color:#ffb02e;color:#ffb02e}
-.arrow{font-size:24px;color:#aaa}
-.exp{display:grid;grid-template-columns:1fr 150px;gap:16px;align-items:center}
-.expMode{font-size:44px;color:#55e63d;font-weight:900}
-.expValue{font-size:52px;color:#55e63d;font-weight:900}
-.bar{display:flex;gap:3px;flex-wrap:wrap;margin-top:10px}
-.seg{width:9px;height:22px;background:#1d252c;border-radius:3px}
+body{
+  margin:0;
+  background:#05080c;
+  color:#f4f7fa;
+  font-family:Arial,Helvetica,sans-serif;
+}
+.app{
+  max-width:720px;
+  margin:auto;
+  min-height:100vh;
+  padding:14px 14px 82px;
+  background:linear-gradient(180deg,#030609,#071017);
+}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
+}
+.logo{
+  font-size:28px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+.status{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#ddd;
+  font-size:14px;
+  letter-spacing:1px;
+}
+.dot{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#555;
+}
+.dot.on{background:#55e63d;box-shadow:0 0 10px #55e63d}
+.menu{font-size:28px;color:#aaa}
+
+.card{
+  background:#0b1117;
+  border:1px solid #2a3640;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:14px;
+  box-shadow:0 0 18px rgba(0,0,0,.35);
+}
+.patchGrid{
+  display:grid;
+  grid-template-columns:1fr 2.2fr 1fr;
+  align-items:center;
+  text-align:center;
+}
+.label{
+  color:#9da5ad;
+  font-size:13px;
+  letter-spacing:1px;
+}
+.bank{
+  font-size:48px;
+  color:#2f9bff;
+  font-weight:900;
+}
+.patchName{
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+.patchNo{
+  font-size:54px;
+  font-weight:900;
+}
+.meta{
+  display:flex;
+  justify-content:space-around;
+  border-top:1px solid #2a3640;
+  margin-top:16px;
+  padding-top:14px;
+  font-size:18px;
+}
+.blue{color:#2f9bff}
+.green{color:#55e63d}
+
+.sectionTitle{
+  font-size:18px;
+  letter-spacing:1px;
+  margin-bottom:18px;
+}
+.chain{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  overflow-x:auto;
+  padding-bottom:4px;
+}
+.fx{
+  min-width:90px;
+  height:115px;
+  border:2px solid #333;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-weight:900;
+}
+.fx.on{
+  border-color:#55e63d;
+  color:#55e63d;
+  background:rgba(40,255,40,.05);
+}
+.fx.selected{
+  border-color:#ffb02e;
+  color:#ffb02e;
+  background:rgba(255,176,46,.08);
+}
+.fx.blue{
+  border-color:#2f9bff;
+  color:#2f9bff;
+}
+.fxIcon{font-size:32px}
+.arrow{
+  color:#aaa;
+  font-size:24px;
+}
+
+.expGrid{
+  display:grid;
+  grid-template-columns:1fr 150px;
+  gap:18px;
+  align-items:center;
+}
+.expMode{
+  font-size:42px;
+  color:#55e63d;
+  font-weight:900;
+  margin:6px 0 16px;
+}
+.expValue{
+  font-size:50px;
+  color:#55e63d;
+  font-weight:900;
+}
+.line{
+  height:1px;
+  background:#2a3640;
+  margin:8px 0 14px;
+}
+.bar{
+  display:flex;
+  gap:3px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+.seg{
+  width:8px;
+  height:22px;
+  background:#1d252c;
+  border-radius:3px;
+}
 .seg.on{background:#55e63d}
-.pedalTitle{text-align:center;color:#55e63d;font-weight:bold;margin-bottom:10px}
-.pedal{height:220px;border:3px solid #55e63d;border-radius:14px;background:linear-gradient(135deg,#222,#050505);display:flex;align-items:center;justify-content:center;color:#222;font-size:32px;font-weight:900}
-.stomps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-.stomp{height:160px;border:2px solid #333;border-radius:14px;text-align:center;padding:14px;cursor:pointer}
-.stomp.on{border-color:#55e63d;color:#55e63d}
-.stomp.off{color:#777}
-.stomp.ctl{border-color:#2f9bff;color:#2f9bff}
-.stompNum{font-size:24px}
-.stompName{font-size:22px;font-weight:900;margin-top:22px}
-.nav{position:fixed;left:0;right:0;bottom:0;background:#071017;border-top:1px solid #27323b;display:flex;justify-content:space-around;padding:12px 0}
-.nav div{text-align:center;color:#888;font-size:13px}
+.pedalTitle{
+  text-align:center;
+  color:#55e63d;
+  font-weight:900;
+  margin-bottom:8px;
+}
+.pedal{
+  height:220px;
+  border:3px solid #55e63d;
+  border-radius:14px;
+  background:
+    repeating-linear-gradient(135deg,#191919 0,#191919 10px,#0c0c0c 10px,#0c0c0c 20px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#222;
+  font-size:30px;
+  font-weight:900;
+  box-shadow:0 0 14px rgba(85,230,61,.2);
+}
+
+.stomps{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+}
+.stomp{
+  height:160px;
+  border:2px solid #333;
+  border-radius:14px;
+  text-align:center;
+  padding:12px;
+  cursor:pointer;
+  background:#0b1117;
+}
+.stomp.on{
+  border-color:#55e63d;
+  color:#55e63d;
+}
+.stomp.off{
+  color:#777;
+}
+.stomp.ctl{
+  border-color:#2f9bff;
+  color:#2f9bff;
+}
+.stompNum{
+  font-size:24px;
+  border:1px solid currentColor;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.stompIcon{
+  font-size:38px;
+  margin:18px 0 10px;
+}
+.stompName{
+  font-size:22px;
+  font-weight:900;
+}
+.stompLine{
+  height:3px;
+  background:currentColor;
+  margin:10px 12px;
+  border-radius:4px;
+}
+
+.nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  max-width:720px;
+  margin:auto;
+  height:72px;
+  background:#071017;
+  border-top:1px solid #2a3640;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+}
+.nav div{
+  text-align:center;
+  color:#8d949b;
+  font-size:12px;
+  padding-top:10px;
+}
 .nav .active{color:#2f9bff}
-.connectBtn{background:#102616;color:#55e63d;border:1px solid #55e63d;border-radius:10px;padding:10px 14px;font-weight:bold}
+.navIcon{font-size:24px}
+
+.hiddenLog{
+  display:none;
+  font-family:monospace;
+  font-size:11px;
+  color:#6cff59;
+  white-space:pre-wrap;
+}
+
 @media(max-width:620px){
   .patchName{font-size:30px}
   .bank{font-size:36px}
   .patchNo{font-size:42px}
+  .expGrid{grid-template-columns:1fr}
   .stomps{grid-template-columns:repeat(2,1fr)}
-  .exp{grid-template-columns:1fr}
 }
 </style>
 </head>
-<body>
 
+<body>
 <div class="app">
+
   <div class="header">
-    <div class="logo">BOSS ME-90</div>
-    <button class="connectBtn" onclick="connectMIDI()" id="connectBtn">● CONNECT</button>
+    <div class="logo">BOSS&nbsp; ME-90</div>
+    <div class="status">
+      <span class="dot" id="dot"></span>
+      <span id="statusText">DISCONNECTED</span>
+      <span class="menu">⋮</span>
+    </div>
   </div>
+
+  <button onclick="connectMIDI()" style="width:100%;padding:12px;margin-bottom:12px;border-radius:10px;border:1px solid #55e63d;background:#102616;color:#55e63d;font-weight:bold">
+    ● CONNECT ME-90
+  </button>
 
   <div class="card">
     <div class="patchGrid">
-      <div><div class="label">BANK</div><div class="bank" id="bank">U2</div></div>
-      <div><div class="label">PATCH NAME</div><div class="patchName" id="patchName">ROCK LEAD</div></div>
-      <div><div class="label">PATCH</div><div class="patchNo" id="patchNo">1</div></div>
+      <div>
+        <div class="label">BANK</div>
+        <div class="bank" id="bank">U2</div>
+      </div>
+
+      <div>
+        <div class="label">PATCH NAME</div>
+        <div class="patchName" id="patchName">ROCK LEAD</div>
+      </div>
+
+      <div>
+        <div class="label">PATCH</div>
+        <div class="patchNo" id="patchNo">1</div>
+      </div>
     </div>
+
     <div class="meta">
-      <div>⏱ TEMPO <span class="blue">120</span></div>
+      <div>⏱ TEMPO <span class="blue" id="tempo">120</span></div>
       <div>CTL <span class="green">● ON</span></div>
     </div>
   </div>
 
   <div class="card">
-    <h3>ACTIVE SIGNAL CHAIN</h3>
+    <div class="sectionTitle">ACTIVE SIGNAL CHAIN</div>
     <div class="chain" id="chain"></div>
   </div>
 
-  <div class="card exp">
+  <div class="card expGrid">
     <div>
-      <h3>EXPRESSION PEDAL</h3>
+      <div class="sectionTitle">EXPRESSION PEDAL</div>
       <div class="label">MODE</div>
       <div class="expMode" id="expMode">WAH</div>
+      <div class="line"></div>
       <div class="label">POSITION</div>
       <div class="expValue" id="expValue">82</div>
       <div class="bar" id="expBar"></div>
     </div>
+
     <div>
       <div class="pedalTitle">EXPRESSION PEDAL</div>
       <div class="pedal">BOSS</div>
@@ -92,106 +345,180 @@ body{margin:0;background:#05080c;color:white;font-family:Arial,sans-serif}
   </div>
 
   <div class="card">
-    <h3>STOMPS</h3>
+    <div class="sectionTitle">STOMPS</div>
     <div class="stomps" id="stomps"></div>
   </div>
+
+  <div class="hiddenLog" id="log"></div>
+
 </div>
 
 <div class="nav">
-  <div class="active">🏠<br>LIVE</div>
-  <div>☰<br>PATCHES</div>
-  <div>📋<br>SETLIST</div>
-  <div>🎚<br>EDITOR</div>
-  <div>⚙<br>SETTINGS</div>
+  <div class="active"><div class="navIcon">⌂</div>LIVE</div>
+  <div><div class="navIcon">☰</div>PATCHES</div>
+  <div><div class="navIcon">▣</div>SETLIST</div>
+  <div><div class="navIcon">≡</div>EDITOR</div>
+  <div><div class="navIcon">⚙</div>SETTINGS</div>
 </div>
 
 <script>
-let midiInput, midiOutput;
+let midiAccess;
+let midiInput;
+let midiOutput;
 
-let state={
-  bank:"U2",
-  patch:1,
-  patchName:"ROCK LEAD",
-  expMode:"WAH",
-  expValue:82,
-  effects:[
-    {name:"COMP",on:true},
-    {name:"BOOST",on:true},
-    {name:"PREAMP",on:true,selected:true},
-    {name:"EQ",on:true},
-    {name:"DELAY",on:true},
-    {name:"REVERB",on:true}
+let state = {
+  bank: "U2",
+  patch: 1,
+  patchName: "ROCK LEAD",
+  tempo: 120,
+  expMode: "WAH",
+  expValue: 82,
+
+  effects: [
+    {name:"COMP", icon:"▣", on:true},
+    {name:"BOOST", icon:"●", on:true},
+    {name:"PREAMP", icon:"▤", on:true, selected:true},
+    {name:"EQ", icon:"≡", on:true, blue:true},
+    {name:"DELAY", icon:"◷", on:true},
+    {name:"REVERB", icon:"≋", on:true}
   ],
-  stomps:[
-    {num:"1",name:"COMP",on:true},
-    {num:"2",name:"BOOST",on:true},
-    {num:"3",name:"MOD",on:false},
-    {num:"4",name:"DELAY",on:true},
-    {num:"CTL",name:"REVERB",on:true,ctl:true}
+
+  stomps: [
+    {num:"1", name:"COMP", icon:"▣", on:true},
+    {num:"2", name:"BOOST", icon:"●", on:true},
+    {num:"3", name:"MOD", icon:"≋", on:false},
+    {num:"4", name:"DELAY", icon:"◷", on:true},
+    {num:"CTL", name:"REVERB", icon:"≋", on:true, ctl:true}
   ]
 };
 
 function render(){
-  bank.textContent=state.bank;
-  patchNo.textContent=state.patch;
-  patchName.textContent=state.patchName;
-  expMode.textContent=state.expMode;
-  expValue.textContent=state.expValue;
+  document.getElementById("bank").textContent = state.bank;
+  document.getElementById("patchNo").textContent = state.patch;
+  document.getElementById("patchName").textContent = state.patchName;
+  document.getElementById("tempo").textContent = state.tempo;
+  document.getElementById("expMode").textContent = state.expMode;
+  document.getElementById("expValue").textContent = state.expValue;
 
-  chain.innerHTML="<span>IN</span>";
-  state.effects.filter(e=>e.on).forEach(e=>{
-    chain.innerHTML+=`<span class="arrow">→</span><div class="fx ${e.selected?'selected':'on'}">${e.name}</div>`;
+  const chain = document.getElementById("chain");
+  chain.innerHTML = `<span>IN</span>`;
+
+  state.effects.filter(e => e.on).forEach(e => {
+    const cls = e.selected ? "selected" : e.blue ? "blue" : "on";
+    chain.innerHTML += `
+      <span class="arrow">→</span>
+      <div class="fx ${cls}">
+        <div class="fxIcon">${e.icon}</div>
+        <div>${e.name}</div>
+      </div>`;
   });
-  chain.innerHTML+=`<span class="arrow">→</span><span>OUT</span>`;
 
-  expBar.innerHTML="";
-  for(let i=1;i<=30;i++){
-    expBar.innerHTML+=`<div class="seg ${i<=state.expValue/3.33?'on':''}"></div>`;
+  chain.innerHTML += `<span class="arrow">→</span><span>OUT</span>`;
+
+  const bar = document.getElementById("expBar");
+  bar.innerHTML = "";
+  for(let i=1;i<=34;i++){
+    bar.innerHTML += `<div class="seg ${i <= state.expValue / 3.73 ? "on" : ""}"></div>`;
   }
 
-  stomps.innerHTML="";
-  state.stomps.forEach((s,i)=>{
-    stomps.innerHTML+=`
-      <div class="stomp ${s.ctl?'ctl':s.on?'on':'off'}" onclick="selectStomp(${i})">
+  const stomps = document.getElementById("stomps");
+  stomps.innerHTML = "";
+
+  state.stomps.forEach((s,i) => {
+    let cls = s.ctl ? "ctl" : s.on ? "on" : "off";
+    stomps.innerHTML += `
+      <div class="stomp ${cls}" onclick="toggleStomp(${i})">
         <div class="stompNum">${s.num}</div>
+        <div class="stompIcon">${s.icon}</div>
         <div class="stompName">${s.name}</div>
-        <div>${s.on?'ON':'OFF'}</div>
+        <div class="stompLine"></div>
+        <div>${s.on ? "ON" : "OFF"}</div>
       </div>`;
   });
 }
 
-async function connectMIDI(){
-  if(!navigator.requestMIDIAccess){alert("Use Chrome or Edge");return}
-  const access=await navigator.requestMIDIAccess({sysex:true});
-  const inputs=[...access.inputs.values()];
-  const outputs=[...access.outputs.values()];
-  midiInput=inputs.find(i=>/me-?90|boss/i.test(i.name))||inputs[0];
-  midiOutput=outputs.find(o=>/me-?90|boss/i.test(o.name))||outputs[0];
-  if(midiInput)midiInput.onmidimessage=handleMIDI;
-  connectBtn.textContent="● CONNECTED";
+function log(msg){
+  const logBox = document.getElementById("log");
+  const time = new Date().toLocaleTimeString();
+  logBox.textContent = `[${time}] ${msg}\n` + logBox.textContent;
 }
 
-function handleMIDI(e){
-  const d=[...e.data];
-  const type=d[0]&0xF0;
+async function connectMIDI(){
+  try{
+    if(!navigator.requestMIDIAccess){
+      alert("Use Chrome or Edge browser.");
+      return;
+    }
 
-  if(type===0xC0){
-    state.patch=d[1]+1;
+    midiAccess = await navigator.requestMIDIAccess({sysex:true});
+
+    const inputs = Array.from(midiAccess.inputs.values());
+    const outputs = Array.from(midiAccess.outputs.values());
+
+    midiInput = inputs.find(i => /me-?90|boss/i.test(i.name)) || inputs[0];
+    midiOutput = outputs.find(o => /me-?90|boss/i.test(o.name)) || outputs[0];
+
+    if(midiInput){
+      midiInput.onmidimessage = handleMIDI;
+      log("Listening: " + midiInput.name);
+    }
+
+    if(midiOutput){
+      log("Output: " + midiOutput.name);
+    }
+
+    document.getElementById("dot").classList.add("on");
+    document.getElementById("statusText").textContent = "CONNECTED";
+
+  }catch(e){
+    alert(e.message);
+  }
+}
+
+function handleMIDI(event){
+  const data = Array.from(event.data);
+  const status = data[0];
+  const type = status & 0xF0;
+
+  const hex = data.map(x => x.toString(16).padStart(2,"0").toUpperCase()).join(" ");
+  log("IN " + hex);
+
+  if(type === 0xC0){
+    state.patch = data[1] + 1;
     render();
   }
 
-  if(type===0xB0){
-    if(d[1]===7||d[1]===11){
-      state.expValue=d[2];
+  if(type === 0xB0){
+    const cc = data[1];
+    const val = data[2];
+
+    if(cc === 7 || cc === 11 || cc === 1){
+      state.expValue = val;
       render();
     }
   }
 }
 
-function selectStomp(i){
-  state.stomps[i].on=!state.stomps[i].on;
-  const fx=state.effects.find(e=>e.name===state.stomps[i].name);
-  if(fx)fx.on=state.stomps[i].on;
+function sendPatch(num){
+  if(!midiOutput)return;
+  midiOutput.send([0xC0, num - 1]);
+  state.patch = num;
+  render();
+}
+
+function toggleStomp(index){
+  state.stomps[index].on = !state.stomps[index].on;
+
+  const name = state.stomps[index].name;
+  const fx = state.effects.find(e => e.name === name);
+
+  state.effects.forEach(e => e.selected = false);
+
+  if(fx){
+    fx.on = state.stomps[index].on;
+    fx.selected = true;
+  }
+
   render();
 }
 
