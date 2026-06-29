@@ -2,201 +2,233 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ME-90 Laptop Controller</title>
+<title>ME-90 Live</title>
 <style>
-body{background:#101214;color:white;font-family:Arial;padding:16px}
-.card{background:#1b1f24;border:1px solid #333;border-radius:18px;padding:16px;max-width:520px;margin:auto}
-button,select{width:100%;padding:15px;margin:7px 0;border-radius:14px;border:1px solid #444;background:#243447;color:white;font-size:16px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.status{background:#111;padding:12px;border-radius:12px;margin:10px 0}
-.patch{font-size:70px;text-align:center;color:#22c55e;font-weight:bold}
-.log{background:#050505;color:#9ae6b4;padding:10px;height:260px;overflow:auto;font-family:monospace;font-size:12px;white-space:pre-wrap;border-radius:12px}
+body{margin:0;background:#05080b;color:white;font-family:Arial,sans-serif}
+.app{max-width:1100px;margin:auto;padding:18px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:30px;font-weight:900}
+.connected{color:#54d13b;font-weight:bold}
+.card{background:#0d1217;border:1px solid #26313a;border-radius:14px;padding:18px;margin-top:16px}
+.patch{display:grid;grid-template-columns:1fr 2fr 1fr;gap:20px;text-align:center}
+.label{color:#aaa;font-size:14px}
+.big{font-size:56px;font-weight:900}
+.blue{color:#2f9bff}.green{color:#54d13b}.orange{color:#ffb02e}
+.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.chain{display:flex;align-items:center;gap:14px;overflow-x:auto}
+.fx{min-width:105px;height:115px;border:2px solid #333;border-radius:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;font-weight:bold}
+.fx.on{border-color:#54d13b;color:#54d13b}
+.fx.selected{border-color:#ffb02e;color:#ffb02e}
+.arrow{color:#aaa;font-size:26px}
+.exp{display:grid;grid-template-columns:1fr 220px;gap:20px;align-items:center}
+.bar{display:flex;gap:3px;margin-top:12px}
+.seg{width:9px;height:22px;border-radius:3px;background:#1c242b}
+.seg.on{background:#54d13b}
+.pedal{height:220px;border:3px solid #54d13b;border-radius:14px;background:linear-gradient(135deg,#1a1a1a,#050505);display:flex;align-items:center;justify-content:center;color:#333;font-size:34px;font-weight:bold}
+.stomps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.stomp{height:150px;border:2px solid #333;border-radius:14px;background:#0b1015;text-align:center;padding:12px;cursor:pointer}
+.stomp.on{border-color:#54d13b;color:#54d13b}
+.stomp.off{color:#777}
+.stomp .num{font-size:24px}
+.stomp .name{font-size:24px;font-weight:bold;margin-top:20px}
+button,select{background:#162233;color:white;border:1px solid #2d3b48;border-radius:10px;padding:12px;font-size:16px}
+.log{background:#020403;color:#7dff69;font-family:monospace;font-size:12px;height:140px;overflow:auto;white-space:pre-wrap}
+@media(max-width:700px){
+  .patch{grid-template-columns:1fr}
+  .exp{grid-template-columns:1fr}
+  .stomps{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
+<div class="app">
 
-<div class="card">
-  <h2>🎛️ ME-90 Laptop Controller</h2>
+  <div class="top">
+    <div class="logo">BOSS ME-90</div>
+    <div id="connectStatus" class="connected">● DISCONNECTED</div>
+  </div>
 
   <button onclick="connectMIDI()">🔌 CONNECT ME-90</button>
 
-  <select id="inputSelect"></select>
-  <select id="outputSelect"></select>
-
-  <div class="status" id="status">Not connected</div>
-
-  <div>Current Patch</div>
-  <div class="patch" id="patch">--</div>
-
-  <div class="grid">
-    <button onclick="sendPatch(1)">Patch 1</button>
-    <button onclick="sendPatch(2)">Patch 2</button>
-    <button onclick="sendPatch(3)">Patch 3</button>
-    <button onclick="sendPatch(4)">Patch 4</button>
-    <button onclick="sendPatch(5)">Patch 5</button>
-    <button onclick="sendPatch(6)">Patch 6</button>
+  <div class="card patch">
+    <div>
+      <div class="label">BANK</div>
+      <div id="bank" class="big blue">U2</div>
+    </div>
+    <div>
+      <div class="label">PATCH NAME</div>
+      <div id="patchName" class="big">ROCK LEAD</div>
+    </div>
+    <div>
+      <div class="label">PATCH</div>
+      <div id="patchNo" class="big">1</div>
+    </div>
+    <div class="row" style="grid-column:1/-1;justify-content:space-around">
+      <div>⏱ TEMPO <span class="blue">120</span></div>
+      <div>CTL <span id="ctlLed" class="green">● ON</span></div>
+    </div>
   </div>
 
-  <button onclick="sendCC(64,127); setTimeout(()=>sendCC(64,0),50)">⏱ TAP CC64</button>
-  <button onclick="clearLog()">🗑 Clear Log</button>
+  <div class="card">
+    <h3>ACTIVE SIGNAL CHAIN</h3>
+    <div id="signalChain" class="chain"></div>
+  </div>
 
-  <div class="log" id="log">Connect ME-90...</div>
+  <div class="card exp">
+    <div>
+      <h3>EXPRESSION PEDAL</h3>
+      <div class="label">MODE</div>
+      <div id="expMode" class="big green">WAH</div>
+      <div class="label">POSITION</div>
+      <div id="expValue" class="big green">82</div>
+      <div id="expBar" class="bar"></div>
+    </div>
+    <div>
+      <div class="green" style="text-align:center;font-weight:bold;margin-bottom:8px">EXPRESSION PEDAL</div>
+      <div class="pedal">BOSS</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>STOMPS</h3>
+    <div class="stomps">
+      <div class="stomp on" onclick="selectStomp('COMP')"><div class="num">①</div><div class="name">COMP</div><div>ON</div></div>
+      <div class="stomp on" onclick="selectStomp('BOOST')"><div class="num">②</div><div class="name">BOOST</div><div>ON</div></div>
+      <div class="stomp off" onclick="selectStomp('MOD')"><div class="num">③</div><div class="name">MOD</div><div>OFF</div></div>
+      <div class="stomp on" onclick="selectStomp('DELAY')"><div class="num">④</div><div class="name">DELAY</div><div>ON</div></div>
+      <div class="stomp on" onclick="selectStomp('REVERB')"><div class="num">CTL</div><div class="name">REVERB</div><div>ON</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Patch Buttons</h3>
+    <div class="row">
+      <button onclick="sendPatch(1)">Patch 1</button>
+      <button onclick="sendPatch(2)">Patch 2</button>
+      <button onclick="sendPatch(3)">Patch 3</button>
+      <button onclick="sendPatch(4)">Patch 4</button>
+    </div>
+  </div>
+
+  <div class="card log" id="log">Log...</div>
+
 </div>
 
 <script>
-let midiAccess = null;
-let midiInput = null;
-let midiOutput = null;
+let midiAccess, midiInput, midiOutput;
 
-const inputSelect = document.getElementById("inputSelect");
-const outputSelect = document.getElementById("outputSelect");
-const statusBox = document.getElementById("status");
-const patchBox = document.getElementById("patch");
-const logBox = document.getElementById("log");
+let state = {
+  bank:"U2",
+  patch:1,
+  patchName:"ROCK LEAD",
+  expMode:"WAH",
+  expValue:82,
+  effects:[
+    {name:"COMP",on:true},
+    {name:"BOOST",on:true},
+    {name:"PREAMP",on:true,selected:true},
+    {name:"EQ",on:true},
+    {name:"DELAY",on:true},
+    {name:"REVERB",on:true}
+  ]
+};
 
 function log(msg){
   const t = new Date().toLocaleTimeString();
-  logBox.textContent = `[${t}] ${msg}\n` + logBox.textContent;
+  document.getElementById("log").textContent =
+    `[${t}] ${msg}\n` + document.getElementById("log").textContent;
 }
 
-function clearLog(){
-  logBox.textContent = "";
+function render(){
+  bank.textContent = state.bank;
+  patchNo.textContent = state.patch;
+  patchName.textContent = state.patchName;
+  expMode.textContent = state.expMode;
+  expValue.textContent = state.expValue;
+
+  const chain = document.getElementById("signalChain");
+  chain.innerHTML = `<span>IN</span>`;
+  state.effects.filter(e=>e.on).forEach(e=>{
+    chain.innerHTML += `<span class="arrow">→</span>
+      <div class="fx ${e.selected?'selected':'on'}">${e.name}</div>`;
+  });
+  chain.innerHTML += `<span class="arrow">→</span><span>OUT</span>`;
+
+  const bar = document.getElementById("expBar");
+  bar.innerHTML = "";
+  for(let i=1;i<=40;i++){
+    const seg=document.createElement("div");
+    seg.className="seg" + (i <= state.expValue/2.5 ? " on" : "");
+    bar.appendChild(seg);
+  }
 }
 
 async function connectMIDI(){
-  try{
-    if(!navigator.requestMIDIAccess){
-      statusBox.textContent = "Web MIDI not supported. Use Chrome or Edge.";
-      log("❌ Web MIDI not supported");
-      return;
-    }
-
-    log("🔍 Requesting MIDI access...");
-    midiAccess = await navigator.requestMIDIAccess({sysex:true});
-    log("✅ MIDI access granted");
-
-    refreshPorts();
-    midiAccess.onstatechange = refreshPorts;
-
-  }catch(e){
-    statusBox.textContent = "Error: " + e.message;
-    log("❌ " + e.message);
+  if(!navigator.requestMIDIAccess){
+    alert("Use Chrome or Edge");
+    return;
   }
-}
 
-function refreshPorts(){
-  inputSelect.innerHTML = "";
-  outputSelect.innerHTML = "";
-
+  midiAccess = await navigator.requestMIDIAccess({sysex:true});
   const inputs = Array.from(midiAccess.inputs.values());
   const outputs = Array.from(midiAccess.outputs.values());
 
-  if(inputs.length === 0){
-    inputSelect.innerHTML = "<option>No inputs</option>";
-    log("❌ No MIDI inputs found");
+  midiInput = inputs.find(i=>/me-?90|boss/i.test(i.name)) || inputs[0];
+  midiOutput = outputs.find(o=>/me-?90|boss/i.test(o.name)) || outputs[0];
+
+  if(midiInput){
+    midiInput.onmidimessage = handleMIDI;
+    log("Listening: " + midiInput.name);
   }
 
-  if(outputs.length === 0){
-    outputSelect.innerHTML = "<option>No outputs</option>";
-    log("❌ No MIDI outputs found");
+  if(midiOutput){
+    log("Output: " + midiOutput.name);
   }
 
-  inputs.forEach(input=>{
-    const opt = document.createElement("option");
-    opt.value = input.id;
-    opt.textContent = input.name;
-    inputSelect.appendChild(opt);
-    log("🎹 Input: " + input.name);
-  });
-
-  outputs.forEach(output=>{
-    const opt = document.createElement("option");
-    opt.value = output.id;
-    opt.textContent = output.name;
-    outputSelect.appendChild(opt);
-    log("📤 Output: " + output.name);
-  });
-
-  const preferredInput = inputs.find(i=>/me-?90|boss/i.test(i.name)) || inputs[0];
-  const preferredOutput = outputs.find(o=>/me-?90|boss/i.test(o.name)) || outputs[0];
-
-  if(preferredInput){
-    inputSelect.value = preferredInput.id;
-    attachInput(preferredInput);
-  }
-
-  if(preferredOutput){
-    outputSelect.value = preferredOutput.id;
-    midiOutput = preferredOutput;
-    log("✅ Output selected: " + preferredOutput.name);
-  }
-
-  statusBox.textContent =
-    "Input: " + (midiInput ? midiInput.name : "none") +
-    " | Output: " + (midiOutput ? midiOutput.name : "none");
+  connectStatus.textContent = "● CONNECTED";
 }
 
-function attachInput(input){
-  if(midiInput) midiInput.onmidimessage = null;
-  midiInput = input;
-  midiInput.onmidimessage = handleMIDI;
-  log("✅ Listening: " + input.name);
-}
+function handleMIDI(e){
+  const d = Array.from(e.data);
+  const hex = d.map(x=>x.toString(16).padStart(2,"0").toUpperCase()).join(" ");
+  log("IN: " + hex);
 
-inputSelect.addEventListener("change", ()=>{
-  const inputs = Array.from(midiAccess.inputs.values());
-  const selected = inputs.find(i=>i.id === inputSelect.value);
-  if(selected) attachInput(selected);
-});
-
-outputSelect.addEventListener("change", ()=>{
-  const outputs = Array.from(midiAccess.outputs.values());
-  midiOutput = outputs.find(o=>o.id === outputSelect.value);
-  log("✅ Output selected: " + midiOutput.name);
-});
-
-function handleMIDI(event){
-  const data = Array.from(event.data);
-  const hex = data.map(b=>b.toString(16).padStart(2,"0").toUpperCase()).join(" ");
-  log("📥 IN: " + hex);
-
-  const status = data[0];
-  const type = status & 0xF0;
-  const channel = (status & 0x0F) + 1;
+  const type = d[0] & 0xF0;
 
   if(type === 0xC0){
-    const rawPatch = data[1];
-    const displayPatch = rawPatch + 1;
-    patchBox.textContent = displayPatch;
-    log(`✅ Patch changed: ${displayPatch} | Raw ${rawPatch} | Ch ${channel}`);
+    state.patch = d[1] + 1;
+    render();
   }
 
   if(type === 0xB0){
-    log(`🎚️ CC ${data[1]} = ${data[2]} | Ch ${channel}`);
+    // Expression pedal guess: CC11 or CC7
+    if(d[1] === 11 || d[1] === 7){
+      state.expValue = d[2];
+      render();
+    }
   }
 }
 
-function sendPatch(patchNumber){
+function sendPatch(num){
   if(!midiOutput){
-    log("❌ No MIDI output selected");
+    log("No MIDI output");
     return;
   }
-
-  const raw = patchNumber - 1;
-  midiOutput.send([0xC0, raw]);
-  log(`📤 Sent Patch ${patchNumber} | MIDI: C0 ${raw.toString(16).padStart(2,"0").toUpperCase()}`);
+  midiOutput.send([0xC0, num-1]);
+  state.patch = num;
+  render();
+  log("OUT: Patch " + num);
 }
 
-function sendCC(cc,value){
-  if(!midiOutput){
-    log("❌ No MIDI output selected");
-    return;
-  }
-
-  midiOutput.send([0xB0, cc, value]);
-  log(`📤 Sent CC ${cc} = ${value}`);
+function selectStomp(name){
+  state.effects.forEach(e=>e.selected=false);
+  const fx = state.effects.find(e=>e.name===name);
+  if(fx) fx.selected = true;
+  render();
+  log("Selected stomp: " + name);
 }
+
+render();
 </script>
-
 </body>
 </html>
