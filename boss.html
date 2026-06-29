@@ -1,181 +1,267 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ME-90 USB Test v3</title>
+<title>ME-90 Patch Monitor</title>
 <style>
-body{font-family:monospace;background:#0a0a0f;color:#0f0;padding:16px;margin:0}
-button{background:#ff3333;color:#fff;border:none;padding:14px 20px;font-size:15px;border-radius:6px;width:100%;margin-bottom:10px}
-button:active{background:#cc0000}
-button.alt{background:#00ccff;color:#000}
-pre{white-space:pre-wrap;word-break:break-all;font-size:12px;line-height:1.5;background:#111;padding:12px;border-radius:6px;border:1px solid #333}
-h2{color:#0cf;font-size:15px}
+  :root{
+    --bg: #14110f;
+    --panel: #1c1815;
+    --panel-edge: #2a241f;
+    --amber: #e8742c;
+    --amber-dim: #8a4a22;
+    --text: #ece6da;
+    --text-dim: #948b7c;
+    --mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    --display: "Oswald", "Arial Narrow", sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; min-height:100vh;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(232,116,44,0.06), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+    color: var(--text);
+    font-family: var(--mono);
+    display:flex; flex-direction:column; align-items:center;
+  }
+
+  .wrap{ width:100%; max-width:720px; padding: 32px 20px 60px; }
+
+  header{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom: 28px; flex-wrap:wrap; gap:8px; }
+  .brand{ font-family:var(--display); font-weight:700; font-size: 22px; letter-spacing:0.5px; }
+  .brand span{ color:var(--amber); }
+  .sub{ font-size:11px; color:var(--text-dim); letter-spacing:1.5px; text-transform:uppercase; }
+
+  .status-row{ display:flex; align-items:center; gap:10px; margin-bottom:22px; font-size:12px; color:var(--text-dim); }
+  .dot{ width:8px; height:8px; border-radius:50%; background:#5a4a3a; flex-shrink:0; transition: background .2s, box-shadow .2s; }
+  .dot.live{ background:#4caf6a; box-shadow:0 0 8px #4caf6a; }
+  .dot.error{ background:#c0463a; box-shadow:0 0 8px #c0463a; }
+
+  select{
+    background: var(--panel); color:var(--text); border:1px solid var(--panel-edge);
+    font-family: var(--mono); font-size:12px; padding:6px 10px; border-radius:3px;
+  }
+
+  .display{
+    background: linear-gradient(180deg, #1a1612, #100d0b);
+    border: 1px solid var(--panel-edge);
+    border-radius: 6px;
+    padding: 40px 30px;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.4);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .display::before{
+    content:""; position:absolute; inset:0;
+    background: repeating-linear-gradient(90deg, transparent 0px, transparent 28px, rgba(255,255,255,0.015) 29px);
+    pointer-events:none;
+  }
+  .patch-label{ font-size:11px; letter-spacing:2px; color:var(--text-dim); text-transform:uppercase; margin-bottom:6px; }
+  .patch-number{
+    font-family:var(--display); font-weight:700; font-size: 96px; line-height:1;
+    color: var(--amber);
+    text-shadow: 0 0 24px rgba(232,116,44,0.35);
+    transition: opacity .15s;
+  }
+  .patch-number.flash{ opacity:0.3; }
+  .patch-meta{ display:flex; gap:24px; margin-top:18px; font-size:12px; color:var(--text-dim); flex-wrap:wrap; }
+  .patch-meta b{ color:var(--text); font-weight:500; }
+
+  .log-title{ font-size:11px; letter-spacing:1.5px; color:var(--text-dim); text-transform:uppercase; margin: 28px 0 10px; display:flex; justify-content:space-between; align-items:center; }
+  .log-title button{
+    background:none; border:1px solid var(--panel-edge); color:var(--text-dim);
+    font-family:var(--mono); font-size:10px; padding:3px 8px; border-radius:3px; cursor:pointer;
+  }
+  .log-title button:hover{ color:var(--text); border-color:var(--amber-dim); }
+
+  .log{
+    background: var(--panel); border:1px solid var(--panel-edge); border-radius:6px;
+    height: 220px; overflow-y:auto; padding: 4px 0;
+  }
+  .log-row{
+    display:grid; grid-template-columns: 70px 60px 1fr; gap:10px;
+    padding: 7px 16px; font-size:11.5px; border-bottom:1px solid #211d19;
+  }
+  .log-row:last-child{ border-bottom:none; }
+  .log-time{ color:var(--text-dim); }
+  .log-tag{ color:var(--amber); font-weight:700; }
+  .log-detail{ color:var(--text); }
+  .log-empty{ padding: 30px 16px; color:var(--text-dim); text-align:center; font-size:12px; }
+
+  footer{ margin-top: 28px; font-size:11px; color:var(--text-dim); line-height:1.6; }
+  footer code{ color:var(--text); background:var(--panel); padding:1px 5px; border-radius:3px; }
+
+  ::-webkit-scrollbar{ width:8px; }
+  ::-webkit-scrollbar-thumb{ background:#332b24; border-radius:4px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .patch-number, .patch-number.flash{ transition:none; }
+  }
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<h2>BOSS ME-90 — Vendor-Specific Interface Scan</h2>
-<button onclick="connectAndScan()">1. Connect + Scan ALL Interfaces</button>
-<button class="alt" onclick="trySend()">2. Try Send Test Bytes</button>
-<button onclick="clearLog()" style="background:#444">Clear Log</button>
+  <header>
+    <div>
+      <div class="brand">ME-90 <span>PATCH MONITOR</span></div>
+      <div class="sub">Live USB-MIDI Program Change reader</div>
+    </div>
+    <select id="portSelect"><option>No MIDI inputs found</option></select>
+  </header>
 
-<pre id="log">Step 1: This skips interface 1 (confirmed locked
-by Android's MIDI driver) and instead tries
-claiming EVERY interface number 0-6, reporting
-exactly which ones succeed. The vendor-specific
-bulk-transfer ones (likely 3,4,5,6) should be
-free since Android has no built-in driver
-for "Unknown" subclass.</pre>
+  <div class="status-row">
+    <div class="dot" id="statusDot"></div>
+    <span id="statusText">Waiting for Web MIDI access…</span>
+  </div>
+
+  <div class="display">
+    <div class="patch-label">Current Patch</div>
+    <div class="patch-number" id="patchNumber">--</div>
+    <div class="patch-meta">
+      <div>Channel <b id="metaChannel">—</b></div>
+      <div>Last change <b id="metaTime">—</b></div>
+      <div>Total changes <b id="metaCount">0</b></div>
+    </div>
+  </div>
+
+  <div class="log-title">
+    <span>Message Log</span>
+    <button id="clearBtn">Clear</button>
+  </div>
+  <div class="log" id="log">
+    <div class="log-empty">No messages yet — step on a patch button to see it here.</div>
+  </div>
+
+  <footer>
+    Reads raw MIDI Program Change messages (status <code>0xC0</code>) over the
+    browser's Web MIDI API — no drivers or capture tools needed. Works in Chrome
+    and Edge; Safari and Firefox do not support Web MIDI yet. Connect the ME-90
+    via USB and select it above if it isn't picked automatically.
+  </footer>
+
+</div>
 
 <script>
-let logEl = document.getElementById("log");
-let dev = null;
-let workingInterface = null;
-let outEndpoint = null;
-let inEndpoint = null;
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const portSelect = document.getElementById('portSelect');
+const patchNumber = document.getElementById('patchNumber');
+const metaChannel = document.getElementById('metaChannel');
+const metaTime = document.getElementById('metaTime');
+const metaCount = document.getElementById('metaCount');
+const logEl = document.getElementById('log');
+const clearBtn = document.getElementById('clearBtn');
 
-function append(text) {
-  logEl.textContent += "\n" + text;
+let changeCount = 0;
+let currentInput = null;
+let midiAccess = null;
+
+function setStatus(state, text){
+  statusDot.className = 'dot' + (state ? ' ' + state : '');
+  statusText.textContent = text;
 }
-function clearLog() {
-  logEl.textContent = "";
+
+function formatTime(){
+  const d = new Date();
+  return d.toLocaleTimeString([], {hour12:false}) + '.' + String(d.getMilliseconds()).padStart(3,'0');
 }
 
-async function connectAndScan() {
-  clearLog();
-  try {
-    dev = await navigator.usb.requestDevice({
-      filters: [{ vendorId: 0x0582 }]
-    });
-    append("Selected: " + dev.productName);
+function addLogRow(tag, detail){
+  const empty = logEl.querySelector('.log-empty');
+  if (empty) empty.remove();
+  const row = document.createElement('div');
+  row.className = 'log-row';
+  row.innerHTML = `<span class="log-time">${formatTime()}</span><span class="log-tag">${tag}</span><span class="log-detail">${detail}</span>`;
+  logEl.prepend(row);
+}
 
-    await dev.open();
-    append("✅ Opened");
+function flashNumber(){
+  patchNumber.classList.add('flash');
+  setTimeout(()=> patchNumber.classList.remove('flash'), 120);
+}
 
-    if (!dev.configuration) {
-      await dev.selectConfiguration(1);
-    }
-    append("✅ Configuration: " + dev.configuration.configurationValue);
+function handleMessage(event){
+  const [statusByte, d1, d2] = event.data;
+  const messageType = statusByte & 0xF0;
+  const channel = (statusByte & 0x0F) + 1;
 
-    append("\n--- SCANNING ALL INTERFACES ---");
-    append("Total interfaces found: " + dev.configuration.interfaces.length);
-    append("Interface numbers: " + dev.configuration.interfaces.map(i => i.interfaceNumber).join(", "));
-    append("");
-
-    for (const iface of dev.configuration.interfaces) {
-      const num = iface.interfaceNumber;
-      try {
-        await dev.claimInterface(num);
-        append("✅ Interface " + num + " CLAIMED");
-
-        for (const alt of iface.alternates) {
-          const eps = alt.endpoints;
-          append("   alt " + alt.alternateSetting +
-            " class=" + alt.interfaceClass +
-            " sub=" + alt.interfaceSubclass +
-            " proto=" + alt.interfaceProtocol +
-            " endpoints=" + eps.length);
-
-          if (eps.length > 0) {
-            try {
-              if (alt.alternateSetting !== 0) {
-                await dev.selectAlternateInterface(num, alt.alternateSetting);
-                append("      ✅ selected alt " + alt.alternateSetting);
-              }
-              for (const ep of eps) {
-                append("      EP" + ep.endpointNumber +
-                  " dir=" + ep.direction +
-                  " type=" + ep.type +
-                  " size=" + ep.packetSize);
-
-                if (ep.type === "bulk") {
-                  if (ep.direction === "out" && !outEndpoint) {
-                    outEndpoint = ep.endpointNumber;
-                    workingInterface = num;
-                  }
-                  if (ep.direction === "in" && !inEndpoint) {
-                    inEndpoint = ep.endpointNumber;
-                  }
-                }
-              }
-            } catch (e3) {
-              append("      ❌ alt select failed: " + e3.message);
-            }
-          }
-        }
-
-        try {
-          await dev.releaseInterface(num);
-          append("   (released)");
-        } catch (eRelease) {
-          append("   ⚠️ release failed (non-fatal): " + eRelease.message);
-        }
-
-      } catch (e) {
-        append("❌ Interface " + num + " FAILED: " + e.message);
-      }
-    }
-
-    append("\n--- RESULT ---");
-    if (workingInterface !== null) {
-      append("✅ Best candidate: Interface " + workingInterface);
-      append("   OUT endpoint: " + outEndpoint);
-      append("   IN endpoint: " + (inEndpoint || "none found"));
-      append("\nRe-claiming it now for step 2...");
-      await dev.claimInterface(workingInterface);
-      append("✅ Interface " + workingInterface + " claimed and held open.");
-    } else {
-      append("⚠️ No BULK transfer endpoint found on any claimable interface.");
-      append("All interfaces may be locked, or endpoints are a");
-      append("different transfer type (isochronous/interrupt) we");
-      append("haven't tried selecting properly.");
-    }
-
-  } catch (e) {
-    append("❌ Error: " + e.message);
+  if (messageType === 0xC0){
+    // Program Change
+    changeCount++;
+    flashNumber();
+    patchNumber.textContent = d1;
+    metaChannel.textContent = channel;
+    metaTime.textContent = formatTime();
+    metaCount.textContent = changeCount;
+    addLogRow('PC', `Program Change → patch ${d1} (channel ${channel})`);
+  } else if (messageType === 0xB0){
+    addLogRow('CC', `Controller ${d1} = ${d2} (channel ${channel})`);
+  } else if (statusByte === 0xF0){
+    const hex = Array.from(event.data).map(b => b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
+    addLogRow('SYX', hex);
+  } else {
+    const hex = Array.from(event.data).map(b => b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
+    addLogRow('MSG', hex);
   }
 }
 
-async function trySend() {
-  if (!dev || workingInterface === null || !outEndpoint) {
-    append("\n⚠️ Run step 1 first - no working interface/endpoint found yet.");
+function attachToInput(input){
+  if (currentInput) currentInput.onmidimessage = null;
+  currentInput = input;
+  if (input){
+    input.onmidimessage = handleMessage;
+    setStatus('live', `Listening on “${input.name}”`);
+  }
+}
+
+function refreshPortList(){
+  portSelect.innerHTML = '';
+  const inputs = Array.from(midiAccess.inputs.values());
+  if (inputs.length === 0){
+    portSelect.innerHTML = '<option>No MIDI inputs found</option>';
+    setStatus('error', 'No MIDI devices detected — check the USB connection.');
     return;
   }
+  inputs.forEach((input, i) => {
+    const opt = document.createElement('option');
+    opt.value = input.id;
+    opt.textContent = input.name;
+    portSelect.appendChild(opt);
+  });
 
-  try {
-    // Generic Roland/Boss SysEx wrapper test:
-    // F0 41 [dev id] [model id bytes] ... F7
-    // We don't know ME-90's exact model ID yet, so this is just
-    // a connectivity probe - a harmless "Identity Request" style message
-    const testPacket = new Uint8Array([0xF0, 0x7E, 0x7F, 0x06, 0x01, 0xF7]);
-    // ^ This is the UNIVERSAL MIDI "Identity Request" - safe on any device,
-    // most synths/devices reply with their ID if they support it.
+  // auto-select something with ME-90 in the name, else first device
+  const preferred = inputs.find(i => /me-?90/i.test(i.name)) || inputs[0];
+  portSelect.value = preferred.id;
+  attachToInput(preferred);
+}
 
-    append("\nSending Universal Identity Request: " +
-      Array.from(testPacket).map(b => b.toString(16).padStart(2,"0")).join(" "));
+portSelect.addEventListener('change', () => {
+  const input = Array.from(midiAccess.inputs.values()).find(i => i.id === portSelect.value);
+  attachToInput(input);
+});
 
-    const result = await dev.transferOut(outEndpoint, testPacket);
-    append("✅ transferOut: status=" + result.status +
-      " bytesWritten=" + result.bytesWritten);
+clearBtn.addEventListener('click', () => {
+  logEl.innerHTML = '<div class="log-empty">No messages yet — step on a patch button to see it here.</div>';
+});
 
-    if (inEndpoint) {
-      append("\nListening for reply on IN endpoint " + inEndpoint + "...");
-      try {
-        const inResult = await dev.transferIn(inEndpoint, 64);
-        const bytes = new Uint8Array(inResult.data.buffer);
-        append("✅ Received " + bytes.length + " bytes: " +
-          Array.from(bytes).map(b => b.toString(16).padStart(2,"0")).join(" "));
-      } catch (e2) {
-        append("⚠️ No reply / transferIn failed: " + e2.message);
-      }
-    }
-
-  } catch (e) {
-    append("❌ Send failed: " + e.message);
-  }
+if (!navigator.requestMIDIAccess){
+  setStatus('error', 'This browser does not support Web MIDI. Use Chrome or Edge.');
+} else {
+  navigator.requestMIDIAccess({ sysex: true }).then(access => {
+    midiAccess = access;
+    refreshPortList();
+    access.onstatechange = refreshPortList;
+  }).catch(err => {
+    setStatus('error', 'MIDI access denied: ' + err.message);
+  });
 }
 </script>
-
 </body>
 </html>
