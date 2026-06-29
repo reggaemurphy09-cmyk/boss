@@ -2,84 +2,36 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ME-90 Android MIDI Tester</title>
+<title>ME-90 USB Sniffer</title>
 <style>
-body{
-  background:#101214;
-  color:white;
-  font-family:Arial,sans-serif;
-  padding:16px;
-}
-.card{
-  background:#1b1f24;
-  border:1px solid #333;
-  border-radius:18px;
-  padding:16px;
-  max-width:480px;
-  margin:auto;
-}
-button,select{
-  width:100%;
-  padding:15px;
-  margin:8px 0;
-  border-radius:14px;
-  border:1px solid #444;
-  background:#243447;
-  color:white;
-  font-size:16px;
-}
-.status{
-  padding:12px;
-  background:#111;
-  border-radius:12px;
-  margin:10px 0;
-}
-.big{
-  font-size:60px;
-  color:#22c55e;
-  text-align:center;
-  font-weight:bold;
-}
-.log{
-  background:#070707;
-  color:#9ae6b4;
-  padding:10px;
-  height:260px;
-  overflow:auto;
-  font-family:monospace;
-  font-size:12px;
-  white-space:pre-wrap;
-  border-radius:12px;
-}
+body{background:#101214;color:white;font-family:Arial;padding:16px}
+.card{background:#1b1f24;border:1px solid #333;border-radius:18px;padding:16px;max-width:480px;margin:auto}
+button{width:100%;padding:16px;margin:8px 0;border-radius:14px;border:1px solid #444;background:#243447;color:white;font-size:16px}
+.status{padding:12px;background:#111;border-radius:12px;margin:10px 0}
+.log{background:#050505;color:#9ae6b4;padding:10px;height:360px;overflow:auto;font-family:monospace;font-size:12px;white-space:pre-wrap;border-radius:12px}
 </style>
 </head>
 <body>
-
 <div class="card">
-  <h2>🎛️ ME-90 Android Tester</h2>
-
-  <button onclick="connectMIDI()">🔌 CONNECT ME-90</button>
-
-  <select id="inputSelect"></select>
-
-  <div class="status" id="status">Status: Not connected</div>
-
-  <div>Current Patch:</div>
-  <div class="big" id="patch">--</div>
-
-  <button onclick="clearLog()">Clear Log</button>
-
-  <div class="log" id="log">Press CONNECT, then step on ME-90 pedal...</div>
+  <h2>🎛️ ME-90 USB Sniffer</h2>
+  <button onclick="connectUSB()">🔌 CONNECT USB</button>
+  <button onclick="stopListen()">⛔ STOP</button>
+  <button onclick="clearLog()">🗑 CLEAR</button>
+  <div class="status" id="status">Not connected</div>
+  <div class="log" id="log">Connect ME-90, then press pedal...</div>
 </div>
 
 <script>
-let midiAccess = null;
-let currentInput = null;
-let count = 0;
+const BOSS_VID = 0x0582;
+const ME90_PID = 0x02e0;
 
-const inputSelect = document.getElementById("inputSelect");
+let device = null;
+let inEndpoint = null;
+let outEndpoint = null;
+let ifaceNumber = null;
+let running = false;
+
 const statusBox = document.getElementById("status");
-const patchBox = document.getElementById("patch");
 const logBox = document.getElementById("log");
 
 function log(msg){
@@ -87,103 +39,127 @@ function log(msg){
   logBox.textContent = `[${t}] ${msg}\n` + logBox.textContent;
 }
 
-function clearLog(){
-  logBox.textContent = "";
+function clearLog(){ logBox.textContent = ""; }
+
+function hex(data){
+  return Array.from(data)
+    .map(b => b.toString(16).padStart(2,"0").toUpperCase())
+    .join(" ");
 }
 
-async function connectMIDI(){
+async function connectUSB(){
   try{
-    if(!navigator.requestMIDIAccess){
-      statusBox.textContent = "Status: Web MIDI not supported. Try Chrome Android or Samsung Internet.";
-      log("❌ Web MIDI not supported");
+    if(!navigator.usb){
+      statusBox.textContent = "WebUSB not supported. Use Chrome Android.";
+      log("❌ WebUSB not supported");
       return;
     }
 
-    statusBox.textContent = "Status: Asking MIDI permission...";
-    log("🔍 Requesting MIDI access...");
+    log("🔍 Requesting ME-90...");
+    device = await navigator.usb.requestDevice({
+      filters:[{ vendorId:BOSS_VID, productId:ME90_PID }]
+    });
 
-    midiAccess = await navigator.requestMIDIAccess({ sysex:true });
+    log("✅ Found: " + (device.productName || "BOSS ME-90"));
 
-    log("✅ MIDI access granted");
-    refreshInputs();
+    await device.open();
+    log("✅ Device opened");
 
-    midiAccess.onstatechange = () => {
-      log("🔄 MIDI device changed");
-      refreshInputs();
-    };
+    if(device.configuration === null){
+      await device.selectConfiguration(1);
+      log("✅ Configuration selected");
+    }
+
+    scanEndpoints();
+
+    if(ifaceNumber === null || inEndpoint === null){
+      statusBox.textContent = "No IN endpoint found";
+      log("❌ No IN endpoint found");
+      return;
+    }
+
+    try{
+      await device.claimInterface(ifaceNumber);
+      log("✅ Claimed interface #" + ifaceNumber);
+    }catch(e){
+      log("⚠️ Claim error: " + e.message);
+    }
+
+    statusBox.textContent =
+      "Connected | Interface #" + ifaceNumber +
+      " | IN " + inEndpoint +
+      " | OUT " + (outEndpoint ?? "none");
+
+    running = true;
+    listenLoop();
 
   }catch(err){
-    statusBox.textContent = "Status: MIDI permission denied/error";
+    statusBox.textContent = "Error: " + err.message;
     log("❌ " + err.message);
   }
 }
 
-function refreshInputs(){
-  inputSelect.innerHTML = "";
+function scanEndpoints(){
+  inEndpoint = null;
+  outEndpoint = null;
+  ifaceNumber = null;
 
-  const inputs = Array.from(midiAccess.inputs.values());
+  const config = device.configuration || device.configurations[0];
 
-  if(inputs.length === 0){
-    statusBox.textContent = "Status: No MIDI input found";
-    log("❌ No MIDI input found. Check OTG cable and ME-90 USB.");
-    return;
+  log("🔎 Scanning interfaces...");
+
+  for(const iface of config.interfaces){
+    for(const alt of iface.alternates){
+      log("Interface " + iface.interfaceNumber +
+          " alt " + alt.alternateSetting +
+          " class " + alt.interfaceClass);
+
+      for(const ep of alt.endpoints){
+        log("  endpoint " + ep.endpointNumber +
+            " " + ep.direction +
+            " " + ep.type +
+            " packet " + ep.packetSize);
+
+        if(ep.direction === "in" && inEndpoint === null){
+          inEndpoint = ep.endpointNumber;
+          ifaceNumber = iface.interfaceNumber;
+        }
+
+        if(ep.direction === "out" && outEndpoint === null){
+          outEndpoint = ep.endpointNumber;
+        }
+      }
+    }
   }
-
-  inputs.forEach(input => {
-    const opt = document.createElement("option");
-    opt.value = input.id;
-    opt.textContent = input.name || "MIDI Input";
-    inputSelect.appendChild(opt);
-    log("🎹 Found input: " + input.name);
-  });
-
-  const preferred = inputs.find(i => /me-?90|boss/i.test(i.name)) || inputs[0];
-  inputSelect.value = preferred.id;
-  attachInput(preferred);
 }
 
-function attachInput(input){
-  if(currentInput){
-    currentInput.onmidimessage = null;
+async function listenLoop(){
+  log("👂 Listening for incoming USB packets...");
+  log("Now press ME-90 pedal.");
+
+  while(running && device && inEndpoint !== null){
+    try{
+      const result = await device.transferIn(inEndpoint, 64);
+
+      if(result.status === "ok" && result.data){
+        const bytes = new Uint8Array(result.data.buffer);
+        log("📥 IN: " + hex(bytes));
+      }else{
+        log("⚠️ IN status: " + result.status);
+      }
+
+    }catch(e){
+      log("❌ Read error: " + e.message);
+      running = false;
+      break;
+    }
   }
-
-  currentInput = input;
-  currentInput.onmidimessage = handleMIDIMessage;
-
-  statusBox.textContent = "Status: Listening on " + input.name;
-  log("✅ Listening: " + input.name);
 }
 
-inputSelect.addEventListener("change", () => {
-  const inputs = Array.from(midiAccess.inputs.values());
-  const selected = inputs.find(i => i.id === inputSelect.value);
-  if(selected) attachInput(selected);
-});
-
-function handleMIDIMessage(event){
-  const data = Array.from(event.data);
-  const status = data[0];
-  const d1 = data[1];
-  const d2 = data[2];
-
-  const type = status & 0xF0;
-  const channel = (status & 0x0F) + 1;
-
-  const hex = data.map(b => b.toString(16).padStart(2,"0").toUpperCase()).join(" ");
-
-  if(type === 0xC0){
-    count++;
-    patchBox.textContent = d1;
-    log(`✅ PROGRAM CHANGE received: Patch ${d1} | Channel ${channel} | Raw: ${hex}`);
-  }
-  else if(type === 0xB0){
-    log(`🎚️ CONTROL CHANGE received: CC ${d1} = ${d2} | Channel ${channel} | Raw: ${hex}`);
-  }
-  else{
-    log(`📩 MIDI received: ${hex}`);
-  }
+function stopListen(){
+  running = false;
+  log("⛔ Stopped listening");
 }
 </script>
-
 </body>
 </html>
