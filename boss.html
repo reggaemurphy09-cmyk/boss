@@ -2,190 +2,455 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ME-90 · MIDI Test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ME-90 Controller</title>
 <style>
   :root{
-    --bg:#14110f; --panel:#1c1815; --edge:#2a241f;
-    --amber:#e8742c; --green:#4caf6a; --red:#c0463a;
-    --text:#ece6da; --dim:#948b7c;
-    --mono:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
-    --display:"Oswald","Arial Narrow",sans-serif;
+    --bg: #14110f;
+    --panel: #1c1815;
+    --panel-edge: #2a241f;
+    --amber: #e8742c;
+    --amber-dim: #8a4a22;
+    --green: #4caf6a;
+    --red: #c0463a;
+    --text: #ece6da;
+    --text-dim: #948b7c;
+    --mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    --display: "Oswald", "Arial Narrow", sans-serif;
   }
-  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
-  html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--mono);}
-  .wrap{max-width:480px;margin:0 auto;padding:20px 16px 50px;}
-  .brand{font-family:var(--display);font-weight:700;font-size:19px;}
-  .brand span{color:var(--amber);}
-  .sub{font-size:10.5px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin:2px 0 16px;}
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-  select{ width:100%; background:var(--panel); color:var(--text); border:1px solid var(--edge);
-    font-family:var(--mono); font-size:12px; padding:9px; border-radius:6px; margin-bottom:10px; }
-
-  .status-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim);margin-bottom:16px;}
-  .dot{width:8px;height:8px;border-radius:50%;background:#5a4a3a;flex-shrink:0;}
-  .dot.live{background:var(--green);box-shadow:0 0 8px var(--green);}
-  .dot.error{background:var(--red);box-shadow:0 0 8px var(--red);}
-
-  .section{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px;margin-bottom:14px;}
-  .section-title{font-size:10.5px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;margin-bottom:10px;}
-
-  .row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
-  .row label{width:64px;font-size:11px;color:var(--dim);}
-  .row input[type=number]{
-    width:60px; background:#211c18; border:1px solid var(--edge); color:var(--text);
-    font-family:var(--mono); font-size:13px; padding:7px; border-radius:6px; text-align:center;
+  *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; margin:0; padding:0; }
+  html,body{
+    min-height:100vh; background: var(--bg);
+    background-image: radial-gradient(circle at 20% 0%, rgba(232,116,44,0.06), transparent 45%);
+    color: var(--text); font-family: var(--mono); touch-action: manipulation;
   }
-  .sendbtn{
-    flex:1; background:var(--amber); border:none; color:#1a1410; font-weight:700;
-    font-size:12px; padding:9px; border-radius:6px; cursor:pointer; letter-spacing:0.5px;
+  .wrap{ max-width:520px; margin:0 auto; padding: 20px 16px 60px; }
+
+  header{ margin-bottom:16px; }
+  .brand{ font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:0.5px; }
+  .brand span{ color:var(--amber); }
+  .sub{ font-size:10.5px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+
+  .status-row{ display:flex; align-items:center; gap:9px; margin-bottom:14px; font-size:12px; color:var(--text-dim); }
+  .dot{ width:8px; height:8px; border-radius:50%; background:#5a4a3a; flex-shrink:0; transition:.2s; }
+  .dot.live{ background:var(--green); box-shadow:0 0 8px var(--green); }
+  .dot.error{ background:var(--red); box-shadow:0 0 8px var(--red); }
+  .dot.warn{ background:var(--amber); box-shadow:0 0 8px var(--amber); animation:pulse 1s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.35} }
+
+  .section{ background: var(--panel); border:1px solid var(--panel-edge); border-radius:10px; padding:14px; margin-bottom:14px; }
+  .section-title{ font-size:10.5px; letter-spacing:1.5px; color:var(--text-dim); text-transform:uppercase; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+  .verified{ color:var(--green); } .unverified{ color:var(--amber); }
+  .tag{ font-size:9px; padding:2px 6px; border-radius:3px; border:1px solid currentColor; letter-spacing:0.5px; }
+
+  .connect-btn{
+    width:100%; padding:15px; border-radius:10px; border:1px solid var(--green);
+    background: linear-gradient(180deg, #1c3526, #142a1c);
+    color:var(--green); font-family:var(--display); font-weight:600; font-size:15px;
+    letter-spacing:0.5px; cursor:pointer; margin-bottom:10px;
   }
-  .sendbtn:active{ transform:scale(0.97); }
+  .connect-btn:active{ transform: scale(0.98); }
+  .connect-btn.connected{ border-color:var(--amber-dim); color:var(--text-dim); background:var(--panel); }
+  .info-box{ font-size:11.5px; color:var(--text-dim); line-height:1.7; }
+  .info-box b{ color:var(--text); }
 
-  .quickgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
-  .qbtn{ background:#211c18; border:1px solid var(--edge); border-radius:7px; padding:11px 4px;
-    text-align:center; font-size:12px; color:var(--dim); cursor:pointer; }
-  .qbtn:active{ transform:scale(0.95); background:var(--amber); color:#1a1410; }
+  .grid5{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
 
-  .log{background:#100d0b;border:1px solid var(--edge);border-radius:8px;height:260px;overflow-y:auto;padding:6px 0;font-size:11px;}
-  .log-row{display:grid;grid-template-columns:62px 26px 1fr;gap:8px;padding:5px 12px;border-bottom:1px solid #1c1814;}
-  .log-row:last-child{border-bottom:none;}
-  .log-time{color:var(--dim);}
-  .log-tag.out{color:var(--amber);font-weight:700;} .log-tag.in{color:var(--green);font-weight:700;}
-  .log-empty{padding:30px 16px;color:var(--dim);text-align:center;font-size:11.5px;}
-  .clear{background:none;border:1px solid var(--edge);color:var(--dim);font-size:10px;padding:3px 8px;border-radius:4px;font-family:var(--mono);float:right;}
+  .btn{
+    background:#211c18; border:1px solid var(--panel-edge); border-radius:8px;
+    padding:14px 4px; text-align:center; font-weight:600; font-size:13px;
+    color:var(--text-dim); cursor:pointer; user-select:none;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.4);
+  }
+  .btn:active{ transform:scale(0.94); }
+  .btn.active{ background:var(--amber); border-color:var(--amber); color:#1a1410; box-shadow:inset 0 -2px 0 rgba(0,0,0,0.25); }
+  .btn.on{ background:#3a2a1c; border-color:var(--amber-dim); color:var(--amber); }
+  .btn.small{ padding:10px 4px; font-size:11.5px; }
+  .btn.danger{ border-color:var(--red); color:var(--red); }
+
+  .slider-row{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .slider-row label{ width:54px; font-size:11px; color:var(--text-dim); }
+  .slider-row input[type=range]{ flex:1; height:4px; -webkit-appearance:none; appearance:none; background:#2a241f; border-radius:10px; outline:none; }
+  .slider-row input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:var(--amber); cursor:pointer; border:1px solid #1a1410; }
+  .slider-val{ width:30px; text-align:right; font-size:12px; color:var(--text); }
+
+  .log{ background:#100d0b; border:1px solid var(--panel-edge); border-radius:8px; height:190px; overflow-y:auto; padding:8px 12px; font-size:11px; font-family:var(--mono); color:var(--text-dim); white-space:pre-wrap; word-break:break-all; }
+
+  .note{ font-size:11px; color:var(--text-dim); line-height:1.6; margin-top:8px; }
+  .note code{ color:var(--text); background:#100d0b; padding:1px 5px; border-radius:3px; }
+  ::-webkit-scrollbar{ width:7px; } ::-webkit-scrollbar-thumb{ background:#332b24; border-radius:4px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="brand">ME-90 <span>MIDI TEST</span></div>
-  <div class="sub">Raw message sender + live monitor — nothing guessed, nothing automatic</div>
 
-  <select id="portSelect"><option>No MIDI devices found</option></select>
-  <div class="status-row"><div class="dot" id="statusDot"></div><span id="statusText">Waiting for Web MIDI access…</span></div>
+  <header>
+    <div class="brand">ME-90 <span>CONTROLLER</span></div>
+    <div class="sub">WebUSB direct control</div>
+  </header>
 
-  <div class="section">
-    <div class="section-title">Send Raw Message</div>
-    <div class="row">
-      <label>Status</label><input type="number" id="byte0" min="0" max="255" value="176">
-      <label>Data 1</label><input type="number" id="byte1" min="0" max="127" value="1">
-      <label>Data 2</label><input type="number" id="byte2" min="0" max="127" value="127">
-    </div>
-    <div class="row">
-      <button class="sendbtn" id="sendRaw">SEND</button>
-    </div>
-    <div class="quickgrid">
-      <div class="qbtn" id="qPC0">PC → 0</div>
-      <div class="qbtn" id="qPC1">PC → 1</div>
-      <div class="qbtn" id="qPC2">PC → 2</div>
-      <div class="qbtn" id="qCCon">CC1 → 127</div>
-      <div class="qbtn" id="qCCoff">CC1 → 0</div>
-      <div class="qbtn" id="qAllNotesOff">All notes off</div>
+  <div class="status-row"><div class="dot" id="statusDot"></div><span id="statusText">disconnected</span></div>
+
+  <div class="section" style="padding-top:14px;">
+    <button class="connect-btn" id="btnConnect">CONNECT TO ME-90</button>
+    <div class="info-box">
+      Device: <b id="deviceInfo">BOSS ME-90 (0582:02e0)</b><br>
+      Interface: <b id="interfaceInfo">—</b> &nbsp;·&nbsp; Endpoint: <b id="endpointInfo">—</b><br>
+      <span id="statusMsg">Tap connect to pair</span>
     </div>
   </div>
 
   <div class="section">
-    <div class="section-title">Live Log <button class="clear" id="clearBtn">Clear</button></div>
-    <div class="log" id="log"><div class="log-empty">Connect, then send a message — every byte in and out shows here.</div></div>
+    <div class="section-title"><span>Patch Select <span class="tag verified">verified</span></span></div>
+    <div class="grid5" id="bankGrid">
+      <div class="btn" data-bank="0">1</div><div class="btn" data-bank="1">2</div><div class="btn" data-bank="2">3</div>
+      <div class="btn" data-bank="3">4</div><div class="btn" data-bank="4">5</div>
+    </div>
   </div>
+
+  <div class="section">
+    <div class="section-title"><span>Effects <span class="tag unverified">unverified</span></span></div>
+    <div class="grid3" id="fxGrid">
+      <div class="btn" data-fx="od">OD</div><div class="btn" data-fx="ds">DS</div><div class="btn" data-fx="mod">MOD</div>
+      <div class="btn" data-fx="delay">DELAY</div><div class="btn" data-fx="reverb">REVERB</div><div class="btn" data-fx="chorus">CHORUS</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span>Parameters <span class="tag unverified">unverified</span></span></div>
+    <div id="sliderGroup"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <span>Debug</span>
+    </div>
+    <div class="grid3">
+      <div class="btn small" id="btnTestCC">TEST CC</div>
+      <div class="btn small" id="btnTestPC">TEST PC</div>
+      <div class="btn small danger" id="btnReset">RESET</div>
+    </div>
+    <div class="grid3" style="margin-top:8px;">
+      <div class="btn small" id="btnTap">⏱ TAP</div>
+      <div class="btn small" id="btnSave">💾 SAVE</div>
+      <div class="btn small" id="btnClearLog">🗑 CLEAR</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span>Log</span></div>
+    <div class="log" id="logArea">Tap CONNECT to pair with your ME-90</div>
+  </div>
+
+  <div class="note">
+    Patch select uses MIDI Program Change (<code>0xC0</code>) — confirmed from a live USB
+    capture of Tone Studio. Effects and parameters send guessed CC numbers and are
+    <strong>not yet confirmed</strong> — use TEST CC / TEST PC and watch the log while
+    checking the pedal's response.
+  </div>
+
 </div>
 
 <script>
-const statusDot = document.getElementById('statusDot');
-const statusText = document.getElementById('statusText');
-const portSelect = document.getElementById('portSelect');
-const logEl = document.getElementById('log');
+(function() {
+  'use strict';
 
-let midiAccess = null, currentInput = null, currentOutput = null;
+  const state = {
+    bank: 0,
+    fx: { od: false, ds: false, mod: false, delay: false, reverb: false, chorus: false },
+    params: { gain: 60, tone: 64, level: 80, time: 50, depth: 40 }
+  };
 
-function setStatus(state, text){ statusDot.className='dot'+(state?' '+state:''); statusText.textContent=text; }
-function formatTime(){ const d=new Date(); return d.toLocaleTimeString([],{hour12:false})+'.'+String(d.getMilliseconds()).padStart(3,'0'); }
-function decode(bytes){
-  const status = bytes[0] & 0xF0, ch=(bytes[0]&0x0F)+1;
-  if (status===0xC0) return `Program Change → ${bytes[1]} (ch ${ch})`;
-  if (status===0xB0) return `CC ${bytes[1]} = ${bytes[2]} (ch ${ch})`;
-  if (status===0x90) return `Note On ${bytes[1]} vel ${bytes[2]} (ch ${ch})`;
-  if (status===0x80) return `Note Off ${bytes[1]} (ch ${ch})`;
-  return '';
-}
-function addLog(tag, hex, detail){
-  const empty = logEl.querySelector('.log-empty'); if(empty) empty.remove();
-  const row = document.createElement('div'); row.className='log-row';
-  row.innerHTML = `<span class="log-time">${formatTime()}</span><span class="log-tag ${tag}">${tag.toUpperCase()}</span><span>${hex} <span style="color:var(--dim)">${detail||''}</span></span>`;
-  logEl.prepend(row);
-}
+  let usbDevice = null;
+  let usbEndpointOut = null;
+  let usbInterfaceNumber = null;
 
-function handleMessage(event){
-  const data = event.data;
-  const hex = Array.from(data).map(b=>b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
-  addLog('in', hex, decode(data));
-}
-function attachInput(input){ if(currentInput) currentInput.onmidimessage=null; currentInput=input; if(input) input.onmidimessage=handleMessage; }
-function attachOutput(output){ currentOutput = output; }
+  const BOSS_VID = 0x0582;
+  const ME90_PID = 0x02e0;
 
-function send(bytes){
-  if (!currentOutput){ addLog('out','—','not connected'); return; }
-  try{
-    currentOutput.send(bytes);
-    const hex = bytes.map(b=>b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
-    addLog('out', hex, decode(bytes));
-  }catch(e){ addLog('out','—','error: '+e.message); }
-}
+  // CC numbers are GUESSES, not yet confirmed against a real capture.
+  const CC = {
+    GAIN: 1, TONE: 2, LEVEL: 3, TIME: 4, DEPTH: 5,
+    OD: 16, DS: 17, MOD: 18, DELAY: 19, REVERB: 20, CHORUS: 21,
+    TAP: 64
+  };
 
-function refreshPortList(){
-  portSelect.innerHTML = '';
-  const inputs = Array.from(midiAccess.inputs.values());
-  const outputs = Array.from(midiAccess.outputs.values());
-  if (inputs.length===0 && outputs.length===0){
-    portSelect.innerHTML = '<option>No MIDI devices found</option>';
-    setStatus('error','No MIDI devices detected.');
-    return;
+  const logArea = document.getElementById('logArea');
+  const statusDot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
+  const deviceInfo = document.getElementById('deviceInfo');
+  const interfaceInfo = document.getElementById('interfaceInfo');
+  const endpointInfo = document.getElementById('endpointInfo');
+  const statusMsg = document.getElementById('statusMsg');
+  const bankBtns = document.querySelectorAll('[data-bank]');
+  const fxBtns = document.querySelectorAll('[data-fx]');
+
+  const params = [
+    {key:'gain',label:'GAIN',cc:CC.GAIN,val:60},{key:'tone',label:'TONE',cc:CC.TONE,val:64},
+    {key:'level',label:'LEVEL',cc:CC.LEVEL,val:80},{key:'time',label:'TIME',cc:CC.TIME,val:50},
+    {key:'depth',label:'DEPTH',cc:CC.DEPTH,val:40}
+  ];
+  const sliderGroup = document.getElementById('sliderGroup');
+  params.forEach(p=>{
+    const row=document.createElement('div'); row.className='slider-row';
+    row.innerHTML=`<label>${p.label}</label><input type="range" min="0" max="127" value="${p.val}" id="param-${p.key}"><span class="slider-val" id="val-${p.key}">${p.val}</span>`;
+    sliderGroup.appendChild(row);
+  });
+  const sliders = {}, valLabels = {};
+  params.forEach(p=>{ sliders[p.key]=document.getElementById('param-'+p.key); valLabels[p.key]=document.getElementById('val-'+p.key); });
+
+  function setStatus(cls, text){ statusDot.className='dot'+(cls?' '+cls:''); statusText.textContent=text; }
+
+  function log(msg) {
+    const time = new Date().toLocaleTimeString();
+    const entry = `[${time}] ${msg}`;
+    logArea.textContent = entry + '\n' + logArea.textContent.split('\n').slice(0, 30).join('\n');
+    console.log('[ME-90]', msg);
   }
-  const names = new Set([...inputs.map(i=>i.name), ...outputs.map(o=>o.name)]);
-  names.forEach(name=>{
-    const opt = document.createElement('option'); opt.value=name; opt.textContent=name;
-    portSelect.appendChild(opt);
-  });
-  const preferred = [...names].find(n=>/me-?90/i.test(n)) || [...names][0];
-  portSelect.value = preferred;
-  selectDevice(preferred);
-}
-function selectDevice(name){
-  const input = Array.from(midiAccess.inputs.values()).find(i=>i.name===name);
-  const output = Array.from(midiAccess.outputs.values()).find(o=>o.name===name);
-  attachInput(input); attachOutput(output);
-  setStatus('live', `Connected to "${name}"${input?' · listening':''}${output?' · ready to send':''}`);
-}
-portSelect.addEventListener('change', ()=>selectDevice(portSelect.value));
-document.getElementById('clearBtn').addEventListener('click', ()=>{
-  logEl.innerHTML = '<div class="log-empty">Connect, then send a message — every byte in and out shows here.</div>';
-});
+  function clearLog() { logArea.textContent = 'Log cleared'; }
 
-document.getElementById('sendRaw').addEventListener('click', ()=>{
-  const b0 = parseInt(document.getElementById('byte0').value)||0;
-  const b1 = parseInt(document.getElementById('byte1').value)||0;
-  const b2 = parseInt(document.getElementById('byte2').value)||0;
-  send([b0,b1,b2]);
-});
-document.getElementById('qPC0').addEventListener('click', ()=>send([0xC0,0]));
-document.getElementById('qPC1').addEventListener('click', ()=>send([0xC0,1]));
-document.getElementById('qPC2').addEventListener('click', ()=>send([0xC0,2]));
-document.getElementById('qCCon').addEventListener('click', ()=>send([0xB0,1,127]));
-document.getElementById('qCCoff').addEventListener('click', ()=>send([0xB0,1,0]));
-document.getElementById('qAllNotesOff').addEventListener('click', ()=>send([0xB0,123,0]));
+  async function sendUSB(data, description = '') {
+    if (!usbDevice || usbEndpointOut === null) {
+      log('❌ Not connected');
+      return false;
+    }
+    try {
+      const packet = new Uint8Array(4);
+      packet[0] = data[0] || 0;
+      packet[1] = data[1] || 0;
+      packet[2] = data[2] || 0;
+      packet[3] = 0;
+      const hex = Array.from(packet).map(b => '0x' + b.toString(16).padStart(2, '0')).join(' ');
+      log(`📤 ${description || 'SEND'}: [${hex}]`);
+      const result = await usbDevice.transferOut(usbEndpointOut, packet);
+      if (result.status === 'ok') {
+        log(`✅ Sent ${result.bytesWritten} bytes`);
+        return true;
+      } else {
+        log(`⚠️ Transfer status: ${result.status}`);
+        return false;
+      }
+    } catch(e) {
+      log(`❌ USB error: ${e.message}`);
+      return false;
+    }
+  }
 
-if (!navigator.requestMIDIAccess){
-  setStatus('error','This browser does not support Web MIDI. Use Chrome or Edge.');
-} else {
-  navigator.requestMIDIAccess({ sysex: true }).then(access=>{
-    midiAccess = access;
-    refreshPortList();
-    access.onstatechange = refreshPortList;
-  }).catch(err=>{
-    setStatus('error','MIDI access denied: '+err.message);
+  async function sendCC(channel, cc, value) {
+    const status = 0xB0 | (channel & 0x0F);
+    return await sendUSB([status, cc, Math.min(127, Math.max(0, value))], `CC#${cc}=${value}`);
+  }
+  async function sendPC(channel, program) {
+    const status = 0xC0 | (channel & 0x0F);
+    return await sendUSB([status, Math.min(127, Math.max(0, program))], `PC#${program}`);
+  }
+
+  async function testCC() { log('🔬 Testing CC #1 (Gain) = 100'); await sendCC(0, 1, 100); }
+  async function testPC() { log('🔬 Testing Program Change #3'); await sendPC(0, 3); }
+
+  async function connectUSB() {
+    try {
+      if (!navigator.usb) {
+        log('❌ WebUSB not supported');
+        setStatus('error', 'unsupported');
+        return;
+      }
+
+      log('🔍 Requesting USB device...');
+      statusMsg.textContent = 'Select your ME-90 from the popup…';
+      setStatus('warn', 'connecting…');
+
+      const device = await navigator.usb.requestDevice({
+        filters: [{ vendorId: BOSS_VID, productId: ME90_PID }]
+      });
+
+      log(`✅ Found: ${device.productName || 'ME-90'}`);
+      deviceInfo.textContent = `${device.productName || 'ME-90'} (${device.vendorId.toString(16)}:${device.productId.toString(16)})`;
+
+      await device.open();
+      log('✅ Device opened');
+
+      if (device.configuration === null) {
+        await device.selectConfiguration(1);
+        log('✅ Selected configuration #1');
+      }
+
+      // Release any interfaces the OS driver may already hold, on the ACTIVE config only.
+      for (const iface of device.configuration.interfaces) {
+        try {
+          await device.releaseInterface(iface.interfaceNumber);
+          log(`Released interface #${iface.interfaceNumber}`);
+        } catch(e) { /* wasn't claimed, ignore */ }
+      }
+
+      await new Promise(r => setTimeout(r, 200));
+
+      // Claim interfaces first, and only scan endpoints on interfaces we actually claimed.
+      // This avoids picking an endpoint whose interface never got claimed (the earlier bug).
+      let foundEndpoint = null;
+      let foundEndpointIn = null;
+      let foundInterfaceNum = null;
+      const claimed = [];
+
+      log('🔍 Scanning + claiming interfaces...');
+
+      for (const iface of device.configuration.interfaces) {
+        const alt = iface.alternate;
+        const num = iface.interfaceNumber;
+        try {
+          await device.claimInterface(num);
+          claimed.push(num);
+          log(`✅ Claimed interface #${num} (class: ${alt.interfaceClass})`);
+        } catch(e) {
+          log(`⚠️ Could not claim interface #${num}: ${e.message}`);
+          continue; // never consider endpoints on an interface we couldn't claim
+        }
+
+        const endpoints = alt.endpoints || [];
+        log(`  Interface #${num}: ${endpoints.length} endpoints`);
+        for (const ep of endpoints) {
+          if (ep.direction === 'out') {
+            log(`    → OUT endpoint: 0x${ep.endpointNumber.toString(16)} (type: ${ep.type})`);
+            // Prefer interface #5 if present (matches the MIDI interface from the USB dump),
+            // otherwise keep the first OUT endpoint found on any successfully claimed interface.
+            if (num === 5 || foundEndpoint === null) {
+              foundEndpoint = ep.endpointNumber;
+              foundInterfaceNum = num;
+            }
+          }
+          if (ep.direction === 'in' && foundEndpointIn === null) {
+            foundEndpointIn = ep.endpointNumber;
+          }
+        }
+      }
+
+      if (claimed.length === 0) {
+        log('❌ Could not claim any interface');
+        statusMsg.textContent = 'Could not claim any interface';
+        setStatus('error', 'failed');
+        return;
+      }
+
+      if (foundEndpoint === null) {
+        log('❌ No OUT endpoint found on any claimed interface');
+        statusMsg.textContent = 'No OUT endpoint found';
+        setStatus('error', 'failed');
+        return;
+      }
+
+      log(`✅ Using Interface #${foundInterfaceNum}, OUT endpoint 0x${foundEndpoint.toString(16)}`);
+
+      usbDevice = device;
+      usbEndpointOut = foundEndpoint;
+      usbInterfaceNumber = foundInterfaceNum;
+
+      interfaceInfo.textContent = `#${foundInterfaceNum}`;
+      endpointInfo.textContent = `0x${foundEndpoint.toString(16)}`;
+
+      setStatus('live', 'connected');
+      statusMsg.textContent = 'Connected! Sending initial state…';
+      document.getElementById('btnConnect').textContent = 'CONNECTED';
+      document.getElementById('btnConnect').classList.add('connected');
+      log('✅ USB connection ready!');
+
+      setTimeout(async () => {
+        await sendAllState();
+        statusMsg.textContent = 'Ready! Test CC and PC buttons below.';
+      }, 500);
+
+    } catch (err) {
+      if (err.message && (err.message.includes('cancelled') || err.message.includes('No device selected'))) {
+        log('⛔ Connection cancelled by user');
+        statusMsg.textContent = 'Cancelled';
+        setStatus('', 'disconnected');
+      } else {
+        log(`❌ Connection error: ${err.message}`);
+        setStatus('error', 'error');
+        statusMsg.textContent = err.message;
+      }
+    }
+  }
+
+  async function sendAllState() {
+    if (!usbDevice) { log('⚠️ Not connected'); return; }
+    log('📤 Sending all state...');
+    await sendPC(0, state.bank);
+    const fxMap = { od: CC.OD, ds: CC.DS, mod: CC.MOD, delay: CC.DELAY, reverb: CC.REVERB, chorus: CC.CHORUS };
+    for (const fx of Object.keys(fxMap)) await sendCC(0, fxMap[fx], state.fx[fx] ? 127 : 0);
+    const paramMap = { gain: CC.GAIN, tone: CC.TONE, level: CC.LEVEL, time: CC.TIME, depth: CC.DEPTH };
+    for (const param of Object.keys(paramMap)) await sendCC(0, paramMap[param], state.params[param]);
+    log('✅ State sent');
+  }
+
+  function updateUI() {
+    bankBtns.forEach((btn, idx) => btn.classList.toggle('active', idx === state.bank));
+    fxBtns.forEach(btn => btn.classList.toggle('on', state.fx[btn.dataset.fx]));
+    params.forEach(p => { sliders[p.key].value = state.params[p.key]; valLabels[p.key].textContent = state.params[p.key]; });
+  }
+
+  document.getElementById('btnConnect').addEventListener('click', connectUSB);
+  document.getElementById('btnTestCC').addEventListener('click', testCC);
+  document.getElementById('btnTestPC').addEventListener('click', testPC);
+  document.getElementById('btnClearLog').addEventListener('click', clearLog);
+
+  bankBtns.forEach((btn, idx) => {
+    btn.addEventListener('click', async () => {
+      state.bank = idx; updateUI();
+      await sendPC(0, idx);
+      log(`📁 Bank ${idx + 1}`);
+    });
   });
-}
+
+  fxBtns.forEach(btn => {
+    const fx = btn.dataset.fx;
+    btn.addEventListener('click', async () => {
+      state.fx[fx] = !state.fx[fx]; updateUI();
+      await sendCC(0, CC[fx.toUpperCase()], state.fx[fx] ? 127 : 0);
+      log(`🎚️ ${fx.toUpperCase()} ${state.fx[fx] ? 'ON' : 'OFF'}`);
+    });
+  });
+
+  params.forEach(p => {
+    sliders[p.key].addEventListener('input', async () => {
+      const val = parseInt(sliders[p.key].value);
+      state.params[p.key] = val; valLabels[p.key].textContent = val;
+      await sendCC(0, p.cc, val);
+    });
+  });
+
+  document.getElementById('btnTap').addEventListener('click', async () => {
+    await sendCC(0, CC.TAP, 127);
+    setTimeout(async () => await sendCC(0, CC.TAP, 0), 30);
+    log('⏱ TAP');
+  });
+
+  document.getElementById('btnSave').addEventListener('click', async () => {
+    await sendCC(0, 80, 127);
+    setTimeout(async () => await sendCC(0, 80, 0), 30);
+    log('💾 Save command sent');
+  });
+
+  document.getElementById('btnReset').addEventListener('click', async () => {
+    state.bank = 0;
+    state.fx = { od: false, ds: false, mod: false, delay: false, reverb: false, chorus: false };
+    state.params = { gain: 60, tone: 64, level: 80, time: 50, depth: 40 };
+    updateUI();
+    await sendAllState();
+    log('↺ Reset');
+  });
+
+  if (!navigator.usb) {
+    log('❌ WebUSB not supported. Use Chrome.');
+    setStatus('error', 'unsupported');
+    statusMsg.textContent = 'Use Chrome browser';
+  } else {
+    log('🔌 Tap CONNECT to pair with your ME-90');
+  }
+})();
 </script>
 </body>
 </html>
