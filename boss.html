@@ -274,72 +274,75 @@
       await device.open();
       log('✅ Device opened');
 
-      try {
-        if (device.configurations && device.configurations.length > 0) {
-          for (const config of device.configurations) {
-            for (const iface of config.interfaces) {
-              try {
-                await device.releaseInterface(iface.interfaceNumber);
-                log(`Released interface #${iface.interfaceNumber}`);
-              } catch(e) { /* wasn't claimed, ignore */ }
-            }
-          }
-        }
-      } catch(e) { /* ignore release errors */ }
+      if (device.configuration === null) {
+        await device.selectConfiguration(1);
+        log('✅ Selected configuration #1');
+      }
+
+      // Release any interfaces the OS driver may already hold, on the ACTIVE config only.
+      for (const iface of device.configuration.interfaces) {
+        try {
+          await device.releaseInterface(iface.interfaceNumber);
+          log(`Released interface #${iface.interfaceNumber}`);
+        } catch(e) { /* wasn't claimed, ignore */ }
+      }
 
       await new Promise(r => setTimeout(r, 200));
 
+      // Claim interfaces first, and only scan endpoints on interfaces we actually claimed.
+      // This avoids picking an endpoint whose interface never got claimed (the earlier bug).
       let foundEndpoint = null;
+      let foundEndpointIn = null;
       let foundInterfaceNum = null;
+      const claimed = [];
 
-      log('🔍 Scanning interfaces...');
+      log('🔍 Scanning + claiming interfaces...');
 
-      for (const config of device.configurations) {
-        for (const iface of config.interfaces) {
-          const alt = iface.alternate;
-          const num = alt.interfaceNumber;
-          const endpoints = alt.endpoints || [];
-          log(`  Interface #${num}: ${endpoints.length} endpoints (class: ${alt.interfaceClass})`);
-          for (const ep of endpoints) {
-            if (ep.direction === 'out') {
-              const epNum = ep.endpointNumber;
-              log(`    → OUT endpoint: 0x${epNum.toString(16)} (type: ${ep.type})`);
-              if (num === 5) {
-                foundEndpoint = epNum; foundInterfaceNum = num;
-                log(`✅ Found Interface #${num} (MIDI interface)`);
-                break;
-              }
-              if (foundEndpoint === null) { foundEndpoint = epNum; foundInterfaceNum = num; }
+      for (const iface of device.configuration.interfaces) {
+        const alt = iface.alternate;
+        const num = iface.interfaceNumber;
+        try {
+          await device.claimInterface(num);
+          claimed.push(num);
+          log(`✅ Claimed interface #${num} (class: ${alt.interfaceClass})`);
+        } catch(e) {
+          log(`⚠️ Could not claim interface #${num}: ${e.message}`);
+          continue; // never consider endpoints on an interface we couldn't claim
+        }
+
+        const endpoints = alt.endpoints || [];
+        log(`  Interface #${num}: ${endpoints.length} endpoints`);
+        for (const ep of endpoints) {
+          if (ep.direction === 'out') {
+            log(`    → OUT endpoint: 0x${ep.endpointNumber.toString(16)} (type: ${ep.type})`);
+            // Prefer interface #5 if present (matches the MIDI interface from the USB dump),
+            // otherwise keep the first OUT endpoint found on any successfully claimed interface.
+            if (num === 5 || foundEndpoint === null) {
+              foundEndpoint = ep.endpointNumber;
+              foundInterfaceNum = num;
             }
           }
-          if (foundEndpoint !== null && foundInterfaceNum === 5) break;
+          if (ep.direction === 'in' && foundEndpointIn === null) {
+            foundEndpointIn = ep.endpointNumber;
+          }
         }
-        if (foundEndpoint !== null && foundInterfaceNum === 5) break;
+      }
+
+      if (claimed.length === 0) {
+        log('❌ Could not claim any interface');
+        statusMsg.textContent = 'Could not claim any interface';
+        setStatus('error', 'failed');
+        return;
       }
 
       if (foundEndpoint === null) {
-        log('❌ No OUT endpoint found');
+        log('❌ No OUT endpoint found on any claimed interface');
         statusMsg.textContent = 'No OUT endpoint found';
         setStatus('error', 'failed');
         return;
       }
 
-      log(`✅ Selected Interface #${foundInterfaceNum}, Endpoint 0x${foundEndpoint.toString(16)}`);
-
-      try {
-        await device.claimInterface(foundInterfaceNum);
-        log(`✅ Claimed interface #${foundInterfaceNum}`);
-      } catch(e) {
-        log(`⚠️ Could not claim interface #${foundInterfaceNum}: ${e.message}`);
-        for (const config of device.configurations) {
-          for (const iface of config.interfaces) {
-            try {
-              await device.claimInterface(iface.interfaceNumber);
-              log(`✅ Claimed alternative interface #${iface.interfaceNumber}`);
-            } catch(e2) { /* ignore */ }
-          }
-        }
-      }
+      log(`✅ Using Interface #${foundInterfaceNum}, OUT endpoint 0x${foundEndpoint.toString(16)}`);
 
       usbDevice = device;
       usbEndpointOut = foundEndpoint;
