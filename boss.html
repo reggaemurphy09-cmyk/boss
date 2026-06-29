@@ -2,11 +2,12 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ME-90 Patch Receiver</title>
+<title>ME-90 Laptop Controller</title>
 <style>
 body{background:#101214;color:white;font-family:Arial;padding:16px}
-.card{background:#1b1f24;border:1px solid #333;border-radius:18px;padding:16px;max-width:500px;margin:auto}
-button,select,input{width:100%;padding:14px;margin:8px 0;border-radius:12px;border:1px solid #444;background:#243447;color:white;font-size:16px}
+.card{background:#1b1f24;border:1px solid #333;border-radius:18px;padding:16px;max-width:520px;margin:auto}
+button,select{width:100%;padding:15px;margin:7px 0;border-radius:14px;border:1px solid #444;background:#243447;color:white;font-size:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .status{background:#111;padding:12px;border-radius:12px;margin:10px 0}
 .patch{font-size:70px;text-align:center;color:#22c55e;font-weight:bold}
 .log{background:#050505;color:#9ae6b4;padding:10px;height:260px;overflow:auto;font-family:monospace;font-size:12px;white-space:pre-wrap;border-radius:12px}
@@ -15,32 +16,43 @@ button,select,input{width:100%;padding:14px;margin:8px 0;border-radius:12px;bord
 <body>
 
 <div class="card">
-  <h2>🎛️ ME-90 Patch Receiver</h2>
+  <h2>🎛️ ME-90 Laptop Controller</h2>
 
-  <button onclick="connectMIDI()">🔌 CONNECT MIDI</button>
+  <button onclick="connectMIDI()">🔌 CONNECT ME-90</button>
+
   <select id="inputSelect"></select>
+  <select id="outputSelect"></select>
 
   <div class="status" id="status">Not connected</div>
 
   <div>Current Patch</div>
   <div class="patch" id="patch">--</div>
 
-  <button onclick="clearLog()">🗑 Clear</button>
+  <div class="grid">
+    <button onclick="sendPatch(1)">Patch 1</button>
+    <button onclick="sendPatch(2)">Patch 2</button>
+    <button onclick="sendPatch(3)">Patch 3</button>
+    <button onclick="sendPatch(4)">Patch 4</button>
+    <button onclick="sendPatch(5)">Patch 5</button>
+    <button onclick="sendPatch(6)">Patch 6</button>
+  </div>
 
-  <input id="manualHex" placeholder="Paste hex like: 1C C0 45 60">
-  <button onclick="testManual()">🧪 Decode Manual Hex</button>
+  <button onclick="sendCC(64,127); setTimeout(()=>sendCC(64,0),50)">⏱ TAP CC64</button>
+  <button onclick="clearLog()">🗑 Clear Log</button>
 
-  <div class="log" id="log">Connect ME-90 then press pedal...</div>
+  <div class="log" id="log">Connect ME-90...</div>
 </div>
 
 <script>
 let midiAccess = null;
-let currentInput = null;
+let midiInput = null;
+let midiOutput = null;
 
+const inputSelect = document.getElementById("inputSelect");
+const outputSelect = document.getElementById("outputSelect");
 const statusBox = document.getElementById("status");
 const patchBox = document.getElementById("patch");
 const logBox = document.getElementById("log");
-const inputSelect = document.getElementById("inputSelect");
 
 function log(msg){
   const t = new Date().toLocaleTimeString();
@@ -54,18 +66,17 @@ function clearLog(){
 async function connectMIDI(){
   try{
     if(!navigator.requestMIDIAccess){
-      statusBox.textContent = "Web MIDI not supported.";
-      log("❌ Web MIDI not supported.");
+      statusBox.textContent = "Web MIDI not supported. Use Chrome or Edge.";
+      log("❌ Web MIDI not supported");
       return;
     }
 
     log("🔍 Requesting MIDI access...");
     midiAccess = await navigator.requestMIDIAccess({sysex:true});
-
     log("✅ MIDI access granted");
-    refreshInputs();
 
-    midiAccess.onstatechange = refreshInputs;
+    refreshPorts();
+    midiAccess.onstatechange = refreshPorts;
 
   }catch(e){
     statusBox.textContent = "Error: " + e.message;
@@ -73,15 +84,21 @@ async function connectMIDI(){
   }
 }
 
-function refreshInputs(){
+function refreshPorts(){
   inputSelect.innerHTML = "";
+  outputSelect.innerHTML = "";
 
   const inputs = Array.from(midiAccess.inputs.values());
+  const outputs = Array.from(midiAccess.outputs.values());
 
   if(inputs.length === 0){
-    statusBox.textContent = "No MIDI input found";
-    log("❌ No MIDI input found");
-    return;
+    inputSelect.innerHTML = "<option>No inputs</option>";
+    log("❌ No MIDI inputs found");
+  }
+
+  if(outputs.length === 0){
+    outputSelect.innerHTML = "<option>No outputs</option>";
+    log("❌ No MIDI outputs found");
   }
 
   inputs.forEach(input=>{
@@ -89,22 +106,41 @@ function refreshInputs(){
     opt.value = input.id;
     opt.textContent = input.name;
     inputSelect.appendChild(opt);
-    log("🎹 Found: " + input.name);
+    log("🎹 Input: " + input.name);
   });
 
-  const preferred = inputs.find(i=>/me-?90|boss/i.test(i.name)) || inputs[0];
-  inputSelect.value = preferred.id;
-  attachInput(preferred);
+  outputs.forEach(output=>{
+    const opt = document.createElement("option");
+    opt.value = output.id;
+    opt.textContent = output.name;
+    outputSelect.appendChild(opt);
+    log("📤 Output: " + output.name);
+  });
+
+  const preferredInput = inputs.find(i=>/me-?90|boss/i.test(i.name)) || inputs[0];
+  const preferredOutput = outputs.find(o=>/me-?90|boss/i.test(o.name)) || outputs[0];
+
+  if(preferredInput){
+    inputSelect.value = preferredInput.id;
+    attachInput(preferredInput);
+  }
+
+  if(preferredOutput){
+    outputSelect.value = preferredOutput.id;
+    midiOutput = preferredOutput;
+    log("✅ Output selected: " + preferredOutput.name);
+  }
+
+  statusBox.textContent =
+    "Input: " + (midiInput ? midiInput.name : "none") +
+    " | Output: " + (midiOutput ? midiOutput.name : "none");
 }
 
 function attachInput(input){
-  if(currentInput) currentInput.onmidimessage = null;
-
-  currentInput = input;
-  currentInput.onmidimessage = handleMIDI;
-
-  statusBox.textContent = "Listening: " + input.name;
-  log("✅ Listening on " + input.name);
+  if(midiInput) midiInput.onmidimessage = null;
+  midiInput = input;
+  midiInput.onmidimessage = handleMIDI;
+  log("✅ Listening: " + input.name);
 }
 
 inputSelect.addEventListener("change", ()=>{
@@ -113,46 +149,52 @@ inputSelect.addEventListener("change", ()=>{
   if(selected) attachInput(selected);
 });
 
+outputSelect.addEventListener("change", ()=>{
+  const outputs = Array.from(midiAccess.outputs.values());
+  midiOutput = outputs.find(o=>o.id === outputSelect.value);
+  log("✅ Output selected: " + midiOutput.name);
+});
+
 function handleMIDI(event){
   const data = Array.from(event.data);
-  decodePacket(data, "LIVE");
-}
-
-function decodePacket(data, source){
   const hex = data.map(b=>b.toString(16).padStart(2,"0").toUpperCase()).join(" ");
+  log("📥 IN: " + hex);
 
-  log(`📥 ${source}: ${hex}`);
-
-  let status, program;
-
-  if(data.length === 4 && (data[0] & 0x0F) === 0x0C){
-    status = data[1];
-    program = data[2];
-  } else {
-    status = data[0];
-    program = data[1];
-  }
-
+  const status = data[0];
   const type = status & 0xF0;
   const channel = (status & 0x0F) + 1;
 
   if(type === 0xC0){
-    const displayPatch = program + 1;
+    const rawPatch = data[1];
+    const displayPatch = rawPatch + 1;
     patchBox.textContent = displayPatch;
-    log(`✅ Program Change | Raw ${program} | Display Patch ${displayPatch} | Channel ${channel}`);
-  } else if(type === 0xB0){
-    log(`🎚️ Control Change CC ${program} = ${data[2]}`);
-  } else {
-    log("📩 Other MIDI message");
+    log(`✅ Patch changed: ${displayPatch} | Raw ${rawPatch} | Ch ${channel}`);
+  }
+
+  if(type === 0xB0){
+    log(`🎚️ CC ${data[1]} = ${data[2]} | Ch ${channel}`);
   }
 }
 
-function testManual(){
-  const text = document.getElementById("manualHex").value.trim();
-  if(!text) return;
+function sendPatch(patchNumber){
+  if(!midiOutput){
+    log("❌ No MIDI output selected");
+    return;
+  }
 
-  const data = text.split(/\s+/).map(x=>parseInt(x,16)).filter(x=>!isNaN(x));
-  decodePacket(data, "MANUAL");
+  const raw = patchNumber - 1;
+  midiOutput.send([0xC0, raw]);
+  log(`📤 Sent Patch ${patchNumber} | MIDI: C0 ${raw.toString(16).padStart(2,"0").toUpperCase()}`);
+}
+
+function sendCC(cc,value){
+  if(!midiOutput){
+    log("❌ No MIDI output selected");
+    return;
+  }
+
+  midiOutput.send([0xB0, cc, value]);
+  log(`📤 Sent CC ${cc} = ${value}`);
 }
 </script>
 
