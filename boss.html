@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ME-90 Controller</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ME-90 · Hybrid Controller</title>
 <style>
   :root{
     --bg: #14110f;
@@ -13,6 +13,7 @@
     --amber-dim: #8a4a22;
     --green: #4caf6a;
     --red: #c0463a;
+    --blue: #3b82f6;
     --text: #ece6da;
     --text-dim: #948b7c;
     --mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
@@ -20,49 +21,53 @@
   }
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-  *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; margin:0; padding:0; }
   html,body{
-    margin:0; padding:0; min-height:100vh;
-    background: var(--bg);
+    min-height:100vh; background: var(--bg);
     background-image: radial-gradient(circle at 20% 0%, rgba(232,116,44,0.06), transparent 45%);
-    color: var(--text);
-    font-family: var(--mono);
+    color: var(--text); font-family: var(--mono); touch-action: manipulation;
   }
   .wrap{ max-width:520px; margin:0 auto; padding: 20px 16px 60px; }
 
-  header{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; }
+  header{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; }
   .brand{ font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:0.5px; }
   .brand span{ color:var(--amber); }
   .sub{ font-size:10.5px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
 
-  .status-row{ display:flex; align-items:center; gap:9px; margin-bottom:16px; font-size:12px; color:var(--text-dim); }
+  .status-row{ display:flex; align-items:center; gap:9px; margin-bottom:14px; font-size:12px; color:var(--text-dim); }
   .dot{ width:8px; height:8px; border-radius:50%; background:#5a4a3a; flex-shrink:0; transition:.2s; }
   .dot.live{ background:var(--green); box-shadow:0 0 8px var(--green); }
   .dot.error{ background:var(--red); box-shadow:0 0 8px var(--red); }
+  .dot.warn{ background:var(--amber); box-shadow:0 0 8px var(--amber); animation:pulse 1s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.35} }
+
+  .section{ background: var(--panel); border:1px solid var(--panel-edge); border-radius:10px; padding:14px; margin-bottom:14px; }
+  .section-title{ font-size:10.5px; letter-spacing:1.5px; color:var(--text-dim); text-transform:uppercase; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+  .verified{ color:var(--green); } .unverified{ color:var(--amber); }
+  .tag{ font-size:9px; padding:2px 6px; border-radius:3px; border:1px solid currentColor; letter-spacing:0.5px; }
+
+  .mode-row{ display:flex; gap:8px; margin-bottom:10px; }
+  .mode-btn{
+    flex:1; padding:9px; text-align:center; font-size:11.5px; font-weight:600;
+    background:#211c18; border:1px solid var(--panel-edge); border-radius:7px; color:var(--text-dim); cursor:pointer;
+  }
+  .mode-btn.active{ background:#2a3f55; border-color:var(--blue); color:#fff; }
 
   .connect-btn{
-    width:100%; padding:16px; border-radius:10px; border:1px solid var(--green);
+    width:100%; padding:15px; border-radius:10px; border:1px solid var(--green);
     background: linear-gradient(180deg, #1c3526, #142a1c);
     color:var(--green); font-family:var(--display); font-weight:600; font-size:15px;
-    letter-spacing:0.5px; cursor:pointer; margin-bottom:18px;
+    letter-spacing:0.5px; cursor:pointer; margin-bottom:4px;
   }
   .connect-btn:active{ transform: scale(0.98); }
   .connect-btn.connected{ border-color:var(--amber-dim); color:var(--text-dim); background:var(--panel); }
 
-  .section{
-    background: var(--panel); border:1px solid var(--panel-edge); border-radius:10px;
-    padding:14px; margin-bottom:14px;
-  }
-  .section-title{
-    font-size:10.5px; letter-spacing:1.5px; color:var(--text-dim); text-transform:uppercase;
-    margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;
-  }
-  .verified{ color:var(--green); }
-  .unverified{ color:var(--amber); }
-  .tag{ font-size:9px; padding:2px 6px; border-radius:3px; border:1px solid currentColor; letter-spacing:0.5px; }
+  .info-box{ font-size:11.5px; color:var(--text-dim); margin-top:10px; line-height:1.7; }
+  .info-box b{ color:var(--text); }
 
   .grid5{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
   .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
 
   .btn{
     background:#211c18; border:1px solid var(--panel-edge); border-radius:8px;
@@ -73,35 +78,24 @@
   .btn:active{ transform:scale(0.94); }
   .btn.active{ background:var(--amber); border-color:var(--amber); color:#1a1410; box-shadow:inset 0 -2px 0 rgba(0,0,0,0.25); }
   .btn.on{ background:#3a2a1c; border-color:var(--amber-dim); color:var(--amber); }
+  .btn.small{ padding:10px 4px; font-size:11.5px; }
 
   .slider-row{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
   .slider-row label{ width:54px; font-size:11px; color:var(--text-dim); }
-  .slider-row input[type=range]{
-    flex:1; height:4px; -webkit-appearance:none; appearance:none;
-    background:#2a241f; border-radius:10px; outline:none;
-  }
-  .slider-row input[type=range]::-webkit-slider-thumb{
-    -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
-    background:var(--amber); cursor:pointer; border:1px solid #1a1410;
-  }
+  .slider-row input[type=range]{ flex:1; height:4px; -webkit-appearance:none; appearance:none; background:#2a241f; border-radius:10px; outline:none; }
+  .slider-row input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:var(--amber); cursor:pointer; border:1px solid #1a1410; }
   .slider-val{ width:30px; text-align:right; font-size:12px; color:var(--text); }
 
-  .log{
-    background:#100d0b; border:1px solid var(--panel-edge); border-radius:8px;
-    height:160px; overflow-y:auto; padding:6px 0; font-size:11px;
-  }
+  .log{ background:#100d0b; border:1px solid var(--panel-edge); border-radius:8px; height:170px; overflow-y:auto; padding:6px 0; font-size:11px; }
   .log-row{ display:grid; grid-template-columns:64px 28px 1fr; gap:8px; padding:5px 12px; border-bottom:1px solid #1c1814; }
   .log-row:last-child{ border-bottom:none; }
   .log-time{ color:var(--text-dim); }
-  .log-tag.out{ color:var(--amber); font-weight:700; }
-  .log-tag.in{ color:var(--green); font-weight:700; }
+  .log-tag.out{ color:var(--amber); font-weight:700; } .log-tag.in{ color:var(--green); font-weight:700; } .log-tag.sys{ color:var(--blue); font-weight:700; }
   .log-empty{ padding:30px 16px; color:var(--text-dim); text-align:center; font-size:11.5px; }
 
   .note{ font-size:11px; color:var(--text-dim); line-height:1.6; margin-top:8px; }
   .note code{ color:var(--text); background:#100d0b; padding:1px 5px; border-radius:3px; }
-
-  ::-webkit-scrollbar{ width:7px; }
-  ::-webkit-scrollbar-thumb{ background:#332b24; border-radius:4px; }
+  ::-webkit-scrollbar{ width:7px; } ::-webkit-scrollbar-thumb{ background:#332b24; border-radius:4px; }
 </style>
 </head>
 <body>
@@ -109,241 +103,272 @@
 
   <header>
     <div>
-      <div class="brand">ME-90 <span>CONTROLLER</span></div>
-      <div class="sub">WebUSB direct control + live monitor</div>
+      <div class="brand">ME-90 <span>HYBRID</span></div>
+      <div class="sub">WebUSB / WebMIDI · live monitor</div>
     </div>
   </header>
 
-  <div class="status-row">
-    <div class="dot" id="statusDot"></div>
-    <span id="statusText">Not connected</span>
+  <div class="status-row"><div class="dot" id="statusDot"></div><span id="statusText">Not connected</span></div>
+
+  <div class="section" style="padding-top:14px;">
+    <div class="mode-row">
+      <div class="mode-btn active" id="modeUSB">🔌 WebUSB</div>
+      <div class="mode-btn" id="modeMIDI">🎹 WebMIDI</div>
+    </div>
+    <button class="connect-btn" id="connectBtn">CONNECT</button>
+    <div class="info-box">
+      Mode: <b id="modeLabel">WebUSB</b> &nbsp;·&nbsp; <span id="statusMsg">Tap connect to pair</span>
+    </div>
   </div>
 
-  <button class="connect-btn" id="connectBtn">CONNECT TO ME-90</button>
-
   <div class="section">
-    <div class="section-title">
-      <span>Patch Select <span class="tag verified">verified</span></span>
-      <span id="patchLabel">—</span>
-    </div>
+    <div class="section-title"><span>Patch Select <span class="tag verified">verified</span></span><span id="patchLabel">—</span></div>
     <div class="grid5" id="bankGrid">
-      <div class="btn" data-bank="0">1</div>
-      <div class="btn" data-bank="1">2</div>
-      <div class="btn" data-bank="2">3</div>
-      <div class="btn" data-bank="3">4</div>
-      <div class="btn" data-bank="4">5</div>
+      <div class="btn" data-bank="0">1</div><div class="btn" data-bank="1">2</div><div class="btn" data-bank="2">3</div>
+      <div class="btn" data-bank="3">4</div><div class="btn" data-bank="4">5</div>
     </div>
   </div>
 
   <div class="section">
-    <div class="section-title">
-      <span>Effects <span class="tag unverified">unverified — test &amp; confirm</span></span>
-    </div>
+    <div class="section-title"><span>Effects <span class="tag unverified">unverified</span></span></div>
     <div class="grid3" id="fxGrid">
-      <div class="btn" data-fx="od">OD</div>
-      <div class="btn" data-fx="ds">DS</div>
-      <div class="btn" data-fx="mod">MOD</div>
-      <div class="btn" data-fx="delay">DELAY</div>
-      <div class="btn" data-fx="reverb">REVERB</div>
-      <div class="btn" data-fx="chorus">CHORUS</div>
+      <div class="btn" data-fx="od">OD</div><div class="btn" data-fx="ds">DS</div><div class="btn" data-fx="mod">MOD</div>
+      <div class="btn" data-fx="delay">DELAY</div><div class="btn" data-fx="reverb">REVERB</div><div class="btn" data-fx="chorus">CHORUS</div>
     </div>
   </div>
 
   <div class="section">
-    <div class="section-title">
-      <span>Parameters <span class="tag unverified">unverified — test &amp; confirm</span></span>
-    </div>
+    <div class="section-title"><span>Parameters <span class="tag unverified">unverified</span></span></div>
     <div id="sliderGroup"></div>
+    <div class="grid2">
+      <div class="btn small" id="btnTap">⏱ TAP</div>
+      <div class="btn small" id="btnSave">💾 SAVE</div>
+    </div>
   </div>
 
   <div class="section">
-    <div class="section-title">
-      <span>Live Monitor (in / out)</span>
-      <button id="clearLog" style="background:none;border:1px solid var(--panel-edge);color:var(--text-dim);font-size:10px;padding:3px 8px;border-radius:4px;font-family:var(--mono);">Clear</button>
-    </div>
-    <div class="log" id="log">
-      <div class="log-empty">Connect, then press patch buttons or test FX — every byte sent and received shows here.</div>
-    </div>
+    <div class="section-title"><span>Live Monitor</span><button id="clearLog" style="background:none;border:1px solid var(--panel-edge);color:var(--text-dim);font-size:10px;padding:3px 8px;border-radius:4px;font-family:var(--mono);">Clear</button></div>
+    <div class="log" id="log"><div class="log-empty">Select a mode, connect, then press a button — every message shows here.</div></div>
   </div>
 
   <div class="note">
-    Patch select uses MIDI Program Change (<code>0xC0</code>) — confirmed from a live USB
-    capture of Tone Studio. Effect and parameter buttons send guessed CC numbers and are
-    <strong>not yet confirmed</strong>. Toggle one effect at a time in Tone Studio while
-    watching this monitor, compare the bytes, then we can correct the CC map.
+    Patch select uses MIDI Program Change (<code>0xC0</code>) — confirmed from a live capture
+    of Tone Studio. Effects and parameters send guessed CC numbers and are <strong>not yet
+    confirmed</strong>. WebUSB sends raw 4-byte packets directly to the device's bulk/interrupt
+    endpoint; WebMIDI goes through the OS MIDI layer instead — try both if one doesn't respond.
   </div>
 
 </div>
 
 <script>
+(function(){
+'use strict';
+
+const state = {
+  bank: 0,
+  fx: { od:false, ds:false, mod:false, delay:false, reverb:false, chorus:false },
+  params: { gain:60, tone:64, level:80, time:50, depth:40 }
+};
+
+let currentMode = 'webusb';
+let midiOutput = null, midiInput = null;
+let usbDevice = null, usbEndpointOut = null, usbEndpointIn = null;
+let pollTimer = null;
+
+// CC numbers are GUESSES, not yet confirmed against a real capture.
+const CC = { GAIN:1, TONE:2, LEVEL:3, TIME:4, DEPTH:5, OD:16, DS:17, MOD:18, DELAY:19, REVERB:20, CHORUS:21, TAP:64 };
+
 const statusDot = document.getElementById('statusDot');
 const statusText = document.getElementById('statusText');
+const statusMsg = document.getElementById('statusMsg');
+const modeLabel = document.getElementById('modeLabel');
 const connectBtn = document.getElementById('connectBtn');
 const patchLabel = document.getElementById('patchLabel');
 const logEl = document.getElementById('log');
-const clearLog = document.getElementById('clearLog');
-
-let usbDevice = null;
-let endpointOut = null;
-let endpointIn = null;
-let pollTimer = null;
-
-// CC numbers below are GUESSES, not yet confirmed against a real capture.
-const CC = {
-  GAIN: 1, TONE: 2, LEVEL: 3, TIME: 4, DEPTH: 5,
-  OD: 16, DS: 17, MOD: 18, DELAY: 19, REVERB: 20, CHORUS: 21
-};
 
 const params = [
-  { key:'gain',  label:'GAIN',  cc:CC.GAIN,  val:60 },
-  { key:'tone',  label:'TONE',  cc:CC.TONE,  val:64 },
-  { key:'level', label:'LEVEL', cc:CC.LEVEL, val:80 },
-  { key:'time',  label:'TIME',  cc:CC.TIME,  val:50 },
-  { key:'depth', label:'DEPTH', cc:CC.DEPTH, val:40 }
+  {key:'gain',label:'GAIN',cc:CC.GAIN,val:60},{key:'tone',label:'TONE',cc:CC.TONE,val:64},
+  {key:'level',label:'LEVEL',cc:CC.LEVEL,val:80},{key:'time',label:'TIME',cc:CC.TIME,val:50},
+  {key:'depth',label:'DEPTH',cc:CC.DEPTH,val:40}
 ];
-
 const sliderGroup = document.getElementById('sliderGroup');
-params.forEach(p => {
-  const row = document.createElement('div');
-  row.className = 'slider-row';
-  row.innerHTML = `<label>${p.label}</label><input type="range" min="0" max="127" value="${p.val}" id="param-${p.key}"><span class="slider-val" id="val-${p.key}">${p.val}</span>`;
+params.forEach(p=>{
+  const row=document.createElement('div'); row.className='slider-row';
+  row.innerHTML=`<label>${p.label}</label><input type="range" min="0" max="127" value="${p.val}" id="param-${p.key}"><span class="slider-val" id="val-${p.key}">${p.val}</span>`;
   sliderGroup.appendChild(row);
 });
 
-function setStatus(state, text){
-  statusDot.className = 'dot' + (state ? ' ' + state : '');
-  statusText.textContent = text;
-}
-
-function formatTime(){
-  const d = new Date();
-  return d.toLocaleTimeString([], {hour12:false}) + '.' + String(d.getMilliseconds()).padStart(3,'0');
-}
-
-function addLogRow(dir, hex, detail){
-  const empty = logEl.querySelector('.log-empty');
-  if (empty) empty.remove();
-  const row = document.createElement('div');
-  row.className = 'log-row';
-  row.innerHTML = `<span class="log-time">${formatTime()}</span><span class="log-tag ${dir}">${dir.toUpperCase()}</span><span>${hex} <span style="color:var(--text-dim)">${detail||''}</span></span>`;
+function setStatus(cls, text){ statusDot.className = 'dot' + (cls?(' '+cls):''); statusText.textContent = text; }
+function formatTime(){ const d=new Date(); return d.toLocaleTimeString([],{hour12:false})+'.'+String(d.getMilliseconds()).padStart(3,'0'); }
+function addLog(tag, hex, detail){
+  const empty = logEl.querySelector('.log-empty'); if(empty) empty.remove();
+  const row = document.createElement('div'); row.className='log-row';
+  row.innerHTML = `<span class="log-time">${formatTime()}</span><span class="log-tag ${tag}">${tag.toUpperCase()}</span><span>${hex} <span style="color:var(--text-dim)">${detail||''}</span></span>`;
   logEl.prepend(row);
 }
-
 function decode(bytes){
-  const status = bytes[0] & 0xF0;
-  const ch = (bytes[0] & 0x0F) + 1;
-  if (status === 0xC0) return `Program Change → patch ${bytes[1]} (ch ${ch})`;
-  if (status === 0xB0) return `CC ${bytes[1]} = ${bytes[2]} (ch ${ch})`;
+  const status = bytes[0] & 0xF0, ch = (bytes[0] & 0x0F)+1;
+  if (status===0xC0) return `Program Change → patch ${bytes[1]} (ch ${ch})`;
+  if (status===0xB0) return `CC ${bytes[1]} = ${bytes[2]} (ch ${ch})`;
   return '';
 }
 
-async function sendRaw(bytes, label){
-  if (!usbDevice || endpointOut === null){ addLogRow('out','—','not connected'); return; }
-  const packet = new Uint8Array(4);
-  packet[0] = bytes[0]||0; packet[1] = bytes[1]||0; packet[2] = bytes[2]||0; packet[3]=0;
-  const hex = Array.from(packet).map(b=>b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
-  try{
-    await usbDevice.transferOut(endpointOut, packet);
-    addLogRow('out', hex, label || decode(bytes));
-  }catch(e){
-    addLogRow('out', hex, 'error: ' + e.message);
+async function sendMIDI(data){
+  if (currentMode==='webmidi' && midiOutput){
+    try{
+      midiOutput.send(data);
+      const hex = data.map(b=>'0x'+b.toString(16).padStart(2,'0')).join(' ');
+      addLog('out', hex, decode(data));
+      return true;
+    }catch(e){ addLog('out','—','error: '+e.message); return false; }
+  } else if (currentMode==='webusb' && usbDevice && usbEndpointOut!==null){
+    try{
+      const packet = new Uint8Array(4);
+      packet[0]=data[0]||0; packet[1]=data[1]||0; packet[2]=data[2]||0; packet[3]=0;
+      const hex = Array.from(packet).map(b=>b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
+      await usbDevice.transferOut(usbEndpointOut, packet);
+      addLog('out', hex, decode(data));
+      return true;
+    }catch(e){ addLog('out','—','error: '+e.message); return false; }
+  } else {
+    addLog('out','—','not connected'); return false;
   }
 }
 
-async function sendCC(cc, value){ await sendRaw([0xB0, cc, Math.max(0,Math.min(127,value))]); }
-async function sendPC(program){
-  await sendRaw([0xC0, program]);
-  patchLabel.textContent = 'patch ' + program;
+async function sendCC(channel, cc, value){
+  return await sendMIDI([0xB0|(channel&0x0F), cc, Math.max(0,Math.min(127,value))]);
+}
+async function sendPC(channel, program){
+  const ok = await sendMIDI([0xC0|(channel&0x0F), Math.max(0,Math.min(127,program))]);
+  if (ok) patchLabel.textContent = 'patch ' + program;
+  return ok;
 }
 
-async function pollIn(){
-  if (!usbDevice || endpointIn === null) return;
+async function pollUSBIn(){
+  if (currentMode!=='webusb' || !usbDevice || usbEndpointIn===null) return;
   try{
-    const result = await usbDevice.transferIn(endpointIn, 64);
-    if (result.data && result.data.byteLength > 0){
+    const result = await usbDevice.transferIn(usbEndpointIn, 64);
+    if (result.data && result.data.byteLength>0){
       const bytes = new Uint8Array(result.data.buffer);
       const hex = Array.from(bytes).map(b=>b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
-      addLogRow('in', hex, decode(bytes));
+      addLog('in', hex, decode(bytes));
     }
   }catch(e){ /* timeouts are normal when idle */ }
-  pollTimer = setTimeout(pollIn, 80);
+  pollTimer = setTimeout(pollUSBIn, 80);
 }
 
-async function connect(){
-  if (!navigator.usb){
-    setStatus('error', 'WebUSB not supported — use Chrome.');
-    return;
-  }
+async function connectWebMIDI(){
+  if (!navigator.requestMIDIAccess){ addLog('sys','—','WebMIDI not supported'); return false; }
   try{
-    setStatus('', 'Requesting device…');
+    const access = await navigator.requestMIDIAccess({ sysex:false });
+    let foundOut=null, foundIn=null;
+    access.outputs.forEach(o=>{ addLog('sys','—','output: '+o.name); if(!foundOut) foundOut=o; });
+    access.inputs.forEach(i=>{ addLog('sys','—','input: '+i.name); if(!foundIn) foundIn=i; });
+    if (!foundOut){ addLog('sys','—','no MIDI outputs found'); return false; }
+    midiOutput = foundOut;
+    midiInput = foundIn;
+    if (midiInput) midiInput.onmidimessage = (e)=>{
+      const hex = Array.from(e.data).map(b=>b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
+      addLog('in', hex, decode(e.data));
+    };
+    return true;
+  }catch(e){ addLog('sys','—','error: '+e.message); return false; }
+}
+
+async function connectWebUSB(){
+  if (!navigator.usb){ addLog('sys','—','WebUSB not supported'); return false; }
+  try{
     const device = await navigator.usb.requestDevice({ filters: [{ vendorId: 0x0582 }] });
     await device.open();
     if (device.configuration === null) await device.selectConfiguration(1);
 
-    let foundOut=null, foundIn=null, foundIface=null;
+    let foundOut=null, foundIn=null;
     for (const config of device.configurations){
       for (const iface of config.interfaces){
         try{
           await device.claimInterface(iface.interfaceNumber);
+          addLog('sys','—','claimed interface #'+iface.interfaceNumber);
           for (const ep of iface.alternate.endpoints || []){
-            if (ep.direction === 'out' && foundOut===null){ foundOut = ep.endpointNumber; foundIface = iface.interfaceNumber; }
-            if (ep.direction === 'in' && foundIn===null){ foundIn = ep.endpointNumber; }
+            if (ep.direction==='out' && foundOut===null) foundOut = ep.endpointNumber;
+            if (ep.direction==='in' && foundIn===null) foundIn = ep.endpointNumber;
           }
-        }catch(e){ /* interface may already be claimed by OS driver, skip */ }
+        }catch(e){ /* already claimed by OS driver, skip */ }
       }
     }
-
-    if (foundOut === null){
-      setStatus('error', 'No OUT endpoint found');
-      return;
-    }
-
-    usbDevice = device;
-    endpointOut = foundOut;
-    endpointIn = foundIn;
-
-    setStatus('live', `Connected · iface #${foundIface} · out 0x${foundOut.toString(16)}${foundIn!==null? ' · in 0x'+foundIn.toString(16):''}`);
-    connectBtn.textContent = 'CONNECTED';
-    connectBtn.classList.add('connected');
-    if (foundIn !== null) pollIn();
-  }catch(err){
-    setStatus('error', err.message.includes('cancel') ? 'Selection cancelled' : err.message);
+    if (foundOut===null){ addLog('sys','—','no OUT endpoint found'); return false; }
+    usbDevice = device; usbEndpointOut = foundOut; usbEndpointIn = foundIn;
+    addLog('sys','—',`out 0x${foundOut.toString(16)}${foundIn!==null?' · in 0x'+foundIn.toString(16):''}`);
+    return true;
+  }catch(e){
+    addLog('sys','—', e.message.includes('cancel') ? 'selection cancelled' : 'error: '+e.message);
+    return false;
   }
 }
 
+async function connect(){
+  setStatus('warn', 'Connecting via ' + currentMode.toUpperCase() + '…');
+  statusMsg.textContent = 'Connecting…';
+  const ok = currentMode==='webmidi' ? await connectWebMIDI() : await connectWebUSB();
+  if (ok){
+    setStatus('live', 'Connected via ' + currentMode.toUpperCase());
+    statusMsg.textContent = 'Ready';
+    connectBtn.textContent = 'CONNECTED'; connectBtn.classList.add('connected');
+    if (currentMode==='webusb' && usbEndpointIn!==null) pollUSBIn();
+  } else {
+    setStatus('error', 'Connection failed');
+    statusMsg.textContent = 'Failed — see log';
+  }
+}
+
+document.getElementById('modeUSB').addEventListener('click', function(){
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  this.classList.add('active'); currentMode='webusb'; modeLabel.textContent='WebUSB';
+});
+document.getElementById('modeMIDI').addEventListener('click', function(){
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  this.classList.add('active'); currentMode='webmidi'; modeLabel.textContent='WebMIDI';
+});
 connectBtn.addEventListener('click', connect);
-clearLog.addEventListener('click', () => {
-  logEl.innerHTML = '<div class="log-empty">Connect, then press patch buttons or test FX — every byte sent and received shows here.</div>';
+document.getElementById('clearLog').addEventListener('click', ()=>{
+  logEl.innerHTML = '<div class="log-empty">Select a mode, connect, then press a button — every message shows here.</div>';
 });
 
-document.querySelectorAll('[data-bank]').forEach(btn => {
-  btn.addEventListener('click', async () => {
+document.querySelectorAll('[data-bank]').forEach(btn=>{
+  btn.addEventListener('click', async ()=>{
     document.querySelectorAll('[data-bank]').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
-    await sendPC(parseInt(btn.dataset.bank));
+    state.bank = parseInt(btn.dataset.bank);
+    await sendPC(0, state.bank);
   });
 });
 
-const fxState = {};
-document.querySelectorAll('[data-fx]').forEach(btn => {
+document.querySelectorAll('[data-fx]').forEach(btn=>{
   const fx = btn.dataset.fx;
-  fxState[fx] = false;
-  btn.addEventListener('click', async () => {
-    fxState[fx] = !fxState[fx];
-    btn.classList.toggle('on', fxState[fx]);
-    await sendCC(CC[fx.toUpperCase()], fxState[fx] ? 127 : 0);
+  btn.addEventListener('click', async ()=>{
+    state.fx[fx] = !state.fx[fx];
+    btn.classList.toggle('on', state.fx[fx]);
+    await sendCC(0, CC[fx.toUpperCase()], state.fx[fx] ? 127 : 0);
   });
 });
 
-params.forEach(p => {
+params.forEach(p=>{
   const slider = document.getElementById('param-'+p.key);
   const valLabel = document.getElementById('val-'+p.key);
-  slider.addEventListener('input', async () => {
+  slider.addEventListener('input', async ()=>{
     const val = parseInt(slider.value);
-    valLabel.textContent = val;
-    await sendCC(p.cc, val);
+    state.params[p.key] = val; valLabel.textContent = val;
+    await sendCC(0, p.cc, val);
   });
 });
+
+document.getElementById('btnTap').addEventListener('click', async ()=>{
+  await sendCC(0, CC.TAP, 127); setTimeout(()=>sendCC(0, CC.TAP, 0), 30);
+});
+document.getElementById('btnSave').addEventListener('click', async ()=>{
+  await sendCC(0, 80, 127); setTimeout(()=>sendCC(0, 80, 0), 30);
+});
+
+})();
 </script>
 </body>
 </html>
