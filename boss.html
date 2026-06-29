@@ -2,23 +2,24 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ME-90 USB Sniffer</title>
+<title>ME-90 USB Explorer</title>
 <style>
 body{background:#101214;color:white;font-family:Arial;padding:16px}
-.card{background:#1b1f24;border:1px solid #333;border-radius:18px;padding:16px;max-width:480px;margin:auto}
+.card{background:#1b1f24;border:1px solid #333;border-radius:18px;padding:16px;max-width:520px;margin:auto}
 button{width:100%;padding:16px;margin:8px 0;border-radius:14px;border:1px solid #444;background:#243447;color:white;font-size:16px}
-.status{padding:12px;background:#111;border-radius:12px;margin:10px 0}
-.log{background:#050505;color:#9ae6b4;padding:10px;height:360px;overflow:auto;font-family:monospace;font-size:12px;white-space:pre-wrap;border-radius:12px}
+.status{padding:12px;background:#111;border-radius:12px;margin:10px 0;font-weight:bold}
+.log{background:#050505;color:#9ae6b4;padding:10px;height:430px;overflow:auto;font-family:monospace;font-size:12px;white-space:pre-wrap;border-radius:12px}
 </style>
 </head>
 <body>
+
 <div class="card">
-  <h2>🎛️ ME-90 USB Sniffer</h2>
-  <button onclick="connectUSB()">🔌 CONNECT USB</button>
+  <h2>🎛️ ME-90 USB Explorer</h2>
+  <button onclick="connectUSB()">🔌 CONNECT + EXPLORE</button>
   <button onclick="stopListen()">⛔ STOP</button>
   <button onclick="clearLog()">🗑 CLEAR</button>
   <div class="status" id="status">Not connected</div>
-  <div class="log" id="log">Connect ME-90, then press pedal...</div>
+  <div class="log" id="log">Connect ME-90...</div>
 </div>
 
 <script>
@@ -26,10 +27,10 @@ const BOSS_VID = 0x0582;
 const ME90_PID = 0x02e0;
 
 let device = null;
-let inEndpoint = null;
-let outEndpoint = null;
-let ifaceNumber = null;
 let running = false;
+let workingIn = null;
+let workingInterface = null;
+let workingAlt = null;
 
 const statusBox = document.getElementById("status");
 const logBox = document.getElementById("log");
@@ -50,8 +51,8 @@ function hex(data){
 async function connectUSB(){
   try{
     if(!navigator.usb){
-      statusBox.textContent = "WebUSB not supported. Use Chrome Android.";
       log("❌ WebUSB not supported");
+      statusBox.textContent = "WebUSB not supported";
       return;
     }
 
@@ -60,86 +61,123 @@ async function connectUSB(){
       filters:[{ vendorId:BOSS_VID, productId:ME90_PID }]
     });
 
-    log("✅ Found: " + (device.productName || "BOSS ME-90"));
+    log("✅ Found: " + (device.productName || "ME-90"));
 
     await device.open();
     log("✅ Device opened");
 
     if(device.configuration === null){
       await device.selectConfiguration(1);
-      log("✅ Configuration selected");
+      log("✅ Configuration 1 selected");
     }
 
-    scanEndpoints();
+    await exploreDevice();
 
-    if(ifaceNumber === null || inEndpoint === null){
-      statusBox.textContent = "No IN endpoint found";
-      log("❌ No IN endpoint found");
-      return;
-    }
-
-    try{
-      await device.claimInterface(ifaceNumber);
-      log("✅ Claimed interface #" + ifaceNumber);
-    }catch(e){
-      log("⚠️ Claim error: " + e.message);
-    }
-
-    statusBox.textContent =
-      "Connected | Interface #" + ifaceNumber +
-      " | IN " + inEndpoint +
-      " | OUT " + (outEndpoint ?? "none");
-
-    running = true;
-    listenLoop();
-
-  }catch(err){
-    statusBox.textContent = "Error: " + err.message;
-    log("❌ " + err.message);
+  }catch(e){
+    log("❌ MAIN ERROR: " + e.message);
+    statusBox.textContent = "Error: " + e.message;
   }
 }
 
-function scanEndpoints(){
-  inEndpoint = null;
-  outEndpoint = null;
-  ifaceNumber = null;
+async function exploreDevice(){
+  workingIn = null;
+  workingInterface = null;
+  workingAlt = null;
 
-  const config = device.configuration || device.configurations[0];
-
-  log("🔎 Scanning interfaces...");
+  const config = device.configuration;
+  log("🔎 Exploring configuration...");
 
   for(const iface of config.interfaces){
+    const ifaceNum = iface.interfaceNumber;
+
     for(const alt of iface.alternates){
-      log("Interface " + iface.interfaceNumber +
-          " alt " + alt.alternateSetting +
-          " class " + alt.interfaceClass);
+      const altNum = alt.alternateSetting;
+
+      log("--------------------------------");
+      log(`TRY Interface ${ifaceNum}, Alt ${altNum}, Class ${alt.interfaceClass}`);
 
       for(const ep of alt.endpoints){
-        log("  endpoint " + ep.endpointNumber +
-            " " + ep.direction +
-            " " + ep.type +
-            " packet " + ep.packetSize);
+        log(`Endpoint ${ep.endpointNumber} ${ep.direction} ${ep.type} packet ${ep.packetSize}`);
+      }
 
-        if(ep.direction === "in" && inEndpoint === null){
-          inEndpoint = ep.endpointNumber;
-          ifaceNumber = iface.interfaceNumber;
-        }
+      try{
+        await device.claimInterface(ifaceNum);
+        log(`✅ Claimed interface ${ifaceNum}`);
+      }catch(e){
+        log(`❌ Claim failed interface ${ifaceNum}: ${e.message}`);
+        continue;
+      }
 
-        if(ep.direction === "out" && outEndpoint === null){
-          outEndpoint = ep.endpointNumber;
+      try{
+        await device.selectAlternateInterface(ifaceNum, altNum);
+        log(`✅ Selected alt ${altNum}`);
+      }catch(e){
+        log(`⚠️ Select alt failed: ${e.message}`);
+      }
+
+      for(const ep of alt.endpoints){
+        if(ep.direction === "in"){
+          log(`🧪 Testing IN endpoint ${ep.endpointNumber}...`);
+
+          const ok = await testInEndpoint(ep.endpointNumber);
+
+          if(ok){
+            workingIn = ep.endpointNumber;
+            workingInterface = ifaceNum;
+            workingAlt = altNum;
+
+            statusBox.textContent =
+              `WORKING: Interface ${ifaceNum} Alt ${altNum} IN ${ep.endpointNumber}`;
+
+            log("🎉 WORKING IN ENDPOINT FOUND!");
+            log("👣 Now press ME-90 pedal.");
+            running = true;
+            listenLoop();
+            return;
+          }
         }
       }
     }
   }
+
+  statusBox.textContent = "No working IN endpoint found";
+  log("❌ No working IN endpoint found");
+}
+
+async function testInEndpoint(epNum){
+  try{
+    const timeout = new Promise(resolve => {
+      setTimeout(() => resolve("timeout"), 700);
+    });
+
+    const read = device.transferIn(epNum, 512);
+
+    const result = await Promise.race([read, timeout]);
+
+    if(result === "timeout"){
+      log(`⚠️ Endpoint ${epNum}: no data yet, but endpoint may be valid`);
+      return true;
+    }
+
+    if(result.status === "ok"){
+      const bytes = new Uint8Array(result.data.buffer);
+      log(`✅ Endpoint ${epNum} read OK: ${hex(bytes)}`);
+      return true;
+    }
+
+    log(`⚠️ Endpoint ${epNum} status: ${result.status}`);
+    return false;
+
+  }catch(e){
+    log(`❌ Endpoint ${epNum} failed: ${e.message}`);
+    return false;
+  }
 }
 
 async function listenLoop(){
-  log("👂 Listening for incoming USB packets...");
-  log("Now press ME-90 pedal.");
-
-  while(running && device && inEndpoint !== null){
+  while(running && device && workingIn !== null){
     try{
-      const result = await device.transferIn(inEndpoint, 64);
+      const result = await device.transferIn(workingIn, 512);
 
       if(result.status === "ok" && result.data){
         const bytes = new Uint8Array(result.data.buffer);
@@ -149,7 +187,7 @@ async function listenLoop(){
       }
 
     }catch(e){
-      log("❌ Read error: " + e.message);
+      log("❌ Listen error: " + e.message);
       running = false;
       break;
     }
@@ -158,8 +196,9 @@ async function listenLoop(){
 
 function stopListen(){
   running = false;
-  log("⛔ Stopped listening");
+  log("⛔ Stopped");
 }
 </script>
+
 </body>
 </html>
