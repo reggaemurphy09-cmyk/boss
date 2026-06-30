@@ -22,7 +22,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
   html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--mono);touch-action:manipulation;}
-  .wrap{max-width:540px;margin:0 auto;padding:12px 12px 60px;}
+  .wrap{max-width:540px;margin:0 auto;padding:12px 12px 90px;}
 
   /* ---- HEADER ---- */
   .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;}
@@ -110,6 +110,17 @@
   .p-btn{flex:1;padding:10px 4px;text-align:center;background:var(--panel2);border:1px solid var(--border);border-radius:7px;font-size:12px;font-weight:700;color:var(--dim);cursor:pointer;}
   .p-btn:active{transform:scale(0.96);}
   .p-btn.active{background:#0d2040;border-color:var(--blue);color:var(--blue);}
+  /* ---- BOTTOM NAV ---- */
+  .bottom-nav{
+    position:fixed; bottom:0; left:0; right:0;
+    background:#080c10; border-top:1px solid var(--border);
+    display:flex; justify-content:space-around; align-items:center;
+    padding:8px 0 14px; z-index:100;
+  }
+  .nav-item{ display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; flex:1; padding:4px 0; }
+  .nav-icon{ font-size:19px; }
+  .nav-label{ font-size:9.5px; letter-spacing:1px; color:var(--dim); text-transform:uppercase; }
+  .nav-item.active .nav-label{ color:var(--blue); }
 </style>
 </head>
 <body>
@@ -165,13 +176,13 @@
       <span class="arrow">→</span>
       <div class="chain-node on preamp" data-fx="preamp"><span class="node-icon">🔊</span><span class="node-name">PREAMP</span></div>
       <span class="arrow">→</span>
-      <div class="chain-node selected" data-fx="eq"><span class="node-icon">📊</span><span class="node-name">EQ</span></div>
+      <div class="chain-node on" data-fx="eq"><span class="node-icon">📊</span><span class="node-name">EQ</span></div>
       <span class="arrow">→</span>
       <div class="chain-node on" data-fx="mod"><span class="node-icon">〰️</span><span class="node-name">MOD</span></div>
       <span class="arrow">→</span>
       <div class="chain-node on" data-fx="delay"><span class="node-icon">⏱</span><span class="node-name">DELAY</span></div>
       <span class="arrow">→</span>
-      <div class="chain-node on" data-fx="reverb"><span class="node-icon">〜</span><span class="node-name">REVERB</span></div>
+      <div class="chain-node on" data-fx="reverb"><span class="node-icon">〰️</span><span class="node-name">REVERB</span></div>
       <span class="arrow">→</span>
       <span class="out-label">OUT</span>
     </div>
@@ -230,15 +241,31 @@
     </div>
   </div>
 
-  <!-- Log -->
-  <div class="log-section">
-    <div class="sec-label">MIDI Log <button id="clearLog" style="float:right;background:none;border:1px solid var(--border);color:var(--dim);font-size:10px;padding:2px 8px;border-radius:4px;font-family:var(--mono);cursor:pointer;">Clear</button></div>
-    <div class="log" id="log">Tap "tap to connect" in the top right to pair with the ME-90.</div>
+
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <div class="nav-item active" data-page="live">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">LIVE</span>
+    </div>
+    <div class="nav-item" data-page="patches">
+      <span class="nav-icon">☰</span>
+      <span class="nav-label">PATCHES</span>
+    </div>
+    <div class="nav-item" data-page="setlist">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">SETLIST</span>
+    </div>
+    <div class="nav-item" data-page="editor">
+      <span class="nav-icon">🎚</span>
+      <span class="nav-label">EDITOR</span>
+    </div>
+    <div class="nav-item" data-page="settings">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">SETTINGS</span>
+    </div>
   </div>
-
-</div>
-
-<script>
 // ---- MIDI ----
 let midiAccess = null, currentInput = null, currentOutput = null;
 const connLed = document.getElementById('connLed');
@@ -315,7 +342,7 @@ portSelect.addEventListener('change', ()=>attachDevice(portSelect.value));
 document.getElementById('connToggle').addEventListener('click', ()=>{
   connPanel.classList.toggle('visible');
 });
-document.getElementById('clearLog').addEventListener('click', ()=>{ logEl.innerHTML = ''; });
+
 
 // Patch select
 document.querySelectorAll('.p-btn').forEach(btn=>{
@@ -359,7 +386,14 @@ document.querySelectorAll('.stomp').forEach(stomp=>{
   });
 });
 
-// MIDI init
+// Nav
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click', ()=>{
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
 if (!navigator.requestMIDIAccess){
   connStatus.textContent = 'Web MIDI not supported — use Chrome.';
   connLed.className = 'led error';
