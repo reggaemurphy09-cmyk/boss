@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>ME-90 Live</title>
+<title>ME-90 Live Control All</title>
 <style>
   :root{
     --bg:#060a0e; --panel:#0d1218; --panel2:#111820; --border:#1a2535;
@@ -15,623 +15,131 @@
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
   html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--mono);touch-action:manipulation;}
-  .page{display:none;max-width:540px;margin:0 auto;padding:12px 12px 90px;}
+  .page{display:none;max-width:540px;margin:0 auto;padding:12px 12px 96px;}
   .page.active{display:block;}
-  /* topbar */
   .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;}
   .boss-logo{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:2px;color:var(--text);}
   .boss-logo span{color:var(--blue);}
   .conn-dot{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--dim);cursor:pointer;}
-  .led{width:8px;height:8px;border-radius:50%;background:#1a2535;}
+  .led{width:8px;height:8px;border-radius:50%;background:#1a2535;display:inline-block;}
   .led.on{background:var(--green);box-shadow:0 0 8px var(--green);}
   .led.error{background:var(--red);box-shadow:0 0 8px var(--red);}
-  /* card */
   .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
   .sec-label{font-size:9.5px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;margin-bottom:10px;}
-  /* patch header */
   .patch-top{display:grid;grid-template-columns:80px 1fr 80px;gap:8px;align-items:center;margin-bottom:10px;}
   .ph-block{text-align:center;}
   .ph-label{font-size:9.5px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;margin-bottom:2px;}
   .ph-value{font-family:var(--display);font-weight:700;font-size:22px;color:var(--blue);}
   .ph-value.name{font-size:18px;color:var(--text);}
   .ph-value.num{color:var(--text);}
-  .patch-meta{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dim);}
+  .patch-meta{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dim);gap:8px;}
   .patch-meta .tempo span{color:var(--blue);font-weight:700;}
   .ctl-pill{padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;border:1px solid var(--green);color:var(--green);cursor:pointer;}
   .ctl-pill.off{border-color:var(--dim);color:var(--dim);}
-  /* chain */
   .chain{display:flex;align-items:center;gap:4px;overflow-x:auto;padding-bottom:4px;}
-  .chain::-webkit-scrollbar{height:3px;}
-  .chain::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+  .chain::-webkit-scrollbar{height:3px;}.chain::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
   .arrow{color:var(--dim);font-size:11px;flex-shrink:0;}
-  .chain-node{flex-shrink:0;width:70px;border:2px solid var(--border);border-radius:8px;padding:8px 4px 6px;text-align:center;background:var(--panel2);cursor:pointer;transition:border-color .15s;}
-  .chain-node.on{border-color:var(--green);}
-  .chain-node.on .node-name{color:var(--green);}
-  .chain-node.preamp.on{border-color:var(--amber);}
-  .chain-node.preamp.on .node-name{color:var(--amber);}
-  .node-icon{font-size:19px;margin-bottom:3px;display:block;}
-  .node-name{font-size:10px;font-weight:700;letter-spacing:0.5px;color:var(--dim);}
+  .chain-node{flex-shrink:0;width:70px;border:2px solid var(--border);border-radius:8px;padding:8px 4px 6px;text-align:center;background:var(--panel2);cursor:pointer;}
+  .chain-node.on{border-color:var(--green);} .chain-node.on .node-name{color:var(--green);}
+  .chain-node.preamp.on{border-color:var(--amber);} .chain-node.preamp.on .node-name{color:var(--amber);}
+  .node-icon{font-size:19px;margin-bottom:3px;display:block;}.node-name{font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--dim);}
   .in-label,.out-label{font-size:9px;color:var(--dim);flex-shrink:0;}
-  /* expression pedal */
   .exp-grid{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;}
   .exp-mode{font-family:var(--display);font-weight:700;font-size:28px;color:var(--green);margin:4px 0;}
   .exp-pos{font-size:28px;font-family:var(--display);font-weight:700;color:var(--green);}
   .exp-bar{height:8px;background:var(--border);border-radius:4px;margin-top:8px;overflow:hidden;}
-  .exp-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:4px;}
+  .exp-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:4px;}
   .wah-pedal{width:80px;height:110px;background:linear-gradient(145deg,#1a2535,#0d1218);border:3px solid var(--border);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:8px 4px;cursor:pointer;transition:border-color .2s,box-shadow .2s;}
-  .wah-pedal.on{border-color:var(--green);box-shadow:0 0 18px rgba(34,197,94,0.4);}
-  .wah-pedal .boss-mark{font-family:var(--display);font-size:9px;color:var(--dim);letter-spacing:1px;}
-  .wah-pedal .pedal-pad{width:44px;height:52px;background:linear-gradient(160deg,#2a3a4a,#141e28);border-radius:6px;border:1px solid #2a3540;}
-  .wah-pedal .wah-state{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--dim);}
-  .wah-pedal.on .wah-state{color:var(--green);}
-  /* stomps */
+  .wah-pedal.on{border-color:var(--green);box-shadow:0 0 18px rgba(34,197,94,.4);}
+  .wah-pedal .boss-mark{font-family:var(--display);font-size:9px;color:var(--dim);letter-spacing:1px;}.wah-pedal .pedal-pad{width:44px;height:52px;background:linear-gradient(160deg,#2a3a4a,#141e28);border-radius:6px;border:1px solid #2a3540;}.wah-pedal .wah-state{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--dim);}.wah-pedal.on .wah-state{color:var(--green);}
   .stomps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
   .stomp{border:2px solid var(--border);border-radius:8px;padding:10px 4px 8px;text-align:center;background:var(--panel2);cursor:pointer;transition:border-color .15s;}
-  .stomp.on{border-color:var(--green);}
-  .stomp.ctl-stomp.on{border-color:var(--blue);}
-  .stomp-num{font-size:9px;color:var(--dim);margin-bottom:3px;}
-  .stomp.on .stomp-num{color:var(--green);}
-  .stomp.ctl-stomp.on .stomp-num{color:var(--blue);}
-  .stomp-icon{font-size:18px;display:block;margin-bottom:2px;}
-  .stomp-name{font-size:10px;font-weight:700;color:var(--dim);}
-  .stomp.on .stomp-name{color:var(--text);}
-  .stomp.ctl-stomp.on .stomp-name{color:var(--blue);}
-  .stomp-state{font-size:9px;margin-top:4px;font-weight:700;color:var(--dim);}
-  .stomp-state.on{color:var(--green);}
-  .stomp.ctl-stomp.on .stomp-state{color:var(--blue);}
-  /* conn panel */
-  .conn-panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;display:none;}
-  .conn-panel.visible{display:block;}
-  .conn-status{font-size:11.5px;color:var(--dim);margin-top:6px;}
-  select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--border);font-family:var(--mono);font-size:12px;padding:9px;border-radius:6px;margin-bottom:8px;}
-  /* patches */
-  .patch-list{display:flex;flex-direction:column;gap:8px;}
-  .patch-item{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
-  .patch-item.active-patch{border-color:var(--blue);background:#0d2040;}
-  .pi-bank{font-size:10px;color:var(--dim);letter-spacing:1px;margin-bottom:2px;}
-  .pi-name{font-family:var(--display);font-weight:600;font-size:16px;color:var(--text);}
-  .pi-num{font-family:var(--display);font-weight:700;font-size:22px;color:var(--blue);}
-  /* bank selector */
-  .bank-row{display:flex;gap:6px;margin-bottom:10px;}
-  .bank-btn{flex:1;padding:9px 4px;text-align:center;font-size:12px;font-weight:700;background:var(--panel2);border:1px solid var(--border);border-radius:7px;color:var(--dim);cursor:pointer;}
-  .bank-btn.active{border-color:var(--blue);color:var(--blue);background:#0d2040;}
-  /* setlist */
-  .setlist-empty{text-align:center;color:var(--dim);font-size:12px;padding:40px 0;}
-  .setlist-item{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;align-items:center;margin-bottom:8px;cursor:pointer;}
-  .si-order{font-family:var(--display);font-weight:700;font-size:20px;color:var(--amber);width:32px;}
-  .si-name{font-family:var(--display);font-weight:600;font-size:15px;color:var(--text);flex:1;margin-left:12px;}
-  .si-remove{color:var(--red);font-size:18px;padding:4px 8px;}
-  .add-btn{width:100%;padding:11px;background:rgba(59,139,255,0.1);border:1px solid var(--blue);border-radius:8px;color:var(--blue);font-family:var(--display);font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;}
-  /* editor */
-  .slider-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-  .slider-row label{width:64px;font-size:11px;color:var(--dim);}
-  .slider-row input[type=range]{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:#1a2535;border-radius:10px;outline:none;}
-  .slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--blue);cursor:pointer;border:1px solid #0a0e14;}
-  .slider-val{width:32px;text-align:right;font-size:12px;color:var(--text);font-weight:600;}
-  .etabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-  .etab{padding:8px 10px;text-align:center;font-size:10.5px;font-weight:700;background:var(--panel2);border:1px solid var(--border);border-radius:6px;color:var(--dim);cursor:pointer;}
-  .etab.active{border-color:var(--blue);color:var(--blue);background:#0d2040;}
-  /* settings */
-  .setting-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:12px;}
-  .setting-row:last-child{border-bottom:none;}
-  .setting-label{color:var(--dim);}
-  .setting-val{color:var(--text);font-weight:600;}
-  /* bottom nav */
-  .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#080c10;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:8px 0 14px;z-index:100;}
-  .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:4px 0;}
-  .nav-icon{font-size:19px;}
-  .nav-label{font-size:9.5px;letter-spacing:1px;color:var(--dim);text-transform:uppercase;}
-  .nav-item.active .nav-label{color:var(--blue);}
+  .stomp.on{border-color:var(--green);}.stomp.ctl-stomp.on{border-color:var(--blue);}.stomp-num{font-size:9px;color:var(--dim);margin-bottom:3px;}.stomp.on .stomp-num{color:var(--green);}.stomp.ctl-stomp.on .stomp-num{color:var(--blue);}.stomp-icon{font-size:18px;display:block;margin-bottom:2px;}.stomp-name{font-size:10px;font-weight:700;color:var(--dim);}.stomp.on .stomp-name{color:var(--text);}.stomp-state{font-size:9px;margin-top:4px;font-weight:700;color:var(--dim);}.stomp-state.on{color:var(--green);}.stomp.ctl-stomp.on .stomp-name,.stomp.ctl-stomp.on .stomp-state{color:var(--blue);}
+  .conn-panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;display:none;}.conn-panel.visible{display:block;}.conn-status{font-size:11.5px;color:var(--dim);margin-top:6px;line-height:1.4;}
+  select,.small-input{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--border);font-family:var(--mono);font-size:12px;padding:9px;border-radius:6px;margin-bottom:8px;}
+  .patch-list{display:flex;flex-direction:column;gap:8px;}.patch-item{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}.patch-item.active-patch{border-color:var(--blue);background:#0d2040;}.pi-bank{font-size:10px;color:var(--dim);letter-spacing:1px;margin-bottom:2px;}.pi-name{font-family:var(--display);font-weight:600;font-size:16px;color:var(--text);}.pi-num{font-family:var(--display);font-weight:700;font-size:22px;color:var(--blue);}
+  .editor-head{display:flex;gap:8px;margin-bottom:10px}.editor-head select{margin:0;}.learn-banner{display:none;background:#201506;color:var(--amber);border:1px solid var(--amber);padding:10px;border-radius:8px;font-size:11px;margin-bottom:10px;}.learn-banner.show{display:block;}
+  .slider-row{display:grid;grid-template-columns:72px 1fr 38px 46px;align-items:center;gap:8px;margin-bottom:12px;}.slider-row label{font-size:11px;color:var(--dim);}.slider-row input[type=range]{width:100%;height:4px;-webkit-appearance:none;appearance:none;background:#1a2535;border-radius:10px;outline:none;}.slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--blue);cursor:pointer;border:1px solid #0a0e14;}.slider-val{text-align:right;font-size:12px;color:var(--text);font-weight:600;}.learn-btn{font-size:9px;background:#0d2040;color:var(--blue);border:1px solid var(--blue);border-radius:6px;padding:6px 4px;cursor:pointer;}.learn-btn.mapped{border-color:var(--green);color:var(--green);background:#0b2815;}
+  .setlist-empty{text-align:center;color:var(--dim);font-size:12px;padding:40px 0;}.setlist-item{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;align-items:center;margin-bottom:8px;cursor:pointer;}.si-order{font-family:var(--display);font-weight:700;font-size:20px;color:var(--amber);width:32px;}.si-name{font-family:var(--display);font-weight:600;font-size:15px;color:var(--text);flex:1;margin-left:12px;}.si-remove{color:var(--red);font-size:18px;padding:4px 8px;}.add-btn{width:100%;padding:11px;background:rgba(59,139,255,.1);border:1px solid var(--blue);border-radius:8px;color:var(--blue);font-family:var(--display);font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;}
+  .debug-log{height:260px;overflow:auto;background:#020406;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:10px;color:#80ff91;white-space:pre-wrap;line-height:1.45;}.debug-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}.mini-btn{padding:9px;border-radius:7px;background:var(--panel2);border:1px solid var(--border);color:var(--text);font-size:11px;cursor:pointer;}
+  .setting-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:12px;gap:12px;}.setting-row:last-child{border-bottom:none;}.setting-label{color:var(--dim);}.setting-val{color:var(--text);font-weight:600;text-align:right;}
+  .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#080c10;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:8px 0 14px;z-index:100;}.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:4px 0;}.nav-icon{font-size:19px;}.nav-label{font-size:9.5px;letter-spacing:1px;color:var(--dim);text-transform:uppercase;}.nav-item.active .nav-label{color:var(--blue);}
 </style>
 </head>
 <body>
 
-<!-- ===== LIVE ===== -->
 <div class="page active" id="page-live">
-  <div class="topbar">
-    <div class="boss-logo">&#9633;BOSS <span>ME-90</span></div>
-    <div class="conn-dot" id="connToggle"><span id="connLabel">tap to connect</span><div class="led" id="connLed"></div></div>
-  </div>
-  <div class="conn-panel" id="connPanel">
-    <select id="portSelect"><option>No MIDI devices found</option></select>
-    <div class="conn-status" id="connStatus">Waiting for Web MIDI...</div>
-  </div>
-  <div class="card">
-    <div class="patch-top">
-      <div class="ph-block"><div class="ph-label">Bank</div><div class="ph-value" id="bankVal">A</div></div>
-      <div class="ph-block"><div class="ph-label">Patch Name</div><div class="ph-value name" id="patchName">ROCK LEAD</div></div>
-      <div class="ph-block"><div class="ph-label">Patch</div><div class="ph-value num" id="patchNum">1</div></div>
-    </div>
-    <div class="patch-meta">
-      <div class="tempo">&#9201; TEMPO <span id="tempoVal">120</span></div>
-      <div class="ctl-pill on" id="ctlPill">CTL ON</div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="sec-label">Active Signal Chain</div>
-    <div class="chain">
-      <span class="in-label">IN</span><span class="arrow">&#8594;</span>
-      <div class="chain-node on" data-stomp-idx="0"><span class="node-icon">&#127919;</span><span class="node-name">COMP</span></div><span class="arrow">&#8594;</span>
-      <div class="chain-node on" data-stomp-idx="1"><span class="node-icon">&#9889;</span><span class="node-name">OD/DS</span></div><span class="arrow">&#8594;</span>
-      <div class="chain-node on preamp" data-stomp-idx="2"><span class="node-icon">&#128266;</span><span class="node-name">PREAMP</span></div><span class="arrow">&#8594;</span>
-      <div class="chain-node on" data-stomp-idx="3"><span class="node-icon">&#128202;</span><span class="node-name">EQ</span></div><span class="arrow">&#8594;</span>
-      <div class="chain-node on" data-stomp-idx="4"><span class="node-icon">&#8767;</span><span class="node-name">MOD</span></div><span class="arrow">&#8594;</span>
-      <div class="chain-node on" data-stomp-idx="5"><span class="node-icon">&#9201;</span><span class="node-name">DELAY</span></div><span class="arrow">&#8594;</span>
-      <div class="chain-node on" data-stomp-idx="6"><span class="node-icon">&#127754;</span><span class="node-name">REVERB</span></div>
-      <span class="arrow">&#8594;</span><span class="out-label">OUT</span>
-    </div>
-  </div>
-  <div class="card">
-    <div class="sec-label">Expression Pedal</div>
-    <div class="exp-grid">
-      <div>
-        <div style="font-size:10.5px;color:var(--dim)">MODE</div>
-        <div class="exp-mode">WAH</div>
-        <div style="font-size:10.5px;color:var(--dim);margin-top:4px">POSITION</div>
-        <div class="exp-pos" id="expPos">82</div>
-        <div class="exp-bar"><div class="exp-fill" style="width:64%"></div></div>
-      </div>
-      <div class="wah-pedal on" id="wahPedal">
-        <span class="boss-mark">&#9633;BOSS</span>
-        <div class="pedal-pad"></div>
-        <span class="wah-state" id="wahState">WAH ON</span>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="sec-label">Stomps</div>
-    <div class="stomps-grid">
-      <div class="stomp on" data-stomp-idx="0"><div class="stomp-num">1</div><span class="stomp-icon">&#127919;</span><div class="stomp-name">COMP</div><div class="stomp-state on">ON</div></div>
-      <div class="stomp on" data-stomp-idx="1"><div class="stomp-num">2</div><span class="stomp-icon">&#9889;</span><div class="stomp-name">OD/DS</div><div class="stomp-state on">ON</div></div>
-      <div class="stomp" data-stomp-idx="4"><div class="stomp-num">3</div><span class="stomp-icon">&#8767;</span><div class="stomp-name">MOD</div><div class="stomp-state">OFF</div></div>
-      <div class="stomp on" data-stomp-idx="5"><div class="stomp-num">4</div><span class="stomp-icon">&#9201;</span><div class="stomp-name">DELAY</div><div class="stomp-state on">ON</div></div>
-      <div class="stomp on ctl-stomp" data-ctl="1"><div class="stomp-num">CTL</div><span class="stomp-icon">&#127754;</span><div class="stomp-name">REVERB</div><div class="stomp-state on">ON</div></div>
-    </div>
-  </div>
+  <div class="topbar"><div class="boss-logo">□BOSS <span>ME-90</span></div><div class="conn-dot" id="connToggle"><span id="connLabel">tap to connect</span><div class="led" id="connLed"></div></div></div>
+  <div class="conn-panel" id="connPanel"><select id="portSelect"><option>No MIDI devices found</option></select><div class="conn-status" id="connStatus">Waiting for Web MIDI...</div></div>
+  <div class="card"><div class="patch-top"><div class="ph-block"><div class="ph-label">Bank</div><div class="ph-value" id="bankVal">U2</div></div><div class="ph-block"><div class="ph-label">Patch Name</div><div class="ph-value name" id="patchName">ROCK LEAD</div></div><div class="ph-block"><div class="ph-label">Patch</div><div class="ph-value num" id="patchNum">1</div></div></div><div class="patch-meta"><div class="tempo">⏱ TEMPO <span id="tempoVal">120</span></div><div class="ctl-pill on" id="ctlPill">CTL ON</div></div></div>
+  <div class="card"><div class="sec-label">Active Signal Chain</div><div class="chain" id="chain"></div></div>
+  <div class="card"><div class="sec-label">Expression Pedal</div><div class="exp-grid"><div><div style="font-size:10.5px;color:var(--dim)">MODE</div><div class="exp-mode" id="expMode">WAH</div><div style="font-size:10.5px;color:var(--dim);margin-top:4px">LEVEL</div><div class="exp-pos" id="expPos">82</div><div class="exp-bar"><div class="exp-fill" id="expFill"></div></div></div><div class="wah-pedal on" id="wahPedal"><span class="boss-mark">□BOSS</span><div class="pedal-pad"></div><span class="wah-state" id="wahState">WAH ON</span></div></div></div>
+  <div class="card"><div class="sec-label">Stomps</div><div class="stomps-grid" id="stompsGrid"></div></div>
 </div>
 
-<!-- ===== PATCHES ===== -->
-<div class="page" id="page-patches">
-  <div class="topbar"><div class="boss-logo">&#9633;BOSS <span>PATCHES</span></div><div class="conn-dot"><span id="connLabel2">--</span><div class="led" id="connLed2"></div></div></div>
-  <div class="card">
-    <div class="sec-label">Bank</div>
-    <div class="bank-row" id="bankRow">
-      <div class="bank-btn active" data-bank="0">A</div>
-      <div class="bank-btn" data-bank="1">B</div>
-      <div class="bank-btn" data-bank="2">C</div>
-      <div class="bank-btn" data-bank="3">D</div>
-    </div>
-    <div class="sec-label">Patches</div>
-    <div class="patch-list" id="patchList"></div>
-  </div>
-</div>
+<div class="page" id="page-patches"><div class="topbar"><div class="boss-logo">□BOSS <span>PATCHES</span></div><div class="conn-dot"><span id="connLabel2">--</span><div class="led" id="connLed2"></div></div></div><div class="card"><div class="sec-label">Select Patch</div><div class="patch-list" id="patchList"></div></div></div>
 
-<!-- ===== SETLIST ===== -->
-<div class="page" id="page-setlist">
-  <div class="topbar"><div class="boss-logo">&#9633;BOSS <span>SETLIST</span></div></div>
-  <div class="card">
-    <div class="sec-label">My Setlist</div>
-    <div id="setlistItems"><div class="setlist-empty">No patches yet.<br>Go to Patches and add them.</div></div>
-    <button class="add-btn" id="addCurrentBtn">+ Add Current Patch</button>
-  </div>
-</div>
+<div class="page" id="page-setlist"><div class="topbar"><div class="boss-logo">□BOSS <span>SETLIST</span></div></div><div class="card"><div class="sec-label">My Setlist</div><div id="setlistItems"><div class="setlist-empty">No patches in setlist yet.<br>Go to Patches and add them.</div></div><button class="add-btn" id="addCurrentBtn">+ Add Current Patch to Setlist</button></div></div>
 
-<!-- ===== EDITOR ===== -->
-<div class="page" id="page-editor">
-  <div class="topbar"><div class="boss-logo">&#9633;BOSS <span>EDITOR</span></div></div>
-  <div class="card">
-    <div class="etabs" id="editorTabs">
-      <div class="etab active" data-tab="comp">COMP</div>
-      <div class="etab" data-tab="od">OD/DS</div>
-      <div class="etab" data-tab="preamp">PREAMP</div>
-      <div class="etab" data-tab="eq">EQ</div>
-      <div class="etab" data-tab="mod">MOD</div>
-      <div class="etab" data-tab="delay">DELAY</div>
-      <div class="etab" data-tab="reverb">REVERB</div>
-      <div class="etab" data-tab="output">OUTPUT</div>
-    </div>
-    <div id="editorContent"></div>
-  </div>
-</div>
+<div class="page" id="page-editor"><div class="topbar"><div class="boss-logo">□BOSS <span>EDITOR</span></div></div><div class="card"><div class="editor-head"><select id="blockSelect"></select><select id="ccChannel"><option value="0">CH 1</option><option value="1">CH 2</option><option value="2">CH 3</option><option value="3">CH 4</option><option value="4">CH 5</option><option value="5">CH 6</option><option value="6">CH 7</option><option value="7">CH 8</option><option value="8">CH 9</option><option value="9">CH 10</option><option value="10">CH 11</option><option value="11">CH 12</option><option value="12">CH 13</option><option value="13">CH 14</option><option value="14">CH 15</option><option value="15">CH 16</option></select></div><div class="learn-banner" id="learnBanner">Move the ME-90 knob/control now. The next CC received will be assigned.</div><div id="editorContent"></div></div></div>
 
-<!-- ===== SETTINGS ===== -->
-<div class="page" id="page-settings">
-  <div class="topbar"><div class="boss-logo">&#9633;BOSS <span>SETTINGS</span></div></div>
-  <div class="card">
-    <div class="sec-label">MIDI Connection</div>
-    <select id="portSelect2"><option>No MIDI devices found</option></select>
-    <div class="conn-status" id="connStatus2">Waiting for Web MIDI...</div>
-    <div style="margin-top:14px">
-      <div class="setting-row"><span class="setting-label">Device</span><span class="setting-val" id="settDevice">--</span></div>
-      <div class="setting-row"><span class="setting-label">MIDI In</span><span class="setting-val" id="settIn">--</span></div>
-      <div class="setting-row"><span class="setting-label">MIDI Out</span><span class="setting-val" id="settOut">--</span></div>
-      <div class="setting-row"><span class="setting-label">Protocol</span><span class="setting-val">Roland SysEx DT1</span></div>
-      <div class="setting-row"><span class="setting-label">Version</span><span class="setting-val">2.0.0</span></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="sec-label">MIDI Log</div>
-    <div id="midiLog" style="height:160px;overflow-y:auto;font-size:10.5px;color:var(--dim);font-family:var(--mono);"></div>
-    <button id="clearMidiLog" style="margin-top:8px;background:none;border:1px solid var(--border);color:var(--dim);font-size:10px;padding:4px 10px;border-radius:4px;font-family:var(--mono);cursor:pointer;">Clear Log</button>
-  </div>
-</div>
+<div class="page" id="page-settings"><div class="topbar"><div class="boss-logo">□BOSS <span>SETTINGS</span></div></div><div class="card"><div class="sec-label">MIDI Connection</div><select id="portSelect2"><option>No MIDI devices found</option></select><div class="conn-status" id="connStatus2">Waiting for Web MIDI...</div><div style="margin-top:14px"><div class="setting-row"><span class="setting-label">Device</span><span class="setting-val" id="settDevice">--</span></div><div class="setting-row"><span class="setting-label">MIDI In</span><span class="setting-val" id="settIn">--</span></div><div class="setting-row"><span class="setting-label">MIDI Out</span><span class="setting-val" id="settOut">--</span></div><div class="setting-row"><span class="setting-label">Expression CC</span><span class="setting-val" id="settExpCC">Auto</span></div><div class="setting-row"><span class="setting-label">App Version</span><span class="setting-val">2.0 Control All</span></div></div></div><div class="card"><div class="sec-label">MIDI Monitor</div><div class="debug-actions"><button class="mini-btn" id="clearLogBtn">Clear Log</button><button class="mini-btn" id="resetMapBtn">Reset Learned CC</button></div><div class="debug-log" id="debugLog">Ready...</div></div></div>
 
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-  <div class="nav-item active" data-page="live"><span class="nav-icon">&#127968;</span><span class="nav-label">LIVE</span></div>
-  <div class="nav-item" data-page="patches"><span class="nav-icon">&#9776;</span><span class="nav-label">PATCHES</span></div>
-  <div class="nav-item" data-page="setlist"><span class="nav-icon">&#128203;</span><span class="nav-label">SETLIST</span></div>
-  <div class="nav-item" data-page="editor"><span class="nav-icon">&#127906;</span><span class="nav-label">EDITOR</span></div>
-  <div class="nav-item" data-page="settings"><span class="nav-icon">&#9881;</span><span class="nav-label">SETTINGS</span></div>
-</div>
+<div class="bottom-nav"><div class="nav-item active" data-page="live"><span class="nav-icon">⌂</span><span class="nav-label">LIVE</span></div><div class="nav-item" data-page="patches"><span class="nav-icon">☰</span><span class="nav-label">PATCHES</span></div><div class="nav-item" data-page="setlist"><span class="nav-icon">▤</span><span class="nav-label">SETLIST</span></div><div class="nav-item" data-page="editor"><span class="nav-icon">🎚</span><span class="nav-label">EDITOR</span></div><div class="nav-item" data-page="settings"><span class="nav-icon">⚙</span><span class="nav-label">SETTINGS</span></div></div>
 
 <script>
-// =============================================
-// MIDI STATE
-// =============================================
-var midiAccess=null, currentInput=null, currentOutput=null;
-var currentBank=0, currentPatch=0, ctlOn=true, wahOn=true, setlist=[];
-
-// Patch names from USB capture
-var patches=[
-  {bank:0,bankName:'A',name:'ROCK LEAD',num:1},
-  {bank:0,bankName:'A',name:'E.gtr to A.gtr',num:2},
-  {bank:0,bankName:'A',name:'SPACE CLEAN',num:3},
-  {bank:0,bankName:'A',name:'SPACE CLEAN',num:4},
-  {bank:0,bankName:'A',name:'ROCK LEAD',num:5},
-  {bank:0,bankName:'A',name:'METAL AMP',num:6},
-  {bank:0,bankName:'A',name:'ROCK LEAD',num:7},
-  {bank:1,bankName:'B',name:'SPACE CLEAN',num:1},
-  {bank:1,bankName:'B',name:'VO CRUNCH',num:2},
-  {bank:1,bankName:'B',name:'VO CRUNCH',num:3},
-  {bank:1,bankName:'B',name:'CTL TUNE DOWN',num:4},
-  {bank:1,bankName:'B',name:'ROCK LEAD',num:5},
-  {bank:1,bankName:'B',name:'VO CRUNCH',num:6},
-  {bank:1,bankName:'B',name:'SPACE CLEAN',num:7},
-  {bank:1,bankName:'B',name:'CTL TUNE DOWN',num:8},
-  {bank:2,bankName:'C',name:'SPACE CLEAN',num:1},
-  {bank:2,bankName:'C',name:'SPACE CLEAN',num:2},
-  {bank:2,bankName:'C',name:'ROCK LEAD',num:3},
-  {bank:2,bankName:'C',name:'E.gtr to A.gtr',num:4},
-  {bank:2,bankName:'C',name:'CTL TUNE DOWN',num:5},
-  {bank:2,bankName:'C',name:'WAH LEAD',num:6},
-  {bank:2,bankName:'C',name:'CENTA DRIVE',num:7},
-  {bank:2,bankName:'C',name:'+REV DEEP CLEAN',num:8},
-  {bank:3,bankName:'D',name:'WARM LEAD',num:1},
-  {bank:3,bankName:'D',name:'SHIMMER',num:2},
-  {bank:3,bankName:'D',name:'PEDAL BEND',num:3},
-  {bank:3,bankName:'D',name:'ROTARY CRUNCH',num:4},
-  {bank:3,bankName:'D',name:'TALK PEDAL',num:5},
-  {bank:3,bankName:'D',name:'LATIN LEAD',num:6},
-  {bank:3,bankName:'D',name:'FEEDBACKER',num:7},
-  {bank:3,bankName:'D',name:'HUMANIZER',num:8}
-];
-
-// Editor params per section — addr sub-byte, param byte, label, min, max, default
-// From capture: addr 20 00 04 10 = COMP, 20 = OD, 30 = MOD, 40 = EQ, 50 = DELAY, 60 = REVERB, 70 = OUTPUT
-var editorDefs={
-  comp:{addrByte:0x10,params:[{l:'SUSTAIN',p:0x03,v:50},{l:'ATTACK',p:0x04,v:40},{l:'TONE',p:0x05,v:64},{l:'LEVEL',p:0x01,v:80}]},
-  od:{addrByte:0x20,params:[{l:'DRIVE',p:0x03,v:60},{l:'TONE',p:0x04,v:64},{l:'BOTTOM',p:0x05,v:64},{l:'LEVEL',p:0x01,v:80}]},
-  preamp:{addrByte:0x30,params:[{l:'GAIN',p:0x03,v:60},{l:'BASS',p:0x04,v:64},{l:'MIDDLE',p:0x05,v:64},{l:'TREBLE',p:0x06,v:64},{l:'LEVEL',p:0x01,v:80}]},
-  eq:{addrByte:0x40,params:[{l:'LOW',p:0x05,v:64},{l:'LOW-MID',p:0x06,v:64},{l:'HI-MID',p:0x07,v:64},{l:'HIGH',p:0x01,v:64},{l:'LEVEL',p:0x03,v:80}]},
-  mod:{addrByte:0x50,params:[{l:'RATE',p:0x03,v:50},{l:'DEPTH',p:0x04,v:60},{l:'MANUAL',p:0x05,v:64},{l:'LEVEL',p:0x01,v:80}]},
-  delay:{addrByte:0x60,params:[{l:'TIME',p:0x05,v:50},{l:'FEEDBACK',p:0x06,v:40},{l:'HF DAMP',p:0x07,v:64},{l:'LEVEL',p:0x01,v:60}]},
-  reverb:{addrByte:0x70,params:[{l:'TIME',p:0x02,v:50},{l:'PRE DELAY',p:0x03,v:20},{l:'TONE',p:0x04,v:64},{l:'LEVEL',p:0x00,v:60}]},
-  output:{addrByte:0x00,params:[{l:'VOLUME',p:0x00,v:100},{l:'MASTER',p:0x01,v:100}]}
+var midiAccess=null,currentInput=null,currentOutput=null,activePatchIdx=3,wahOn=true,setlist=[],learnTarget=null,activeBlock='preamp';
+var ccMap=JSON.parse(localStorage.getItem('me90_cc_map_v2')||'{}');
+var expCC=localStorage.getItem('me90_exp_cc')||'';
+var patches=[];
+for(var b=1;b<=9;b++){for(var p=1;p<=4;p++){patches.push({bank:'U'+b,name:'PATCH '+b+'-'+p,num:p,pc:(b-1)*4+(p-1)});}}
+patches[3]={bank:'U1',name:'ROCK LEAD',num:4,pc:3}; patches[4]={bank:'U2',name:'CLEAN JAZZ',num:1,pc:4}; patches[5]={bank:'U2',name:'BLUES DRIVE',num:2,pc:5};
+var blocks={
+  comp:{label:'COMP / FX1',effect:'comp',params:['SUSTAIN','ATTACK','LEVEL','TYPE','TONE']},
+  odds:{label:'OD / DS',effect:'odds',params:['DRIVE','TONE','LEVEL','TYPE','BOTTOM']},
+  preamp:{label:'PREAMP',effect:'preamp',params:['GAIN','BASS','MIDDLE','TREBLE','LEVEL','TYPE']},
+  eq:{label:'EQ / FX2',effect:'eq',params:['LOW','MID','HIGH','LEVEL','FREQ']},
+  mod:{label:'MOD',effect:'mod',params:['RATE','DEPTH','LEVEL','TYPE','E.LEVEL']},
+  delay:{label:'DELAY',effect:'delay',params:['TIME','FEEDBACK','LEVEL','TYPE','TAP']},
+  reverb:{label:'REVERB',effect:'reverb',params:['TIME','TONE','LEVEL','TYPE','PRE-DLY']},
+  pedal:{label:'PEDAL FX',effect:'wah',params:['POSITION','MIN','MAX','TYPE','LEVEL']},
+  ctl:{label:'CTL / SYSTEM',effect:'ctl',params:['CTL','TEMPO','WAH SW','MEM/MAN','BANK']}
 };
-var activeTab='comp';
-
-// =============================================
-// ROLAND SYSEX HELPERS (from USB capture)
-// =============================================
-function rolandChecksum(addrBytes, dataBytes) {
-  var sum = 0;
-  for (var i=0; i<addrBytes.length; i++) sum += addrBytes[i];
-  for (var i=0; i<dataBytes.length; i++) sum += dataBytes[i];
-  return (128 - (sum % 128)) % 128;
-}
-
-function sendSysEx(addrBytes, dataBytes) {
-  if (!currentOutput) return;
-  // F0 41 10 04 01 05 03 04 12 [addr x4] [data] [checksum] F7
-  var checksum = rolandChecksum(addrBytes, dataBytes);
-  var msg = [0xF0, 0x41, 0x10, 0x04, 0x01, 0x05, 0x03, 0x04, 0x12];
-  for (var i=0; i<addrBytes.length; i++) msg.push(addrBytes[i]);
-  for (var i=0; i<dataBytes.length; i++) msg.push(dataBytes[i]);
-  msg.push(checksum);
-  msg.push(0xF7);
-  try {
-    currentOutput.send(msg);
-    addLog('SYX', msg.map(function(b){return b.toString(16).padStart(2,'0').toUpperCase();}).join(' ').substring(0,60)+'...');
-  } catch(e) { addLog('ERR', e.message); }
-}
-
-// Switch bank/patch — confirmed from capture: addr 7F 00 04 00, val = [bank, patch, 06]
-function sendBankPatch(bank, patch) {
-  sendSysEx([0x7F,0x00,0x04,0x00], [bank, patch, 0x06]);
-}
-
-// Stomp on/off — confirmed from capture: addr 20 01 04 00, val = [stompIdx, onOff, 06]
-// stompIdx: 0=COMP,1=OD/DS,2=PREAMP,3=EQ,4=MOD,5=DELAY,6=REVERB
-function sendStompToggle(stompIdx, on) {
-  sendSysEx([0x20,0x01,0x04,0x00], [stompIdx, on?0x01:0x00, 0x06]);
-}
-
-// CTL toggle — confirmed: addr 7F 00 04 01
-function sendCTL(ctlState) {
-  sendSysEx([0x7F,0x00,0x04,0x01], [0x00,0x00,0x07,ctlState]);
-}
-
-// Parameter change — addr 20 00 04 [sectionByte], val = [paramByte, value, 06]
-function sendParam(sectionAddrByte, paramByte, value) {
-  sendSysEx([0x20,0x00,0x04,sectionAddrByte], [paramByte, value, 0x06]);
-}
-
-// =============================================
-// MIDI LOG
-// =============================================
-function addLog(tag, msg) {
-  var el = document.getElementById('midiLog');
-  if (!el) return;
-  var row = document.createElement('div');
-  row.style.padding='2px 0';
-  row.style.borderBottom='1px solid #111820';
-  row.style.fontSize='10px';
-  var t = new Date().toLocaleTimeString([],{hour12:false});
-  row.textContent='['+t+'] '+tag+': '+msg;
-  if (tag==='SYX') row.style.color='#e8742c';
-  else if (tag==='IN') row.style.color='#22c55e';
-  else row.style.color='#c0463a';
-  el.prepend(row);
-}
-
-// =============================================
-// MIDI SETUP
-// =============================================
-function handleMIDI(event) {
-  var data = event.data;
-  var hex = Array.from(data).map(function(b){return b.toString(16).padStart(2,'0').toUpperCase();}).join(' ');
-  addLog('IN', hex.substring(0,60));
-  // If incoming SysEx patch change, update display
-  if (data[0]===0xF0 && data[8]===0x12) {
-    var addr = Array.from(data.slice(9,13));
-    if (addr[0]===0x7F && addr[1]===0x00 && addr[2]===0x04 && addr[3]===0x00) {
-      var bank = data[13], patch = data[14];
-      currentBank = bank; currentPatch = patch;
-      updatePatchDisplay();
-    }
-  }
-}
-
-function setConnUI(name, ok) {
-  ['connLed','connLed2'].forEach(function(id){var el=document.getElementById(id);if(el)el.className='led'+(ok?' on':'');});
-  ['connLabel','connLabel2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ok?'connected':'--';});
-  document.getElementById('connStatus').textContent=ok?'Listening on "'+name+'"':'Not connected';
-  document.getElementById('connStatus2').textContent=ok?'Connected to "'+name+'"':'Not connected';
-  document.getElementById('settDevice').textContent=ok?name:'--';
-  document.getElementById('settIn').textContent=ok?(currentInput?'Active':'--'):'--';
-  document.getElementById('settOut').textContent=ok?(currentOutput?'Active':'--'):'--';
-}
-
-function attachDevice(name) {
-  if (currentInput) currentInput.onmidimessage=null;
-  currentInput = Array.from(midiAccess.inputs.values()).find(function(i){return i.name===name;})||null;
-  currentOutput = Array.from(midiAccess.outputs.values()).find(function(o){return o.name===name;})||null;
-  if (currentInput) currentInput.onmidimessage=handleMIDI;
-  setConnUI(name,!!(currentInput||currentOutput));
-}
-
-function buildPortOptions(sel) {
-  sel.innerHTML='';
-  var names=new Set(
-    Array.from(midiAccess.inputs.values()).map(function(i){return i.name;})
-    .concat(Array.from(midiAccess.outputs.values()).map(function(o){return o.name;}))
-  );
-  if (!names.size){sel.innerHTML='<option>No MIDI devices found</option>';return null;}
-  names.forEach(function(n){var o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
-  var p=Array.from(names).find(function(n){return /me-?90/i.test(n);})||Array.from(names)[0];
-  sel.value=p; return p;
-}
-
-function refreshPorts() {
-  var p=buildPortOptions(document.getElementById('portSelect'));
-  buildPortOptions(document.getElementById('portSelect2'));
-  if (p){document.getElementById('portSelect2').value=p;attachDevice(p);}
-}
-
-// =============================================
-// PATCH DISPLAY
-// =============================================
-function updatePatchDisplay() {
-  var p = patches.find(function(x){return x.bank===currentBank && x.num===(currentPatch+1);});
-  if (!p) p = {bankName:'U'+currentBank, name:'PATCH '+(currentPatch+1), num:currentPatch+1};
-  document.getElementById('bankVal').textContent = p.bankName;
-  document.getElementById('patchName').textContent = p.name;
-  document.getElementById('patchNum').textContent = p.num;
-  buildPatchList();
-}
-
-// =============================================
-// PATCHES PAGE
-// =============================================
-var selectedBankFilter=0;
-function buildPatchList() {
-  var list=document.getElementById('patchList');list.innerHTML='';
-  var filtered=patches.filter(function(p){return p.bank===selectedBankFilter;});
-  filtered.forEach(function(p) {
-    var item=document.createElement('div');
-    var isActive = p.bank===currentBank && p.num===(currentPatch+1);
-    item.className='patch-item'+(isActive?' active-patch':'');
-    item.innerHTML='<div><div class="pi-bank">'+p.bankName+'</div><div class="pi-name">'+p.name+'</div></div><div class="pi-num">'+p.num+'</div>';
-    item.addEventListener('click',function(){
-      currentBank=p.bank; currentPatch=p.num-1;
-      sendBankPatch(currentBank, currentPatch);
-      updatePatchDisplay();
-      showPage('live');
-    });
-    list.appendChild(item);
-  });
-}
-
-document.getElementById('bankRow').addEventListener('click',function(e){
-  var btn=e.target.closest('.bank-btn');if(!btn)return;
-  selectedBankFilter=parseInt(btn.dataset.bank);
-  document.querySelectorAll('.bank-btn').forEach(function(b){b.classList.toggle('active',b.dataset.bank==selectedBankFilter);});
-  buildPatchList();
-});
-buildPatchList();
-
-// =============================================
-// SETLIST
-// =============================================
-document.getElementById('addCurrentBtn').addEventListener('click',function(){
-  var p=patches.find(function(x){return x.bank===currentBank && x.num===(currentPatch+1);});
-  if (!p) return;
-  setlist.push({bank:p.bank,bankName:p.bankName,name:p.name,num:p.num});
-  buildSetlist();
-});
-function buildSetlist() {
-  var el=document.getElementById('setlistItems');
-  if (!setlist.length){el.innerHTML='<div class="setlist-empty">No patches yet.<br>Go to Patches and add them.</div>';return;}
-  el.innerHTML='';
-  setlist.forEach(function(p,i){
-    var item=document.createElement('div');item.className='setlist-item';
-    item.innerHTML='<div class="si-order">'+(i+1)+'</div><div class="si-name">'+p.bankName+' - '+p.name+'</div><div class="si-remove" data-i="'+i+'">&#10005;</div>';
-    item.addEventListener('click',function(e){
-      if (e.target.dataset.i!==undefined){setlist.splice(parseInt(e.target.dataset.i),1);buildSetlist();return;}
-      currentBank=p.bank;currentPatch=p.num-1;
-      sendBankPatch(currentBank,currentPatch);
-      updatePatchDisplay();showPage('live');
-    });
-    el.appendChild(item);
-  });
-}
-
-// =============================================
-// EDITOR
-// =============================================
-function buildEditor() {
-  var c=document.getElementById('editorContent');c.innerHTML='';
-  var def=editorDefs[activeTab];if(!def)return;
-  def.params.forEach(function(p){
-    var row=document.createElement('div');row.className='slider-row';
-    row.innerHTML='<label>'+p.l+'</label><input type="range" min="0" max="99" value="'+p.v+'"><span class="slider-val">'+p.v+'</span>';
-    var inp=row.querySelector('input'),val=row.querySelector('.slider-val');
-    inp.addEventListener('input',function(){
-      val.textContent=inp.value;
-      sendParam(def.addrByte, p.p, parseInt(inp.value));
-    });
-    c.appendChild(row);
-  });
-}
-document.getElementById('editorTabs').addEventListener('click',function(e){
-  var t=e.target.dataset.tab;if(!t)return;
-  activeTab=t;
-  document.querySelectorAll('.etab').forEach(function(x){x.classList.toggle('active',x.dataset.tab===t);});
-  buildEditor();
-});
-buildEditor();
-
-// =============================================
-// CHAIN NODE TOGGLE
-// =============================================
-document.querySelectorAll('.chain-node').forEach(function(node){
-  node.addEventListener('click',function(){
-    var idx=parseInt(node.dataset.stompIdx);
-    var on=node.classList.toggle('on');
-    // Sync matching stomp button
-    var stomp=document.querySelector('.stomp[data-stomp-idx="'+idx+'"]');
-    if (stomp){
-      stomp.classList.toggle('on',on);
-      var st=stomp.querySelector('.stomp-state'),num=stomp.querySelector('.stomp-num');
-      if(st){st.textContent=on?'ON':'OFF';st.className='stomp-state'+(on?' on':'');}
-      if(num){num.className='stomp-num'+(on?' on':'');}
-    }
-    sendStompToggle(idx,on);
-  });
-});
-
-// =============================================
-// STOMP TOGGLE
-// =============================================
-document.querySelectorAll('.stomp:not(.ctl-stomp)').forEach(function(s){
-  s.addEventListener('click',function(){
-    var idx=parseInt(s.dataset.stompIdx);
-    var on=s.classList.toggle('on');
-    var st=s.querySelector('.stomp-state'),num=s.querySelector('.stomp-num');
-    if(st){st.textContent=on?'ON':'OFF';st.className='stomp-state'+(on?' on':'');}
-    if(num){num.className='stomp-num'+(on?' on':'');}
-    // Sync chain node
-    var node=document.querySelector('.chain-node[data-stomp-idx="'+idx+'"]');
-    if(node) node.classList.toggle('on',on);
-    sendStompToggle(idx,on);
-  });
-});
-
-// =============================================
-// CTL TOGGLE
-// =============================================
-var ctlState=0;
-document.getElementById('ctlPill').addEventListener('click',function(){
-  ctlState=(ctlState+1)%4;
-  var pill=document.getElementById('ctlPill');
-  var off=pill.classList.toggle('off');
-  pill.textContent=off?'CTL OFF':'CTL ON';
-  sendCTL(ctlState);
-});
-document.querySelector('.ctl-stomp').addEventListener('click',function(){
-  var s=document.querySelector('.ctl-stomp');
-  var on=s.classList.toggle('on');
-  var st=s.querySelector('.stomp-state'),num=s.querySelector('.stomp-num');
-  if(st){st.textContent=on?'ON':'OFF';st.className='stomp-state'+(on?' on':'');}
-  ctlState=on?1:0;
-  sendCTL(ctlState);
-});
-
-// =============================================
-// WAH PEDAL TOGGLE
-// =============================================
-document.getElementById('wahPedal').addEventListener('click',function(){
-  wahOn=!wahOn;
-  document.getElementById('wahPedal').classList.toggle('on',wahOn);
-  document.getElementById('wahState').textContent=wahOn?'WAH ON':'WAH OFF';
-  // WAH on/off via expression pedal section addr 20 00 04 70
-  sendSysEx([0x20,0x00,0x04,0x70],[0x00,wahOn?0x01:0x00,0x06]);
-});
-
-// =============================================
-// NAV
-// =============================================
-function showPage(page){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.getElementById('page-'+page).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.toggle('active',n.dataset.page===page);});
-}
-document.querySelectorAll('.nav-item').forEach(function(item){
-  item.addEventListener('click',function(){showPage(item.dataset.page);});
-});
-
-// =============================================
-// SETTINGS
-// =============================================
-document.getElementById('portSelect').addEventListener('change',function(e){attachDevice(e.target.value);});
-document.getElementById('portSelect2').addEventListener('change',function(e){attachDevice(e.target.value);document.getElementById('portSelect').value=e.target.value;});
-document.getElementById('connToggle').addEventListener('click',function(){document.getElementById('connPanel').classList.toggle('visible');});
-document.getElementById('clearMidiLog').addEventListener('click',function(){document.getElementById('midiLog').innerHTML='';});
-
-// =============================================
-// MIDI INIT
-// =============================================
-if (!navigator.requestMIDIAccess){
-  document.getElementById('connStatus').textContent='Web MIDI not supported. Use Chrome.';
-} else {
-  navigator.requestMIDIAccess({sysex:true}).then(function(access){
-    midiAccess=access;refreshPorts();access.onstatechange=refreshPorts;
-    document.getElementById('connPanel').classList.add('visible');
-  }).catch(function(err){
-    document.getElementById('connStatus').textContent='MIDI access denied: '+err.message;
-  });
-}
+var state={tempo:120,expMode:'WAH',expValue:82,effects:{comp:true,odds:true,preamp:true,eq:true,mod:true,delay:true,reverb:true},stomps:{1:true,2:true,3:false,4:true,ctl:true},params:{}};
+Object.keys(blocks).forEach(function(k){state.params[k]={};blocks[k].params.forEach(function(p,i){state.params[k][p]=(i===0?60:i===2?80:64);});});
+function saveMap(){localStorage.setItem('me90_cc_map_v2',JSON.stringify(ccMap)); if(expCC)localStorage.setItem('me90_exp_cc',expCC);}
+function debug(msg){var d=document.getElementById('debugLog');var t=new Date().toLocaleTimeString();d.textContent='['+t+'] '+msg+'\n'+d.textContent;}
+function hex(data){return Array.from(data).map(function(x){return x.toString(16).padStart(2,'0').toUpperCase();}).join(' ');}
+function send(bytes){if(currentOutput){try{currentOutput.send(bytes);debug('OUT '+hex(bytes));}catch(e){debug('ERR '+e.message);}}else debug('No MIDI output');}
+function sendCC(cc,val){var ch=parseInt(document.getElementById('ccChannel').value||'0');send([0xB0|ch,cc,Math.max(0,Math.min(127,parseInt(val)))]);}
+function sendPC(pc){send([0xC0,pc]);}
+function handleMIDI(e){var d=Array.from(e.data);debug('IN  '+hex(d));var type=d[0]&0xF0;if(type===0xC0){updatePatchByPC(d[1]);return;}if(type===0xB0){var cc=d[1],val=d[2];if(learnTarget){ccMap[learnTarget]=cc;learnTarget=null;document.getElementById('learnBanner').classList.remove('show');saveMap();buildEditor();debug('LEARNED CC '+cc);return;}if(expCC==='' && [1,7,11,16,17,18,19].indexOf(cc)>=0){expCC=cc;saveMap();}if(cc==parseInt(expCC||'-1') || cc===7 || cc===11 || cc===1){state.expValue=val;renderLive();document.getElementById('settExpCC').textContent='CC '+cc;}applyIncomingCC(cc,val);}}
+function applyIncomingCC(cc,val){Object.keys(ccMap).forEach(function(key){if(parseInt(ccMap[key])===cc){var parts=key.split('.'); if(parts[0]==='stomp'){setStomp(parts[1],val>=64,false);} else if(parts.length===2){state.params[parts[0]][parts[1]]=val; if(parts[0]===activeBlock)buildEditor();}}});}
+function setConnUI(name,ok){['connLed','connLed2'].forEach(function(id){var el=document.getElementById(id);if(el)el.className='led'+(ok?' on':'');});['connLabel','connLabel2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ok?'connected':'--';});document.getElementById('connStatus').textContent=ok?'Listening on '+name:'Not connected';document.getElementById('connStatus2').textContent=ok?'Connected to '+name:'Not connected';document.getElementById('settDevice').textContent=ok?name:'--';document.getElementById('settIn').textContent=ok?(currentInput?'Active':'--'):'--';document.getElementById('settOut').textContent=ok?(currentOutput?'Active':'--'):'--';document.getElementById('settExpCC').textContent=expCC?'CC '+expCC:'Auto';}
+function attachDevice(name){if(currentInput)currentInput.onmidimessage=null;currentInput=Array.from(midiAccess.inputs.values()).find(function(i){return i.name===name;})||null;currentOutput=Array.from(midiAccess.outputs.values()).find(function(o){return o.name===name;})||null;if(currentInput)currentInput.onmidimessage=handleMIDI;setConnUI(name,!!(currentInput||currentOutput));}
+function buildPortOptions(sel){sel.innerHTML='';var names=new Set(Array.from(midiAccess.inputs.values()).map(function(i){return i.name;}).concat(Array.from(midiAccess.outputs.values()).map(function(o){return o.name;})));if(!names.size){sel.innerHTML='<option>No MIDI devices found</option>';return null;}names.forEach(function(n){var o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});var p=Array.from(names).find(function(n){return /me-?90|boss/i.test(n);})||Array.from(names)[0];sel.value=p;return p;}
+function refreshPorts(){var p=buildPortOptions(document.getElementById('portSelect'));buildPortOptions(document.getElementById('portSelect2'));if(p){document.getElementById('portSelect2').value=p;attachDevice(p);}}
+document.getElementById('portSelect').addEventListener('change',function(e){attachDevice(e.target.value);});document.getElementById('portSelect2').addEventListener('change',function(e){attachDevice(e.target.value);document.getElementById('portSelect').value=e.target.value;});document.getElementById('connToggle').addEventListener('click',function(){document.getElementById('connPanel').classList.toggle('visible');});
+function currentPatch(){return patches[activePatchIdx]||{bank:'--',name:'PATCH '+(activePatchIdx+1),num:activePatchIdx+1,pc:activePatchIdx};}
+function updatePatchByPC(pc){var idx=patches.findIndex(function(p){return p.pc===pc;});activePatchIdx=idx>=0?idx:pc;renderPatch();buildPatchList();}
+function renderPatch(){var p=currentPatch();document.getElementById('patchNum').textContent=p.num;document.getElementById('patchName').textContent=p.name;document.getElementById('bankVal').textContent=p.bank;document.getElementById('tempoVal').textContent=state.tempo;}
+function buildPatchList(){var list=document.getElementById('patchList');list.innerHTML='';patches.forEach(function(p,i){var item=document.createElement('div');item.className='patch-item'+(i===activePatchIdx?' active-patch':'');item.innerHTML='<div><div class="pi-bank">'+p.bank+'</div><div class="pi-name">'+p.name+'</div></div><div class="pi-num">'+p.num+'</div>';item.addEventListener('click',function(){activePatchIdx=i;sendPC(p.pc);renderPatch();buildPatchList();showPage('live');});list.appendChild(item);});}
+function renderChain(){var chain=document.getElementById('chain');var order=[['comp','🎯','COMP'],['odds','⚡','OD/DS'],['preamp','🔊','PREAMP'],['eq','📊','EQ'],['mod','≋','MOD'],['delay','⏱','DELAY'],['reverb','🌊','REVERB']];chain.innerHTML='<span class="in-label">IN</span><span class="arrow">→</span>';order.forEach(function(o,i){chain.innerHTML+='<div class="chain-node '+(state.effects[o[0]]?'on ':'')+(o[0]==='preamp'?'preamp':'')+'" data-fx="'+o[0]+'"><span class="node-icon">'+o[1]+'</span><span class="node-name">'+o[2]+'</span></div>';if(i<order.length-1)chain.innerHTML+='<span class="arrow">→</span>';});chain.innerHTML+='<span class="arrow">→</span><span class="out-label">OUT</span>';document.querySelectorAll('.chain-node').forEach(function(n){n.addEventListener('click',function(){var fx=n.dataset.fx;state.effects[fx]=!state.effects[fx];renderLive();});});}
+function renderExp(){document.getElementById('expMode').textContent=state.expMode;document.getElementById('expPos').textContent=state.expValue;document.getElementById('expFill').style.width=Math.round(state.expValue/127*100)+'%';}
+function renderStomps(){var g=document.getElementById('stompsGrid');var data=[['1','COMP','🎯','comp'],['2','BOOST','⚡','odds'],['3','MOD','≋','mod'],['4','DELAY','⏱','delay'],['ctl','REVERB','🌊','reverb']];g.innerHTML='';data.forEach(function(s){var key=s[0],on=state.stomps[key];g.innerHTML+='<div class="stomp '+(on?'on ':'')+(key==='ctl'?'ctl-stomp':'')+'" data-stomp="'+key+'"><div class="stomp-num">'+(key==='ctl'?'CTL':key)+'</div><span class="stomp-icon">'+s[2]+'</span><div class="stomp-name">'+s[1]+'</div><div class="stomp-state '+(on?'on':'')+'">'+(on?'ON':'OFF')+'</div></div>';});document.querySelectorAll('.stomp').forEach(function(s){s.addEventListener('click',function(){var key=s.dataset.stomp;setStomp(key,!state.stomps[key],true);});});}
+function setStomp(key,on,sendIt){state.stomps[key]=on;var map={1:'comp',2:'odds',3:'mod',4:'delay',ctl:'reverb'};if(map[key])state.effects[map[key]]=on;renderLive();if(sendIt){var cc=ccMap['stomp.'+key]; if(cc!==undefined)sendCC(cc,on?127:0);}}
+function renderLive(){renderPatch();renderChain();renderExp();renderStomps();document.getElementById('wahPedal').classList.toggle('on',wahOn);document.getElementById('wahState').textContent=wahOn?'WAH ON':'WAH OFF';document.getElementById('ctlPill').classList.toggle('off',!state.stomps.ctl);document.getElementById('ctlPill').textContent=state.stomps.ctl?'CTL ON':'CTL OFF';}
+function buildBlockSelect(){var s=document.getElementById('blockSelect');s.innerHTML='';Object.keys(blocks).forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=blocks[k].label;s.appendChild(o);});s.value=activeBlock;}
+function keyFor(block,param){return block+'.'+param;}
+function buildEditor(){var c=document.getElementById('editorContent');c.innerHTML='';var b=blocks[activeBlock];b.params.forEach(function(p){var v=state.params[activeBlock][p]||0;var k=keyFor(activeBlock,p);var cc=ccMap[k];var row=document.createElement('div');row.className='slider-row';row.innerHTML='<label>'+p+'</label><input type="range" min="0" max="127" value="'+v+'"><span class="slider-val">'+v+'</span><button class="learn-btn '+(cc!==undefined?'mapped':'')+'">'+(cc!==undefined?'CC '+cc:'LEARN')+'</button>';var inp=row.querySelector('input'),val=row.querySelector('.slider-val'),btn=row.querySelector('button');inp.addEventListener('input',function(){var value=parseInt(inp.value);state.params[activeBlock][p]=value;val.textContent=value;if(ccMap[k]!==undefined)sendCC(ccMap[k],value);});btn.addEventListener('click',function(){learnTarget=k;document.getElementById('learnBanner').textContent='Learning '+blocks[activeBlock].label+' / '+p+'. Move the ME-90 control now.';document.getElementById('learnBanner').classList.add('show');});c.appendChild(row);});}
+document.getElementById('blockSelect').addEventListener('change',function(e){activeBlock=e.target.value;buildEditor();});
+document.getElementById('addCurrentBtn').addEventListener('click',function(){var p=currentPatch();setlist.push(Object.assign({},p,{idx:activePatchIdx}));buildSetlist();});function buildSetlist(){var el=document.getElementById('setlistItems');if(!setlist.length){el.innerHTML='<div class="setlist-empty">No patches in setlist yet.<br>Go to Patches and add them.</div>';return;}el.innerHTML='';setlist.forEach(function(p,i){var item=document.createElement('div');item.className='setlist-item';item.innerHTML='<div class="si-order">'+(i+1)+'</div><div class="si-name">'+p.bank+' - '+p.name+'</div><div class="si-remove" data-i="'+i+'">x</div>';item.addEventListener('click',function(e){if(e.target.dataset.i!==undefined){setlist.splice(parseInt(e.target.dataset.i),1);buildSetlist();return;}activePatchIdx=p.idx;sendPC(p.pc);renderPatch();showPage('live');});el.appendChild(item);});}
+document.getElementById('wahPedal').addEventListener('click',function(){wahOn=!wahOn;renderLive();var cc=ccMap['pedal.WAH SW'];if(cc!==undefined)sendCC(cc,wahOn?127:0);});document.getElementById('ctlPill').addEventListener('click',function(){setStomp('ctl',!state.stomps.ctl,true);});
+function showPage(page){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.getElementById('page-'+page).classList.add('active');document.querySelectorAll('.nav-item').forEach(function(n){n.classList.toggle('active',n.dataset.page===page);});}
+document.querySelectorAll('.nav-item').forEach(function(item){item.addEventListener('click',function(){showPage(item.dataset.page);});});
+document.getElementById('clearLogBtn').addEventListener('click',function(){document.getElementById('debugLog').textContent='';});document.getElementById('resetMapBtn').addEventListener('click',function(){if(confirm('Clear all learned CC mapping?')){ccMap={};expCC='';localStorage.removeItem('me90_cc_map_v2');localStorage.removeItem('me90_exp_cc');buildEditor();renderLive();}});
+function init(){buildBlockSelect();buildEditor();buildPatchList();renderLive();if(!navigator.requestMIDIAccess){document.getElementById('connStatus').textContent='Web MIDI not supported. Use Chrome.';}else{navigator.requestMIDIAccess({sysex:true}).then(function(access){midiAccess=access;refreshPorts();access.onstatechange=refreshPorts;document.getElementById('connPanel').classList.add('visible');}).catch(function(err){document.getElementById('connStatus').textContent='MIDI access denied: '+err.message;});}}
+init();
 </script>
 </body>
 </html>
