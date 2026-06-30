@@ -6,25 +6,17 @@
 <title>ME-90 Live</title>
 <style>
   :root{
-    --bg:#060a0e;
-    --panel:#0d1218;
-    --panel2:#111820;
-    --border:#1a2535;
-    --blue:#3b8bff;
-    --green:#22c55e;
-    --amber:#f59e0b;
-    --red:#ef4444;
-    --text:#e2eaf4;
-    --dim:#5a7090;
+    --bg:#060a0e; --panel:#0d1218; --panel2:#111820; --border:#1a2535;
+    --blue:#3b8bff; --green:#22c55e; --amber:#f59e0b; --red:#ef4444;
+    --text:#e2eaf4; --dim:#5a7090;
     --mono:"JetBrains Mono","SF Mono",Consolas,monospace;
     --display:"Oswald","Arial Narrow",sans-serif;
   }
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
   html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--mono);touch-action:manipulation;}
-  .wrap{max-width:540px;margin:0 auto;padding:12px 12px 90px;}
-
-  /* ---- HEADER ---- */
+  .page{display:none;max-width:540px;margin:0 auto;padding:12px 12px 90px;}
+  .page.active{display:block;}
   .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;}
   .boss-logo{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:2px;color:var(--text);}
   .boss-logo span{color:var(--blue);}
@@ -32,381 +24,377 @@
   .led{width:8px;height:8px;border-radius:50%;background:#1a2535;}
   .led.on{background:var(--green);box-shadow:0 0 8px var(--green);}
   .led.error{background:var(--red);box-shadow:0 0 8px var(--red);}
-
-  /* ---- PATCH HEADER ---- */
-  .patch-header{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
+  .sec-label{font-size:9.5px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;margin-bottom:10px;}
   .patch-top{display:grid;grid-template-columns:80px 1fr 80px;gap:8px;align-items:center;margin-bottom:10px;}
   .ph-block{text-align:center;}
   .ph-label{font-size:9.5px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;margin-bottom:2px;}
   .ph-value{font-family:var(--display);font-weight:700;font-size:22px;color:var(--blue);}
-  .ph-value.name{font-size:20px;color:var(--text);text-align:center;}
+  .ph-value.name{font-size:18px;color:var(--text);}
   .ph-value.num{color:var(--text);}
   .patch-meta{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dim);}
-  .patch-meta .tempo{display:flex;align-items:center;gap:5px;}
   .patch-meta .tempo span{color:var(--blue);font-weight:700;}
-  .ctl-pill{padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;border:1px solid var(--green);color:var(--green);}
+  .ctl-pill{padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;border:1px solid var(--green);color:var(--green);cursor:pointer;}
   .ctl-pill.off{border-color:var(--dim);color:var(--dim);}
-
-  /* ---- SIGNAL CHAIN ---- */
-  .chain-section{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
-  .sec-label{font-size:9.5px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;margin-bottom:10px;}
   .chain{display:flex;align-items:center;gap:4px;overflow-x:auto;padding-bottom:4px;}
   .chain::-webkit-scrollbar{height:3px;}
   .chain::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
   .arrow{color:var(--dim);font-size:11px;flex-shrink:0;}
-  .chain-node{flex-shrink:0;width:72px;border:2px solid var(--border);border-radius:8px;padding:8px 4px 6px;text-align:center;background:var(--panel2);cursor:pointer;position:relative;}
+  .chain-node{flex-shrink:0;width:70px;border:2px solid var(--border);border-radius:8px;padding:8px 4px 6px;text-align:center;background:var(--panel2);cursor:pointer;}
   .chain-node.on{border-color:var(--green);}
   .chain-node.on .node-name{color:var(--green);}
-  .chain-node.selected{border-color:var(--blue);}
-  .chain-node.selected .node-name{color:var(--blue);}
   .chain-node.preamp.on{border-color:var(--amber);}
   .chain-node.preamp.on .node-name{color:var(--amber);}
-  .node-icon{font-size:20px;margin-bottom:3px;display:block;}
+  .node-icon{font-size:19px;margin-bottom:3px;display:block;}
   .node-name{font-size:10px;font-weight:700;letter-spacing:0.5px;color:var(--dim);}
   .in-label,.out-label{font-size:9px;color:var(--dim);flex-shrink:0;}
-
-  /* ---- EXPRESSION PEDAL ---- */
-  .exp-section{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;}
-  .exp-left{}
+  .exp-grid{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;}
   .exp-mode{font-family:var(--display);font-weight:700;font-size:28px;color:var(--green);margin:4px 0;}
-  .exp-bar{height:8px;background:var(--border);border-radius:4px;margin-top:8px;overflow:hidden;}
-  .exp-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:4px;transition:width .1s;}
   .exp-pos{font-size:28px;font-family:var(--display);font-weight:700;color:var(--green);}
+  .exp-bar{height:8px;background:var(--border);border-radius:4px;margin-top:8px;overflow:hidden;}
+  .exp-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:4px;}
   .exp-pedal-graphic{width:64px;height:90px;background:linear-gradient(145deg,#1a2535,#0d1218);border:2px solid var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(34,197,94,0.2);}
-  .exp-pedal-graphic .boss-mark{font-family:var(--display);font-size:10px;color:var(--dim);letter-spacing:1px;}
-
-  /* ---- STOMPS ---- */
-  .stomps-section{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
+  .exp-pedal-graphic span{font-family:var(--display);font-size:10px;color:var(--dim);letter-spacing:1px;}
+  .wah-btn{margin-top:10px;width:100%;padding:9px;border-radius:7px;border:2px solid var(--green);background:rgba(34,197,94,0.12);color:var(--green);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px;cursor:pointer;}
+  .wah-btn.off{border-color:var(--dim);background:rgba(255,255,255,0.03);color:var(--dim);}
   .stomps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
-  .stomp{border:2px solid var(--border);border-radius:8px;padding:10px 4px 8px;text-align:center;background:var(--panel2);cursor:pointer;position:relative;}
+  .stomp{border:2px solid var(--border);border-radius:8px;padding:10px 4px 8px;text-align:center;background:var(--panel2);cursor:pointer;}
   .stomp.on{border-color:var(--green);}
   .stomp.ctl-stomp{border-color:var(--blue);}
   .stomp-num{font-size:9px;color:var(--dim);margin-bottom:3px;}
   .stomp-num.on{color:var(--green);}
   .stomp-icon{font-size:18px;display:block;margin-bottom:2px;}
-  .stomp-name{font-size:10px;font-weight:700;color:var(--dim);letter-spacing:0.3px;}
+  .stomp-name{font-size:10px;font-weight:700;color:var(--dim);}
   .stomp.on .stomp-name{color:var(--text);}
-  .stomp-state{font-size:9px;margin-top:4px;padding:2px 0;border-radius:3px;font-weight:700;letter-spacing:0.5px;}
+  .stomp-state{font-size:9px;margin-top:4px;font-weight:700;color:var(--dim);}
   .stomp-state.on{color:var(--green);}
-  .stomp-state.off{color:var(--dim);}
-  .stomp.ctl-stomp .stomp-name,.stomp.ctl-stomp .stomp-num{color:var(--blue);}
-  .stomp.ctl-stomp .stomp-state.on{color:var(--blue);}
-
-  /* ---- CONNECT PANEL ---- */
+  .stomp.ctl-stomp .stomp-name,.stomp.ctl-stomp .stomp-num,.stomp.ctl-stomp .stomp-state.on{color:var(--blue);}
   .conn-panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;display:none;}
   .conn-panel.visible{display:block;}
-  select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--border);font-family:var(--mono);font-size:12px;padding:9px;border-radius:6px;margin-bottom:8px;}
   .conn-status{font-size:11.5px;color:var(--dim);margin-top:6px;}
-
-  /* ---- LOG ---- */
-  .log-section{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:10px;}
-  .log{height:120px;overflow-y:auto;font-size:10.5px;color:var(--dim);white-space:pre-wrap;word-break:break-all;}
-  .log-row{padding:3px 0;border-bottom:1px solid #0d1218;}
-  .log-in{color:var(--green);}
-  .log-out{color:var(--amber);}
-
-  /* ---- PATCH SELECTOR ---- */
-  .patch-select{display:flex;gap:6px;margin-top:10px;}
-  .p-btn{flex:1;padding:10px 4px;text-align:center;background:var(--panel2);border:1px solid var(--border);border-radius:7px;font-size:12px;font-weight:700;color:var(--dim);cursor:pointer;}
-  .p-btn:active{transform:scale(0.96);}
-  .p-btn.active{background:#0d2040;border-color:var(--blue);color:var(--blue);}
-  /* ---- BOTTOM NAV ---- */
-  .bottom-nav{
-    position:fixed; bottom:0; left:0; right:0;
-    background:#080c10; border-top:1px solid var(--border);
-    display:flex; justify-content:space-around; align-items:center;
-    padding:8px 0 14px; z-index:100;
-  }
-  .nav-item{ display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; flex:1; padding:4px 0; }
-  .nav-icon{ font-size:19px; }
-  .nav-label{ font-size:9.5px; letter-spacing:1px; color:var(--dim); text-transform:uppercase; }
-  .nav-item.active .nav-label{ color:var(--blue); }
+  select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--border);font-family:var(--mono);font-size:12px;padding:9px;border-radius:6px;margin-bottom:8px;}
+  .patch-list{display:flex;flex-direction:column;gap:8px;}
+  .patch-item{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+  .patch-item.active-patch{border-color:var(--blue);background:#0d2040;}
+  .pi-bank{font-size:10px;color:var(--dim);letter-spacing:1px;margin-bottom:2px;}
+  .pi-name{font-family:var(--display);font-weight:600;font-size:16px;color:var(--text);}
+  .pi-num{font-family:var(--display);font-weight:700;font-size:22px;color:var(--blue);}
+  .setlist-empty{text-align:center;color:var(--dim);font-size:12px;padding:40px 0;}
+  .setlist-item{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;align-items:center;margin-bottom:8px;cursor:pointer;}
+  .si-order{font-family:var(--display);font-weight:700;font-size:20px;color:var(--amber);width:32px;}
+  .si-name{font-family:var(--display);font-weight:600;font-size:15px;color:var(--text);flex:1;margin-left:12px;}
+  .si-remove{color:var(--red);font-size:18px;padding:4px 8px;}
+  .add-btn{width:100%;padding:11px;background:rgba(59,139,255,0.1);border:1px solid var(--blue);border-radius:8px;color:var(--blue);font-family:var(--display);font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;}
+  .slider-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .slider-row label{width:64px;font-size:11px;color:var(--dim);}
+  .slider-row input[type=range]{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:#1a2535;border-radius:10px;outline:none;}
+  .slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--blue);cursor:pointer;border:1px solid #0a0e14;}
+  .slider-val{width:32px;text-align:right;font-size:12px;color:var(--text);font-weight:600;}
+  .etabs{display:flex;gap:6px;margin-bottom:12px;}
+  .etab{flex:1;padding:8px 4px;text-align:center;font-size:10.5px;font-weight:700;background:var(--panel2);border:1px solid var(--border);border-radius:6px;color:var(--dim);cursor:pointer;}
+  .etab.active{border-color:var(--blue);color:var(--blue);background:#0d2040;}
+  .setting-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:12px;}
+  .setting-row:last-child{border-bottom:none;}
+  .setting-label{color:var(--dim);}
+  .setting-val{color:var(--text);font-weight:600;}
+  .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#080c10;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:8px 0 14px;z-index:100;}
+  .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:4px 0;}
+  .nav-icon{font-size:19px;}
+  .nav-label{font-size:9.5px;letter-spacing:1px;color:var(--dim);text-transform:uppercase;}
+  .nav-item.active .nav-label{color:var(--blue);}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <!-- Top bar -->
+<!-- LIVE -->
+<div class="page active" id="page-live">
   <div class="topbar">
-    <div class="boss-logo">☐BOSS <span>ME-90</span></div>
-    <div class="conn-dot" id="connToggle">
-      <span id="connLabel">tap to connect</span>
-      <div class="led" id="connLed"></div>
-    </div>
+    <div class="boss-logo">&#9633;BOSS <span>ME-90</span></div>
+    <div class="conn-dot" id="connToggle"><span id="connLabel">tap to connect</span><div class="led" id="connLed"></div></div>
   </div>
-
-  <!-- Connect panel (hidden by default) -->
   <div class="conn-panel" id="connPanel">
     <select id="portSelect"><option>No MIDI devices found</option></select>
-    <div class="conn-status" id="connStatus">Waiting for Web MIDI…</div>
+    <div class="conn-status" id="connStatus">Waiting for Web MIDI...</div>
   </div>
-
-  <!-- Patch header -->
-  <div class="patch-header">
+  <div class="card">
     <div class="patch-top">
-      <div class="ph-block">
-        <div class="ph-label">Bank</div>
-        <div class="ph-value" id="bankVal">U2</div>
-      </div>
-      <div class="ph-block">
-        <div class="ph-label">Patch Name</div>
-        <div class="ph-value name" id="patchName">ROCK LEAD</div>
-      </div>
-      <div class="ph-block">
-        <div class="ph-label">Patch</div>
-        <div class="ph-value num" id="patchNum">1</div>
-      </div>
+      <div class="ph-block"><div class="ph-label">Bank</div><div class="ph-value" id="bankVal">U2</div></div>
+      <div class="ph-block"><div class="ph-label">Patch Name</div><div class="ph-value name" id="patchName">ROCK LEAD</div></div>
+      <div class="ph-block"><div class="ph-label">Patch</div><div class="ph-value num" id="patchNum">1</div></div>
     </div>
     <div class="patch-meta">
-      <div class="tempo">⏱ TEMPO <span id="tempoVal">120</span></div>
+      <div class="tempo">&#9201; TEMPO <span id="tempoVal">120</span></div>
       <div class="ctl-pill on" id="ctlPill">CTL ON</div>
     </div>
-
   </div>
-
-  <!-- Signal chain -->
-  <div class="chain-section">
+  <div class="card">
     <div class="sec-label">Active Signal Chain</div>
     <div class="chain">
-      <span class="in-label">IN</span>
-      <span class="arrow">→</span>
-      <div class="chain-node on" data-fx="comp"><span class="node-icon">🎛</span><span class="node-name">COMP</span></div>
-      <span class="arrow">→</span>
-      <div class="chain-node on" data-fx="odds"><span class="node-icon">⚡</span><span class="node-name">OD/DS</span></div>
-      <span class="arrow">→</span>
-      <div class="chain-node on preamp" data-fx="preamp"><span class="node-icon">🔊</span><span class="node-name">PREAMP</span></div>
-      <span class="arrow">→</span>
-      <div class="chain-node on" data-fx="eq"><span class="node-icon">📊</span><span class="node-name">EQ</span></div>
-      <span class="arrow">→</span>
-      <div class="chain-node on" data-fx="mod"><span class="node-icon">〰️</span><span class="node-name">MOD</span></div>
-      <span class="arrow">→</span>
-      <div class="chain-node on" data-fx="delay"><span class="node-icon">⏱</span><span class="node-name">DELAY</span></div>
-      <span class="arrow">→</span>
-      <div class="chain-node on" data-fx="reverb"><span class="node-icon">〰️</span><span class="node-name">REVERB</span></div>
-      <span class="arrow">→</span>
-      <span class="out-label">OUT</span>
+      <span class="in-label">IN</span><span class="arrow">&#8594;</span>
+      <div class="chain-node on" data-fx="comp"><span class="node-icon">&#127919;</span><span class="node-name">COMP</span></div><span class="arrow">&#8594;</span>
+      <div class="chain-node on" data-fx="odds"><span class="node-icon">&#9889;</span><span class="node-name">OD/DS</span></div><span class="arrow">&#8594;</span>
+      <div class="chain-node on preamp" data-fx="preamp"><span class="node-icon">&#128266;</span><span class="node-name">PREAMP</span></div><span class="arrow">&#8594;</span>
+      <div class="chain-node on" data-fx="eq"><span class="node-icon">&#128202;</span><span class="node-name">EQ</span></div><span class="arrow">&#8594;</span>
+      <div class="chain-node on" data-fx="mod"><span class="node-icon">~</span><span class="node-name">MOD</span></div><span class="arrow">&#8594;</span>
+      <div class="chain-node on" data-fx="delay"><span class="node-icon">&#9201;</span><span class="node-name">DELAY</span></div><span class="arrow">&#8594;</span>
+      <div class="chain-node on" data-fx="reverb"><span class="node-icon">&#8767;</span><span class="node-name">REVERB</span></div>
+      <span class="arrow">&#8594;</span><span class="out-label">OUT</span>
     </div>
   </div>
-
-  <!-- Expression pedal -->
-  <div class="exp-section">
-    <div class="exp-left">
-      <div class="sec-label">Expression Pedal</div>
-      <div style="font-size:10.5px;color:var(--dim);">MODE</div>
-      <div class="exp-mode" id="expMode">WAH</div>
-      <div style="font-size:10.5px;color:var(--dim);margin-top:4px;">POSITION</div>
-      <div class="exp-pos" id="expPos">82</div>
-      <div class="exp-bar"><div class="exp-fill" id="expFill" style="width:64%"></div></div>
-      <button id="wahToggle" style="margin-top:10px;width:100%;padding:9px;border-radius:7px;border:2px solid var(--green);background:rgba(34,197,94,0.12);color:var(--green);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px;cursor:pointer;">WAH ON</button>
-    </div>
-    <div>
-      <div class="exp-pedal-graphic"><span class="boss-mark">☐BOSS</span></div>
+  <div class="card">
+    <div class="sec-label">Expression Pedal</div>
+    <div class="exp-grid">
+      <div>
+        <div style="font-size:10.5px;color:var(--dim)">MODE</div>
+        <div class="exp-mode">WAH</div>
+        <div style="font-size:10.5px;color:var(--dim);margin-top:4px">POSITION</div>
+        <div class="exp-pos" id="expPos">82</div>
+        <div class="exp-bar"><div class="exp-fill" id="expFill" style="width:64%"></div></div>
+        <button class="wah-btn" id="wahToggle">WAH ON</button>
+      </div>
+      <div class="exp-pedal-graphic"><span>BOSS</span></div>
     </div>
   </div>
-
-  <!-- Stomps -->
-  <div class="stomps-section">
+  <div class="card">
     <div class="sec-label">Stomps</div>
     <div class="stomps-grid">
-      <div class="stomp on" data-stomp="1">
-        <div class="stomp-num on">①</div>
-        <span class="stomp-icon">🎛</span>
-        <div class="stomp-name">COMP</div>
-        <div class="stomp-state on">ON</div>
-      </div>
-      <div class="stomp on" data-stomp="2">
-        <div class="stomp-num on">②</div>
-        <span class="stomp-icon">⚡</span>
-        <div class="stomp-name">BOOST</div>
-        <div class="stomp-state on">ON</div>
-      </div>
-      <div class="stomp" data-stomp="3">
-        <div class="stomp-num">③</div>
-        <span class="stomp-icon">〰️</span>
-        <div class="stomp-name">MOD</div>
-        <div class="stomp-state off">OFF</div>
-      </div>
-      <div class="stomp on" data-stomp="4">
-        <div class="stomp-num on">④</div>
-        <span class="stomp-icon">⏱</span>
-        <div class="stomp-name">DELAY</div>
-        <div class="stomp-state on">ON</div>
-      </div>
-      <div class="stomp on ctl-stomp" data-stomp="ctl">
-        <div class="stomp-num on" style="color:var(--blue)">CTL</div>
-        <span class="stomp-icon">〰️</span>
-        <div class="stomp-name">REVERB</div>
-        <div class="stomp-state on" style="color:var(--blue)">ON</div>
-      </div>
+      <div class="stomp on" data-stomp="1"><div class="stomp-num on">1</div><span class="stomp-icon">&#127919;</span><div class="stomp-name">COMP</div><div class="stomp-state on">ON</div></div>
+      <div class="stomp on" data-stomp="2"><div class="stomp-num on">2</div><span class="stomp-icon">&#9889;</span><div class="stomp-name">BOOST</div><div class="stomp-state on">ON</div></div>
+      <div class="stomp" data-stomp="3"><div class="stomp-num">3</div><span class="stomp-icon">~</span><div class="stomp-name">MOD</div><div class="stomp-state">OFF</div></div>
+      <div class="stomp on" data-stomp="4"><div class="stomp-num on">4</div><span class="stomp-icon">&#9201;</span><div class="stomp-name">DELAY</div><div class="stomp-state on">ON</div></div>
+      <div class="stomp on ctl-stomp" data-stomp="ctl"><div class="stomp-num on">CTL</div><span class="stomp-icon">&#8767;</span><div class="stomp-name">REVERB</div><div class="stomp-state on">ON</div></div>
     </div>
   </div>
+</div>
 
+<!-- PATCHES -->
+<div class="page" id="page-patches">
+  <div class="topbar"><div class="boss-logo">&#9633;BOSS <span>PATCHES</span></div><div class="conn-dot"><span id="connLabel2">--</span><div class="led" id="connLed2"></div></div></div>
+  <div class="card"><div class="sec-label">Select Patch</div><div class="patch-list" id="patchList"></div></div>
+</div>
 
+<!-- SETLIST -->
+<div class="page" id="page-setlist">
+  <div class="topbar"><div class="boss-logo">&#9633;BOSS <span>SETLIST</span></div></div>
+  <div class="card">
+    <div class="sec-label">My Setlist</div>
+    <div id="setlistItems"><div class="setlist-empty">No patches in setlist yet.<br>Go to Patches and add them.</div></div>
+    <button class="add-btn" id="addCurrentBtn">+ Add Current Patch to Setlist</button>
+  </div>
+</div>
 
-  <!-- Bottom Nav -->
-  <div class="bottom-nav">
-    <div class="nav-item active" data-page="live">
-      <span class="nav-icon">🏠</span>
-      <span class="nav-label">LIVE</span>
+<!-- EDITOR -->
+<div class="page" id="page-editor">
+  <div class="topbar"><div class="boss-logo">&#9633;BOSS <span>EDITOR</span></div></div>
+  <div class="card">
+    <div class="etabs" id="editorTabs">
+      <div class="etab active" data-tab="preamp">PREAMP</div>
+      <div class="etab" data-tab="eq">EQ</div>
+      <div class="etab" data-tab="mod">MOD</div>
+      <div class="etab" data-tab="delay">DELAY</div>
+      <div class="etab" data-tab="reverb">REVERB</div>
     </div>
-    <div class="nav-item" data-page="patches">
-      <span class="nav-icon">☰</span>
-      <span class="nav-label">PATCHES</span>
-    </div>
-    <div class="nav-item" data-page="setlist">
-      <span class="nav-icon">📋</span>
-      <span class="nav-label">SETLIST</span>
-    </div>
-    <div class="nav-item" data-page="editor">
-      <span class="nav-icon">🎚</span>
-      <span class="nav-label">EDITOR</span>
-    </div>
-    <div class="nav-item" data-page="settings">
-      <span class="nav-icon">⚙️</span>
-      <span class="nav-label">SETTINGS</span>
+    <div id="editorContent"></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="topbar"><div class="boss-logo">&#9633;BOSS <span>SETTINGS</span></div></div>
+  <div class="card">
+    <div class="sec-label">MIDI Connection</div>
+    <select id="portSelect2"><option>No MIDI devices found</option></select>
+    <div class="conn-status" id="connStatus2">Waiting for Web MIDI...</div>
+    <div style="margin-top:14px">
+      <div class="setting-row"><span class="setting-label">Device</span><span class="setting-val" id="settDevice">--</span></div>
+      <div class="setting-row"><span class="setting-label">MIDI In</span><span class="setting-val" id="settIn">--</span></div>
+      <div class="setting-row"><span class="setting-label">MIDI Out</span><span class="setting-val" id="settOut">--</span></div>
+      <div class="setting-row"><span class="setting-label">App Version</span><span class="setting-val">1.0.0</span></div>
     </div>
   </div>
-// ---- MIDI ----
-let midiAccess = null, currentInput = null, currentOutput = null;
-const connLed = document.getElementById('connLed');
-const connLabel = document.getElementById('connLabel');
-const connPanel = document.getElementById('connPanel');
-const portSelect = document.getElementById('portSelect');
-const connStatus = document.getElementById('connStatus');
-const logEl = document.getElementById('log');
+</div>
 
-function addLog(cls, msg){
-  const row = document.createElement('div');
-  row.className = 'log-row ' + cls;
-  row.textContent = '[' + new Date().toLocaleTimeString([],{hour12:false}) + '] ' + msg;
-  logEl.prepend(row);
-}
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active" data-page="live"><span class="nav-icon">&#127968;</span><span class="nav-label">LIVE</span></div>
+  <div class="nav-item" data-page="patches"><span class="nav-icon">&#9776;</span><span class="nav-label">PATCHES</span></div>
+  <div class="nav-item" data-page="setlist"><span class="nav-icon">&#128203;</span><span class="nav-label">SETLIST</span></div>
+  <div class="nav-item" data-page="editor"><span class="nav-icon">&#127906;</span><span class="nav-label">EDITOR</span></div>
+  <div class="nav-item" data-page="settings"><span class="nav-icon">&#9881;</span><span class="nav-label">SETTINGS</span></div>
+</div>
+
+<script>
+// MIDI
+let midiAccess=null,currentInput=null,currentOutput=null;
+let activePatchIdx=3;
+
+const patches=[
+  {bank:'U1',name:'CLEAN JAZZ',num:1},{bank:'U1',name:'BLUES DRIVE',num:2},{bank:'U1',name:'ROCK CRUNCH',num:3},
+  {bank:'U2',name:'ROCK LEAD',num:1},{bank:'U2',name:'METAL HEAVY',num:2},{bank:'U2',name:'SOLO BOOST',num:3},
+  {bank:'U3',name:'ACOUSTIC SIM',num:1},{bank:'U3',name:'FUNK CLEAN',num:2},{bank:'U3',name:'AMBIENT PAD',num:3},
+];
+
+function send(bytes){if(currentOutput){try{currentOutput.send(bytes);}catch(e){console.error(e);}}}
 
 function handleMIDI(event){
-  const data = event.data;
-  const hex = Array.from(data).map(b=>b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
-  const status = data[0] & 0xF0;
-  let detail = hex;
-  if (status === 0xC0){ detail = `PC → patch ${data[1]}`; updatePatchDisplay(data[1]); }
-  else if (status === 0xB0){ detail = `CC ${data[1]} = ${data[2]}`; }
-  addLog('log-in', '← ' + detail);
+  const data=event.data,status=data[0]&0xF0;
+  if(status===0xC0){updatePatchDisplay(data[1]);}
 }
 
-function updatePatchDisplay(num){
-  document.getElementById('patchNum').textContent = num + 1;
-  document.querySelectorAll('.p-btn').forEach((b,i)=>{
-    b.classList.toggle('active', i === num);
-  });
-}
-
-function send(bytes){
-  if (!currentOutput){ addLog('','not connected'); return; }
-  try{
-    currentOutput.send(bytes);
-    const hex = bytes.map(b=>b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
-    addLog('log-out', '→ ' + hex);
-  }catch(e){ addLog('','error: '+e.message); }
+function setConnUI(name,ok){
+  ['connLed','connLed2'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='led'+(ok?' on':'');});
+  ['connLabel','connLabel2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ok?'connected':'--';});
+  document.getElementById('connStatus').textContent=ok?'Listening on "'+name+'"':'Not connected';
+  document.getElementById('connStatus2').textContent=ok?'Connected to "'+name+'"':'Not connected';
+  document.getElementById('settDevice').textContent=ok?name:'--';
+  document.getElementById('settIn').textContent=ok?(currentInput?'Active':'--'):'--';
+  document.getElementById('settOut').textContent=ok?(currentOutput?'Active':'--'):'--';
 }
 
 function attachDevice(name){
-  if(currentInput) currentInput.onmidimessage = null;
-  currentInput = Array.from(midiAccess.inputs.values()).find(i=>i.name===name) || null;
-  currentOutput = Array.from(midiAccess.outputs.values()).find(o=>o.name===name) || null;
-  if(currentInput) currentInput.onmidimessage = handleMIDI;
-  const ok = currentInput || currentOutput;
-  connLed.className = 'led' + (ok ? ' on' : '');
-  connLabel.textContent = ok ? 'connected' : 'tap to connect';
-  connStatus.textContent = ok ? `Listening on "${name}"` : 'Not found';
-  addLog('', ok ? `✅ Connected to ${name}` : `❌ Not found: ${name}`);
+  if(currentInput)currentInput.onmidimessage=null;
+  currentInput=Array.from(midiAccess.inputs.values()).find(i=>i.name===name)||null;
+  currentOutput=Array.from(midiAccess.outputs.values()).find(o=>o.name===name)||null;
+  if(currentInput)currentInput.onmidimessage=handleMIDI;
+  setConnUI(name,!!(currentInput||currentOutput));
+}
+
+function buildPortOptions(sel){
+  sel.innerHTML='';
+  const names=new Set([...Array.from(midiAccess.inputs.values()).map(i=>i.name),...Array.from(midiAccess.outputs.values()).map(o=>o.name)]);
+  if(!names.size){sel.innerHTML='<option>No MIDI devices found</option>';return null;}
+  names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
+  const p=[...names].find(n=>/me-?90/i.test(n))||[...names][0];
+  sel.value=p; return p;
 }
 
 function refreshPorts(){
-  portSelect.innerHTML = '';
-  const names = new Set([
-    ...Array.from(midiAccess.inputs.values()).map(i=>i.name),
-    ...Array.from(midiAccess.outputs.values()).map(o=>o.name)
-  ]);
-  if (names.size === 0){
-    portSelect.innerHTML = '<option>No MIDI devices found</option>';
-    connLed.className = 'led error';
-    connLabel.textContent = 'no device found';
-    return;
-  }
-  names.forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent=n; portSelect.appendChild(o); });
-  const preferred = [...names].find(n=>/me-?90/i.test(n)) || [...names][0];
-  portSelect.value = preferred;
-  attachDevice(preferred);
+  const p=buildPortOptions(document.getElementById('portSelect'));
+  buildPortOptions(document.getElementById('portSelect2'));
+  if(p){document.getElementById('portSelect2').value=p;attachDevice(p);}
 }
 
-portSelect.addEventListener('change', ()=>attachDevice(portSelect.value));
-document.getElementById('connToggle').addEventListener('click', ()=>{
-  connPanel.classList.toggle('visible');
+document.getElementById('portSelect').addEventListener('change',e=>attachDevice(e.target.value));
+document.getElementById('portSelect2').addEventListener('change',e=>{attachDevice(e.target.value);document.getElementById('portSelect').value=e.target.value;});
+document.getElementById('connToggle').addEventListener('click',()=>document.getElementById('connPanel').classList.toggle('visible'));
+
+// Patch display
+function updatePatchDisplay(idx){
+  activePatchIdx=idx;
+  const p=patches[idx]||{bank:'--',name:'PATCH '+(idx+1),num:idx+1};
+  document.getElementById('patchNum').textContent=p.num;
+  document.getElementById('patchName').textContent=p.name;
+  document.getElementById('bankVal').textContent=p.bank;
+  buildPatchList();
+}
+
+// Patches page
+function buildPatchList(){
+  const list=document.getElementById('patchList');
+  list.innerHTML='';
+  patches.forEach((p,i)=>{
+    const item=document.createElement('div');
+    item.className='patch-item'+(i===activePatchIdx?' active-patch':'');
+    item.innerHTML='<div><div class="pi-bank">'+p.bank+'</div><div class="pi-name">'+p.name+'</div></div><div class="pi-num">'+p.num+'</div>';
+    item.addEventListener('click',()=>{send([0xC0,i]);updatePatchDisplay(i);showPage('live');});
+    list.appendChild(item);
+  });
+}
+buildPatchList();
+
+// Setlist
+let setlist=[];
+document.getElementById('addCurrentBtn').addEventListener('click',()=>{
+  const p=patches[activePatchIdx];if(!p)return;
+  setlist.push({...p,idx:activePatchIdx});buildSetlist();
+});
+function buildSetlist(){
+  const el=document.getElementById('setlistItems');
+  if(!setlist.length){el.innerHTML='<div class="setlist-empty">No patches in setlist yet.<br>Go to Patches and add them.</div>';return;}
+  el.innerHTML='';
+  setlist.forEach((p,i)=>{
+    const item=document.createElement('div');item.className='setlist-item';
+    item.innerHTML='<div class="si-order">'+(i+1)+'</div><div class="si-name">'+p.bank+' · '+p.name+'</div><div class="si-remove" data-i="'+i+'">×</div>';
+    item.addEventListener('click',e=>{
+      if(e.target.dataset.i!==undefined){setlist.splice(parseInt(e.target.dataset.i),1);buildSetlist();return;}
+      send([0xC0,p.idx]);updatePatchDisplay(p.idx);showPage('live');
+    });
+    el.appendChild(item);
+  });
+}
+
+// Editor
+const editorParams={
+  preamp:[{l:'GAIN',v:60},{l:'TONE',v:64},{l:'LEVEL',v:80},{l:'BASS',v:64},{l:'TREBLE',v:64}],
+  eq:[{l:'LOW',v:64},{l:'MID',v:64},{l:'HIGH',v:64},{l:'LEVEL',v:80}],
+  mod:[{l:'RATE',v:50},{l:'DEPTH',v:60},{l:'LEVEL',v:80}],
+  delay:[{l:'TIME',v:50},{l:'FEEDBACK',v:40},{l:'LEVEL',v:60}],
+  reverb:[{l:'TIME',v:50},{l:'TONE',v:64},{l:'LEVEL',v:60}],
+};
+let activeTab='preamp';
+function buildEditor(){
+  const c=document.getElementById('editorContent');c.innerHTML='';
+  (editorParams[activeTab]||[]).forEach(p=>{
+    const row=document.createElement('div');row.className='slider-row';
+    row.innerHTML='<label>'+p.l+'</label><input type="range" min="0" max="127" value="'+p.v+'"><span class="slider-val">'+p.v+'</span>';
+    const inp=row.querySelector('input'),val=row.querySelector('.slider-val');
+    inp.addEventListener('input',()=>{val.textContent=inp.value;});
+    c.appendChild(row);
+  });
+}
+document.getElementById('editorTabs').addEventListener('click',e=>{
+  const t=e.target.dataset.tab;if(!t)return;
+  activeTab=t;
+  document.querySelectorAll('.etab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));
+  buildEditor();
+});
+buildEditor();
+
+// Chain toggle
+document.querySelectorAll('.chain-node').forEach(n=>n.addEventListener('click',()=>n.classList.toggle('on')));
+
+// WAH
+let wahOn=true;
+document.getElementById('wahToggle').addEventListener('click',()=>{
+  wahOn=!wahOn;
+  const btn=document.getElementById('wahToggle');
+  btn.textContent=wahOn?'WAH ON':'WAH OFF';
+  btn.classList.toggle('off',!wahOn);
 });
 
-
-// Patch select
-document.querySelectorAll('.p-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const p = parseInt(btn.dataset.patch);
-    send([0xC0, p]);
-    updatePatchDisplay(p);
+// Stomps
+document.querySelectorAll('.stomp').forEach(s=>{
+  s.addEventListener('click',()=>{
+    const on=s.classList.toggle('on');
+    const st=s.querySelector('.stomp-state'),num=s.querySelector('.stomp-num');
+    if(st){st.textContent=on?'ON':'OFF';st.className='stomp-state'+(on?' on':'');}
+    if(num){num.className='stomp-num'+(on?' on':'');}
   });
 });
 
-// Chain node toggle (visual only for now — sends CC when confirmed)
-document.querySelectorAll('.chain-node').forEach(node=>{
-  node.addEventListener('click', ()=>{
-    node.classList.toggle('on');
-    // TODO: replace CC number with real captured value per effect
-    addLog('log-out', `toggled ${node.dataset.fx} — CC mapping not yet confirmed`);
-  });
-});
-
-// WAH toggle
-let wahOn = true;
-document.getElementById('wahToggle').addEventListener('click', ()=>{
-  wahOn = !wahOn;
-  const btn = document.getElementById('wahToggle');
-  btn.textContent = wahOn ? 'WAH ON' : 'WAH OFF';
-  btn.style.borderColor = wahOn ? 'var(--green)' : 'var(--dim)';
-  btn.style.background = wahOn ? 'rgba(34,197,94,0.12)' : 'rgba(255,255,255,0.03)';
-  btn.style.color = wahOn ? 'var(--green)' : 'var(--dim)';
-  addLog('log-out', `WAH ${wahOn ? 'ON' : 'OFF'} — CC mapping not yet confirmed`);
-});
-
-// Stomp toggle
-document.querySelectorAll('.stomp').forEach(stomp=>{
-  stomp.addEventListener('click', ()=>{
-    const isOn = stomp.classList.toggle('on');
-    const state = stomp.querySelector('.stomp-state');
-    const num = stomp.querySelector('.stomp-num');
-    if(state){ state.textContent = isOn ? 'ON' : 'OFF'; state.className = 'stomp-state ' + (isOn ? 'on' : 'off'); }
-    if(num){ num.className = 'stomp-num' + (isOn ? ' on' : ''); }
-    addLog('', `stomp ${stomp.dataset.stomp} toggled — CC mapping not yet confirmed`);
-  });
+// CTL
+document.getElementById('ctlPill').addEventListener('click',()=>{
+  const pill=document.getElementById('ctlPill');
+  const off=pill.classList.toggle('off');
+  pill.textContent=off?'CTL OFF':'CTL ON';
 });
 
 // Nav
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click', ()=>{
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.page===page));
+}
+document.querySelectorAll('.nav-item').forEach(item=>item.addEventListener('click',()=>showPage(item.dataset.page)));
 
-if (!navigator.requestMIDIAccess){
-  connStatus.textContent = 'Web MIDI not supported — use Chrome.';
-  connLed.className = 'led error';
-} else {
-  navigator.requestMIDIAccess({ sysex: true }).then(access=>{
-    midiAccess = access;
-    refreshPorts();
-    access.onstatechange = refreshPorts;
-    connPanel.classList.add('visible');
-  }).catch(err=>{
-    connStatus.textContent = 'MIDI access denied: ' + err.message;
-    connLed.className = 'led error';
-  });
+// MIDI init
+if(!navigator.requestMIDIAccess){
+  document.getElementById('connStatus').textContent='Web MIDI not supported. Use Chrome.';
+}else{
+  navigator.requestMIDIAccess({sysex:true}).then(access=>{
+    midiAccess=access;refreshPorts();access.onstatechange=refreshPorts;
+    document.getElementById('connPanel').classList.add('visible');
+  }).catch(err=>{document.getElementById('connStatus').textContent='MIDI access denied: '+err.message;});
 }
 </script>
 </body>
