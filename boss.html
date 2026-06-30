@@ -150,13 +150,7 @@
       <div class="tempo">⏱ TEMPO <span id="tempoVal">120</span></div>
       <div class="ctl-pill on" id="ctlPill">CTL ON</div>
     </div>
-    <div class="patch-select" id="patchSelect">
-      <div class="p-btn active" data-patch="0">1</div>
-      <div class="p-btn" data-patch="1">2</div>
-      <div class="p-btn" data-patch="2">3</div>
-      <div class="p-btn" data-patch="3">4</div>
-      <div class="p-btn" data-patch="4">5</div>
-    </div>
+
   </div>
 
   <!-- Signal chain -->
@@ -167,15 +161,17 @@
       <span class="arrow">→</span>
       <div class="chain-node on" data-fx="comp"><span class="node-icon">🎛</span><span class="node-name">COMP</span></div>
       <span class="arrow">→</span>
-      <div class="chain-node on" data-fx="boost"><span class="node-icon">⚡</span><span class="node-name">BOOST</span></div>
+      <div class="chain-node on" data-fx="odds"><span class="node-icon">⚡</span><span class="node-name">OD/DS</span></div>
       <span class="arrow">→</span>
       <div class="chain-node on preamp" data-fx="preamp"><span class="node-icon">🔊</span><span class="node-name">PREAMP</span></div>
       <span class="arrow">→</span>
       <div class="chain-node selected" data-fx="eq"><span class="node-icon">📊</span><span class="node-name">EQ</span></div>
       <span class="arrow">→</span>
+      <div class="chain-node on" data-fx="mod"><span class="node-icon">〰️</span><span class="node-name">MOD</span></div>
+      <span class="arrow">→</span>
       <div class="chain-node on" data-fx="delay"><span class="node-icon">⏱</span><span class="node-name">DELAY</span></div>
       <span class="arrow">→</span>
-      <div class="chain-node on" data-fx="reverb"><span class="node-icon">〰️</span><span class="node-name">REVERB</span></div>
+      <div class="chain-node on" data-fx="reverb"><span class="node-icon">〜</span><span class="node-name">REVERB</span></div>
       <span class="arrow">→</span>
       <span class="out-label">OUT</span>
     </div>
@@ -190,6 +186,7 @@
       <div style="font-size:10.5px;color:var(--dim);margin-top:4px;">POSITION</div>
       <div class="exp-pos" id="expPos">82</div>
       <div class="exp-bar"><div class="exp-fill" id="expFill" style="width:64%"></div></div>
+      <button id="wahToggle" style="margin-top:10px;width:100%;padding:9px;border-radius:7px;border:2px solid var(--green);background:rgba(34,197,94,0.12);color:var(--green);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px;cursor:pointer;">WAH ON</button>
     </div>
     <div>
       <div class="exp-pedal-graphic"><span class="boss-mark">☐BOSS</span></div>
@@ -336,6 +333,18 @@ document.querySelectorAll('.chain-node').forEach(node=>{
     // TODO: replace CC number with real captured value per effect
     addLog('log-out', `toggled ${node.dataset.fx} — CC mapping not yet confirmed`);
   });
+});
+
+// WAH toggle
+let wahOn = true;
+document.getElementById('wahToggle').addEventListener('click', ()=>{
+  wahOn = !wahOn;
+  const btn = document.getElementById('wahToggle');
+  btn.textContent = wahOn ? 'WAH ON' : 'WAH OFF';
+  btn.style.borderColor = wahOn ? 'var(--green)' : 'var(--dim)';
+  btn.style.background = wahOn ? 'rgba(34,197,94,0.12)' : 'rgba(255,255,255,0.03)';
+  btn.style.color = wahOn ? 'var(--green)' : 'var(--dim)';
+  addLog('log-out', `WAH ${wahOn ? 'ON' : 'OFF'} — CC mapping not yet confirmed`);
 });
 
 // Stomp toggle
