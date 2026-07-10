@@ -1,343 +1,1329 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
 
-<title>ME90Controller</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="Download ME90Controller, an Android USB MIDI controller and editor for the BOSS ME-90."
+    >
 
-<style>
+    <meta name="theme-color" content="#050607">
 
-body {
-    margin:0;
-    background:#050607;
-    color:white;
-    font-family:Arial, sans-serif;
-}
+    <title>ME90Controller | Android Controller for BOSS ME-90</title>
 
-.container {
-    max-width:500px;
-    margin:auto;
-    padding:20px;
-}
+    <style>
+        :root {
+            --background: #050607;
+            --panel: #0b1219;
+            --panel-light: #111a23;
+            --border: #26313a;
+            --green: #20ff72;
+            --green-dark: #0ec958;
+            --purple: #7f45ff;
+            --purple-panel: #321a54;
+            --white: #ffffff;
+            --text: #d1d5db;
+            --muted: #88919a;
+            --shadow: rgba(0, 0, 0, 0.45);
+        }
 
-.card {
-    background:#111820;
-    border:1px solid #26313A;
-    border-radius:20px;
-    padding:25px;
-    margin-bottom:20px;
-    box-shadow:0 0 20px #000;
-}
+        * {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
 
-.logo {
-    text-align:center;
-    font-size:45px;
-    margin-top:20px;
-}
+        body {
+            margin: 0;
+            background:
+                radial-gradient(
+                    circle at top,
+                    rgba(32, 255, 114, 0.08),
+                    transparent 360px
+                ),
+                var(--background);
+            color: var(--white);
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+            line-height: 1.6;
+        }
 
-h1 {
-    text-align:center;
-    color:#20ff72;
-    font-size:32px;
-}
+        a {
+            color: inherit;
+        }
 
-h2 {
-    color:#20ff72;
-    border-bottom:1px solid #26313A;
-    padding-bottom:10px;
-}
+        img {
+            display: block;
+            max-width: 100%;
+        }
 
-p {
-    color:#cccccc;
-    line-height:1.6;
-}
+        .container {
+            width: min(1120px, calc(100% - 32px));
+            margin: auto;
+        }
 
-.download {
+        /* HEADER */
 
-    display:block;
-    text-align:center;
-    background:#20ff72;
-    color:#000;
-    padding:18px;
-    border-radius:15px;
-    text-decoration:none;
-    font-weight:bold;
-    font-size:18px;
-    margin-top:20px;
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(5, 6, 7, 0.92);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(14px);
+        }
 
-}
+        .nav {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
 
-.download:hover {
-    background:white;
-}
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-size: 19px;
+            font-weight: 900;
+        }
 
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: var(--green);
+            color: #001b0a;
+            box-shadow: 0 0 22px rgba(32, 255, 114, 0.25);
+        }
 
-.feature {
+        .brand span {
+            color: var(--green);
+        }
 
-    background:#0b1015;
-    padding:12px;
-    border-radius:10px;
-    margin:8px 0;
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
 
-}
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+        }
 
+        .nav-links a:hover {
+            color: var(--green);
+        }
 
-.badge {
+        .nav-download {
+            padding: 10px 17px;
+            border-radius: 10px;
+            background: var(--green);
+            color: #001b0a !important;
+        }
 
-    display:inline-block;
-    background:#20ff72;
-    color:#000;
-    padding:6px 12px;
-    border-radius:20px;
-    font-weight:bold;
+        /* HERO */
 
-}
+        .hero {
+            padding: 80px 0 55px;
+        }
 
+        .hero-layout {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            align-items: center;
+            gap: 55px;
+        }
 
-footer {
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 13px;
+            border: 1px solid rgba(32, 255, 114, 0.35);
+            border-radius: 100px;
+            background: rgba(32, 255, 114, 0.08);
+            color: var(--green);
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
 
-text-align:center;
-color:#777;
-padding:20px;
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 12px var(--green);
+        }
 
-}
+        .hero h1 {
+            margin: 20px 0 16px;
+            font-size: clamp(46px, 8vw, 78px);
+            line-height: 0.98;
+            letter-spacing: -3px;
+        }
 
-</style>
+        .hero h1 span {
+            color: var(--green);
+        }
 
+        .hero-description {
+            max-width: 620px;
+            margin: 0;
+            color: var(--text);
+            font-size: 18px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 13px;
+            margin-top: 28px;
+        }
+
+        .button {
+            min-height: 54px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 0 23px;
+            border: 0;
+            border-radius: 13px;
+            text-decoration: none;
+            font-weight: 900;
+            cursor: pointer;
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .button-primary {
+            background: var(--green);
+            color: #001b0a;
+            box-shadow: 0 10px 30px rgba(32, 255, 114, 0.2);
+        }
+
+        .button-primary:hover {
+            background: #62ff98;
+            box-shadow: 0 14px 35px rgba(32, 255, 114, 0.28);
+        }
+
+        .button-secondary {
+            background: var(--panel-light);
+            border: 1px solid var(--border);
+            color: var(--white);
+        }
+
+        .app-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .detail {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            background: rgba(17, 26, 35, 0.7);
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* HERO PHONE */
+
+        .phone-area {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .glow {
+            position: absolute;
+            top: 15%;
+            width: 75%;
+            height: 70%;
+            border-radius: 50%;
+            background: rgba(32, 255, 114, 0.14);
+            filter: blur(70px);
+        }
+
+        .phone {
+            position: relative;
+            width: min(320px, 82vw);
+            padding: 10px;
+            border: 1px solid #3b4650;
+            border-radius: 42px;
+            background: #050607;
+            box-shadow:
+                0 30px 70px var(--shadow),
+                0 0 35px rgba(32, 255, 114, 0.08);
+            transform: rotate(2deg);
+        }
+
+        .phone::before {
+            content: "";
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            width: 92px;
+            height: 22px;
+            border-radius: 20px;
+            background: #050607;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .phone img {
+            width: 100%;
+            border-radius: 33px;
+        }
+
+        /* GENERAL SECTIONS */
+
+        section {
+            padding: 65px 0;
+        }
+
+        .section-heading {
+            max-width: 700px;
+            margin: 0 auto 36px;
+            text-align: center;
+        }
+
+        .section-label {
+            color: var(--green);
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 1.6px;
+        }
+
+        .section-heading h2 {
+            margin: 8px 0 10px;
+            font-size: clamp(31px, 5vw, 46px);
+            line-height: 1.1;
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .panel {
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(17, 26, 35, 0.95),
+                    rgba(8, 14, 20, 0.95)
+                );
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.2);
+        }
+
+        /* FEATURES */
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .feature-card {
+            padding: 25px;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 16px;
+            border: 1px solid rgba(32, 255, 114, 0.3);
+            border-radius: 15px;
+            background: rgba(32, 255, 114, 0.08);
+            color: var(--green);
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .feature-card h3 {
+            margin: 0 0 8px;
+            font-size: 19px;
+        }
+
+        .feature-card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* SCREENSHOTS */
+
+        .screenshots {
+            overflow: hidden;
+        }
+
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            align-items: start;
+            gap: 22px;
+        }
+
+        .screenshot-card {
+            padding: 12px;
+        }
+
+        .screenshot-frame {
+            overflow: hidden;
+            border: 1px solid #35414c;
+            border-radius: 24px;
+            background: #000;
+        }
+
+        .screenshot-frame img {
+            width: 100%;
+            transition: transform 0.35s ease;
+        }
+
+        .screenshot-card:hover img {
+            transform: scale(1.025);
+        }
+
+        .screenshot-info {
+            padding: 16px 8px 9px;
+        }
+
+        .screenshot-info h3 {
+            margin: 0 0 5px;
+        }
+
+        .screenshot-info p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* CONNECT */
+
+        .connection-panel {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 34px;
+            padding: 34px;
+        }
+
+        .connection-panel h2 {
+            margin-top: 0;
+            font-size: 34px;
+        }
+
+        .connection-panel p {
+            color: var(--muted);
+        }
+
+        .connection-flow {
+            display: grid;
+            gap: 12px;
+        }
+
+        .connection-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 17px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: rgba(5, 6, 7, 0.45);
+        }
+
+        .step-number {
+            min-width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: var(--green);
+            color: #001b0a;
+            font-weight: 900;
+        }
+
+        .connection-item strong {
+            display: block;
+        }
+
+        .connection-item small {
+            color: var(--muted);
+        }
+
+        /* MANUAL */
+
+        .manual-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 17px;
+        }
+
+        .manual-card {
+            padding: 24px;
+        }
+
+        .manual-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin-top: 0;
+        }
+
+        .manual-card p {
+            margin-bottom: 0;
+            color: var(--muted);
+        }
+
+        .manual-list {
+            margin: 13px 0 0;
+            padding-left: 20px;
+            color: var(--text);
+        }
+
+        .manual-list li {
+            margin-bottom: 8px;
+        }
+
+        /* REQUIREMENTS */
+
+        .requirements {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        .requirement {
+            padding: 21px 15px;
+            text-align: center;
+        }
+
+        .requirement strong {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--green);
+            font-size: 17px;
+        }
+
+        .requirement span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* DOWNLOAD */
+
+        .download-box {
+            position: relative;
+            overflow: hidden;
+            padding: 55px 28px;
+            text-align: center;
+        }
+
+        .download-box::before {
+            content: "";
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            width: 400px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(32, 255, 114, 0.13);
+            filter: blur(65px);
+            transform: translateX(-50%);
+        }
+
+        .download-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .download-box h2 {
+            margin: 0 0 10px;
+            font-size: clamp(32px, 5vw, 47px);
+        }
+
+        .download-box p {
+            max-width: 620px;
+            margin: 0 auto 25px;
+            color: var(--muted);
+        }
+
+        .download-large {
+            min-width: min(320px, 100%);
+            min-height: 62px;
+            font-size: 18px;
+        }
+
+        .security-note {
+            margin-top: 17px !important;
+            font-size: 13px;
+        }
+
+        /* FAQ */
+
+        .faq-list {
+            display: grid;
+            gap: 12px;
+            max-width: 850px;
+            margin: auto;
+        }
+
+        details {
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: var(--panel);
+        }
+
+        summary {
+            cursor: pointer;
+            color: var(--white);
+            font-weight: 800;
+        }
+
+        details p {
+            margin: 12px 0 0;
+            color: var(--muted);
+        }
+
+        /* FOOTER */
+
+        footer {
+            margin-top: 35px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        .footer-layout {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .footer-layout strong {
+            color: var(--white);
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 850px) {
+            .nav-links a:not(.nav-download) {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 55px;
+            }
+
+            .hero-layout,
+            .connection-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            .hero-description {
+                margin-inline: auto;
+            }
+
+            .hero-actions,
+            .app-details {
+                justify-content: center;
+            }
+
+            .phone-area {
+                margin-top: 15px;
+            }
+
+            .features-grid,
+            .screenshot-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .screenshot-card {
+                max-width: 430px;
+                margin: auto;
+            }
+
+            .manual-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .requirements {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-layout {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: min(100% - 22px, 1120px);
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .hero-actions {
+                display: grid;
+            }
+
+            .button {
+                width: 100%;
+            }
+
+            .connection-panel {
+                padding: 23px 17px;
+            }
+
+            .requirements {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            section {
+                padding: 50px 0;
+            }
+        }
+    </style>
 </head>
-
 
 <body>
 
+<header class="topbar">
+    <div class="container nav">
+
+        <a class="brand" href="#home">
+            <div class="brand-icon">M</div>
+            ME90<span>Controller</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#screenshots">Screenshots</a>
+            <a href="#manual">Manual</a>
+
+            <a
+                class="nav-download"
+                href="me90controller.apk"
+                download
+            >
+                Download
+            </a>
+        </nav>
+
+    </div>
+</header>
+
+<main>
+
+    <!-- HERO -->
+
+    <section class="hero" id="home">
+        <div class="container hero-layout">
+
+            <div class="hero-content">
+
+                <div class="eyebrow">
+                    <span class="status-dot"></span>
+                    ANDROID APP • VERSION 1.0
+                </div>
+
+                <h1>
+                    Control your
+                    <span>ME-90</span>
+                    from Android
+                </h1>
+
+                <p class="hero-description">
+                    ME90Controller is an Android USB MIDI controller and
+                    editor designed for the BOSS ME-90 multi-effects
+                    processor. Control effects, patches, stomp switches
+                    and parameters directly from your phone.
+                </p>
+
+                <div class="hero-actions">
+
+                    <a
+                        class="button button-primary"
+                        href="me90controller.apk"
+                        download
+                    >
+                        ↓ Download APK
+                    </a>
+
+                    <a
+                        class="button button-secondary"
+                        href="#screenshots"
+                    >
+                        View Screenshots
+                    </a>
+
+                </div>
+
+                <div class="app-details">
+                    <span class="detail">Version 1.0</span>
+                    <span class="detail">5.17 MB</span>
+                    <span class="detail">Android 10+</span>
+                    <span class="detail">USB OTG Required</span>
+                </div>
+
+            </div>
+
+            <div class="phone-area">
+                <div class="glow"></div>
+
+                <div class="phone">
+                    <img
+                        src="live.png"
+                        alt="ME90Controller live control page"
+                    >
+                </div>
+            </div>
 
-<div class="container">
+        </div>
+    </section>
 
+    <!-- FEATURES -->
 
-<div class="card">
+    <section id="features">
+        <div class="container">
 
-<div class="logo">
-🎸
-</div>
+            <div class="section-heading">
+                <div class="section-label">APP FEATURES</div>
 
-<h1>
-ME90Controller
-</h1>
+                <h2>
+                    Your ME-90 controls in one app
+                </h2>
 
+                <p>
+                    Connect your Android device to the ME-90 and control
+                    important live, editing and patch functions.
+                </p>
+            </div>
 
-<p style="text-align:center">
-Professional Android Controller<br>
-for BOSS ME-90 Multi Effects
-</p>
+            <div class="features-grid">
 
+                <article class="feature-card panel">
+                    <div class="feature-icon">USB</div>
 
-<p style="text-align:center">
+                    <h3>USB MIDI Connection</h3>
 
-<span class="badge">
-Version 1.0
-</span>
+                    <p>
+                        Connect your Android phone directly to the
+                        BOSS ME-90 using a compatible USB OTG cable.
+                    </p>
+                </article>
 
-</p>
+                <article class="feature-card panel">
+                    <div class="feature-icon">FX</div>
 
+                    <h3>Live Effect Control</h3>
 
-<a class="download" href="me90controller.apk" download>
-DOWNLOAD APK
-</a>
+                    <p>
+                        Control COMP, OD/DS, PREAMP, EQ, MOD,
+                        DELAY, REVERB and WAH from the live page.
+                    </p>
+                </article>
 
+                <article class="feature-card panel">
+                    <div class="feature-icon">1–4</div>
 
-<p style="text-align:center">
-APK Size: 6 MB<br>
-Android 10+ Supported
-</p>
+                    <h3>Stomp Control</h3>
 
+                    <p>
+                        Select and control stomp switches 1 through 4
+                        using the app interface.
+                    </p>
+                </article>
 
-</div>
+                <article class="feature-card panel">
+                    <div class="feature-icon">ED</div>
 
+                    <h3>Effect Editor</h3>
 
+                    <p>
+                        View and adjust parameters such as gain, bass,
+                        middle, treble and level.
+                    </p>
+                </article>
 
+                <article class="feature-card panel">
+                    <div class="feature-icon">P</div>
 
-<div class="card">
+                    <h3>Patch Management</h3>
 
-<h2>
-FEATURES
-</h2>
+                    <p>
+                        Save your preferred tones and recall saved
+                        patches from the patches page.
+                    </p>
+                </article>
 
+                <article class="feature-card panel">
+                    <div class="feature-icon">↔</div>
 
-<div class="feature">
-✓ USB MIDI Connection
-</div>
+                    <h3>Real-Time Control</h3>
 
+                    <p>
+                        Send parameter and effect changes from the app
+                        to the connected ME-90.
+                    </p>
+                </article>
 
-<div class="feature">
-✓ Stomp Switch Control
-</div>
+            </div>
+        </div>
+    </section>
 
+    <!-- SCREENSHOTS -->
 
-<div class="feature">
-✓ Patch Management
-</div>
+    <section class="screenshots" id="screenshots">
+        <div class="container">
 
+            <div class="section-heading">
+                <div class="section-label">APP PREVIEW</div>
 
-<div class="feature">
-✓ Real Time Effect Editor
-</div>
+                <h2>
+                    See ME90Controller in action
+                </h2>
 
+                <p>
+                    Preview the main app pages before downloading.
+                </p>
+            </div>
 
-<div class="feature">
-✓ Parameter Control
-</div>
+            <div class="screenshot-grid">
 
+                <article class="screenshot-card panel">
 
-</div>
+                    <div class="screenshot-frame">
+                        <img
+                            src="live.png"
+                            alt="ME90Controller live page"
+                            loading="lazy"
+                        >
+                    </div>
 
+                    <div class="screenshot-info">
+                        <h3>Live Control</h3>
 
+                        <p>
+                            Control effects, WAH and stomp switches
+                            from the main live interface.
+                        </p>
+                    </div>
 
+                </article>
 
+                <article class="screenshot-card panel">
 
-<div class="card">
+                    <div class="screenshot-frame">
+                        <img
+                            src="editor.png"
+                            alt="ME90Controller editor page"
+                            loading="lazy"
+                        >
+                    </div>
+
+                    <div class="screenshot-info">
+                        <h3>Parameter Editor</h3>
 
-<h2>
-INSTALLATION GUIDE
-</h2>
+                        <p>
+                            View effect parameters using clear vertical
+                            level meters.
+                        </p>
+                    </div>
+
+                </article>
+
+                <article class="screenshot-card panel">
+
+                    <div class="screenshot-frame">
+                        <img
+                            src="patches.png"
+                            alt="ME90Controller patches page"
+                            loading="lazy"
+                        >
+                    </div>
+
+                    <div class="screenshot-info">
+                        <h3>Saved Patches</h3>
+
+                        <p>
+                            Save and recall your custom effect setups
+                            from the patches page.
+                        </p>
+                    </div>
+
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CONNECTION GUIDE -->
 
+    <section id="manual">
+        <div class="container">
 
-<p>
+            <div class="connection-panel panel">
 
-<b>1. Download APK</b><br>
-Press the download button above.
-
-
-<br><br>
-
-<b>2. Install</b><br>
-Open the APK file and allow installation from unknown sources.
-
-
-<br><br>
-
-<b>3. Connect ME-90</b><br>
-
-• Turn on BOSS ME-90<br>
-• Connect USB OTG cable<br>
-• Allow USB permission<br>
-• Open ME90Controller
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-<div class="card">
-
-<h2>
-HOW TO USE
-</h2>
-
-
-<p>
-
-<b>LIVE</b><br>
-Control effects and stomp switches.
-
-
-<br><br>
-
-
-<b>PATCHES</b><br>
-Save and recall your presets.
-
-
-<br><br>
-
-
-<b>EDITOR</b><br>
-Adjust effect parameters.
-
-
-<br><br>
-
-
-<b>SETTINGS</b><br>
-Configure application options.
-
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>
-TROUBLESHOOTING
-</h2>
-
-
-<p>
-
-<b>Cannot connect?</b>
-
-<br><br>
-
-✓ Check USB OTG cable<br>
-✓ Reconnect ME-90<br>
-✓ Accept USB permission<br>
-✓ Restart app
-
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>
-DOWNLOAD QR
-</h2>
-
-
-<p style="text-align:center">
-
-Scan QR code to download the app.
-
-</p>
-
-
-</div>
-
-
-
-
+                <div>
+                    <div class="section-label">
+                        QUICK CONNECTION
+                    </div>
+
+                    <h2>
+                        Connect Android to your BOSS ME-90
+                    </h2>
+
+                    <p>
+                        Use a USB OTG connection between your Android
+                        phone and the ME-90. Grant USB permission when
+                        Android asks for access.
+                    </p>
+
+                    <p>
+                        Connection:
+                        <strong>
+                            Android Phone → USB OTG → BOSS ME-90
+                        </strong>
+                    </p>
+                </div>
+
+                <div class="connection-flow">
+
+                    <div class="connection-item">
+                        <div class="step-number">1</div>
+
+                        <div>
+                            <strong>Turn on the ME-90</strong>
+                            <small>
+                                Make sure the effects processor has power.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="connection-item">
+                        <div class="step-number">2</div>
+
+                        <div>
+                            <strong>Connect the USB OTG cable</strong>
+                            <small>
+                                Connect the Android phone to the ME-90.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="connection-item">
+                        <div class="step-number">3</div>
+
+                        <div>
+                            <strong>Open ME90Controller</strong>
+                            <small>
+                                Start the app after connecting the cable.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="connection-item">
+                        <div class="step-number">4</div>
+
+                        <div>
+                            <strong>Allow USB permission</strong>
+                            <small>
+                                Press Allow when Android displays the
+                                USB access request.
+                            </small>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- USER MANUAL -->
+
+    <section>
+        <div class="container">
+
+            <div class="section-heading">
+                <div class="section-label">USER MANUAL</div>
+
+                <h2>
+                    How to use the app
+                </h2>
+
+                <p>
+                    A quick guide to the main ME90Controller pages.
+                </p>
+            </div>
+
+            <div class="manual-grid">
+
+                <article class="manual-card panel">
+                    <h3>LIVE Page</h3>
+
+                    <p>
+                        Use the live page during practice or performance.
+                    </p>
+
+                    <ul class="manual-list">
+                        <li>Tap an effect to select or control it.</li>
+                        <li>Use stomp buttons 1–4 to change patches.</li>
+                        <li>Control the WAH section and level display.</li>
+                        <li>View bank, patch name and patch number.</li>
+                    </ul>
+                </article>
+
+                <article class="manual-card panel">
+                    <h3>EDITOR Page</h3>
+
+                    <p>
+                        Use the editor to view and adjust effect
+                        parameters.
+                    </p>
+
+                    <ul class="manual-list">
+                        <li>Select an effect from the signal chain.</li>
+                        <li>View its available parameters.</li>
+                        <li>Adjust type, gain, tone and level values.</li>
+                        <li>Changes are sent to the connected ME-90.</li>
+                    </ul>
+                </article>
+
+                <article class="manual-card panel">
+                    <h3>PATCHES Page</h3>
+
+                    <p>
+                        Use the patches page to store custom setups.
+                    </p>
+
+                    <ul class="manual-list">
+                        <li>Prepare your preferred effect settings.</li>
+                        <li>Open the PATCHES page.</li>
+                        <li>Press SAVE PATCH.</li>
+                        <li>Tap a saved patch later to recall it.</li>
+                    </ul>
+                </article>
+
+                <article class="manual-card panel">
+                    <h3>Installation</h3>
+
+                    <p>
+                        Install the APK directly on a compatible Android
+                        device.
+                    </p>
+
+                    <ul class="manual-list">
+                        <li>Press the Download APK button.</li>
+                        <li>Open the downloaded APK file.</li>
+                        <li>Allow installation from this browser if asked.</li>
+                        <li>Press Install and wait for completion.</li>
+                    </ul>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- REQUIREMENTS -->
+
+    <section>
+        <div class="container">
+
+            <div class="section-heading">
+                <div class="section-label">REQUIREMENTS</div>
+
+                <h2>
+                    What you need
+                </h2>
+            </div>
+
+            <div class="requirements">
+
+                <div class="requirement panel">
+                    <strong>Android 10+</strong>
+                    <span>Recommended system</span>
+                </div>
+
+                <div class="requirement panel">
+                    <strong>USB OTG</strong>
+                    <span>Compatible adapter or cable</span>
+                </div>
+
+                <div class="requirement panel">
+                    <strong>BOSS ME-90</strong>
+                    <span>Supported effects processor</span>
+                </div>
+
+                <div class="requirement panel">
+                    <strong>About 10 MB</strong>
+                    <span>Free storage recommended</span>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TROUBLESHOOTING -->
+
+    <section>
+        <div class="container">
+
+            <div class="section-heading">
+                <div class="section-label">HELP</div>
+
+                <h2>
+                    Troubleshooting
+                </h2>
+            </div>
+
+            <div class="faq-list">
+
+                <details>
+                    <summary>
+                        The app does not detect my ME-90
+                    </summary>
+
+                    <p>
+                        Check that your phone supports USB OTG. Reconnect
+                        the cable, turn on the ME-90 and accept the USB
+                        permission request.
+                    </p>
+                </details>
+
+                <details>
+                    <summary>
+                        I pressed Download but the APK did not install
+                    </summary>
+
+                    <p>
+                        Open your phone's Downloads folder and tap
+                        me90controller.apk. Android may ask you to allow
+                        installation from your browser or file manager.
+                    </p>
+                </details>
+
+                <details>
+                    <summary>
+                        The page does not show the screenshots
+                    </summary>
+
+                    <p>
+                        Confirm that live.png, editor.png and patches.png
+                        are in the same GitHub repository folder as
+                        boss.html. File names must match exactly.
+                    </p>
+                </details>
+
+                <details>
+                    <summary>
+                        The download button shows file not found
+                    </summary>
+
+                    <p>
+                        Confirm that the APK is named exactly
+                        me90controller.apk and is located beside
+                        boss.html.
+                    </p>
+                </details>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL DOWNLOAD -->
+
+    <section id="download">
+        <div class="container">
+
+            <div class="download-box panel">
+
+                <div class="download-content">
+
+                    <div class="section-label">
+                        GET THE APP
+                    </div>
+
+                    <h2>
+                        Download ME90Controller
+                    </h2>
+
+                    <p>
+                        Install ME90Controller on your Android device
+                        and connect it to your BOSS ME-90 using USB OTG.
+                    </p>
+
+                    <a
+                        class="button button-primary download-large"
+                        href="me90controller.apk"
+                        download="me90controller.apk"
+                    >
+                        ↓ Download APK — Version 1.0
+                    </a>
+
+                    <p class="security-note">
+                        File: me90controller.apk • Size: approximately
+                        5.17 MB
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
 
 <footer>
+    <div class="container footer-layout">
 
-© 2026 ME90Controller<br>
-Developed by Murphy Sabando
+        <div>
+            <strong>ME90Controller</strong><br>
+            Android controller for BOSS ME-90
+        </div>
 
+        <div>
+            Version 1.0<br>
+            © 2026 Murphy Sabando
+        </div>
+
+    </div>
 </footer>
 
-
-</div>
-
-
 </body>
-
 </html>
