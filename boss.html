@@ -1,82 +1,394 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>me90controller</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            background: #050607;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 60px;
-        }
+<title>ME90Controller</title>
 
-        .card {
-            background: #111820;
-            border-radius: 20px;
-            padding: 30px;
-            margin: auto;
-            width: 85%;
-            max-width: 400px;
-            border: 1px solid #26313A;
-        }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        h1 {
-            color: #20ff72;
-        }
 
-        p {
-            color: #cccccc;
-        }
+<style>
 
-        .download {
-            display: inline-block;
-            background: #20ff72;
-            color: black;
-            padding: 15px 30px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 20px;
-        }
+body {
+    margin:0;
+    background:#050607;
+    color:white;
+    font-family:Arial, sans-serif;
+}
 
-        .download:hover {
-            background: white;
-        }
 
-        .version {
-            margin-top: 20px;
-            color: #888;
-        }
-    </style>
+.container {
+    max-width:520px;
+    margin:auto;
+    padding:20px;
+}
+
+
+.card {
+
+    background:#111820;
+    border:1px solid #26313A;
+    border-radius:20px;
+    padding:25px;
+    margin-bottom:20px;
+
+}
+
+
+.logo {
+
+    text-align:center;
+    font-size:60px;
+
+}
+
+
+h1 {
+
+    text-align:center;
+    color:#20ff72;
+    font-size:34px;
+
+}
+
+
+h2 {
+
+    color:#20ff72;
+    border-bottom:1px solid #26313A;
+    padding-bottom:10px;
+
+}
+
+
+p {
+
+    color:#cccccc;
+    line-height:1.6;
+
+}
+
+
+.download {
+
+    display:block;
+    text-align:center;
+    background:#20ff72;
+    color:black;
+    padding:18px;
+    border-radius:15px;
+    text-decoration:none;
+    font-weight:bold;
+    margin-top:20px;
+    font-size:18px;
+
+}
+
+
+.download:hover {
+
+    background:white;
+
+}
+
+
+
+.feature {
+
+    background:#0b1015;
+    padding:12px;
+    margin:10px 0;
+    border-radius:12px;
+
+}
+
+
+
+.screenshot {
+
+    width:100%;
+    border-radius:20px;
+    margin-top:20px;
+    border:1px solid #26313A;
+
+}
+
+
+
+.badge {
+
+    display:inline-block;
+    background:#20ff72;
+    color:black;
+    padding:8px 15px;
+    border-radius:20px;
+    font-weight:bold;
+
+}
+
+
+
+footer {
+
+    text-align:center;
+    color:#777;
+    padding:20px;
+
+}
+
+
+</style>
+
 
 </head>
 
+
+
 <body>
+
+
+<div class="container">
+
+
 
 <div class="card">
 
-    <h1>me90controller</h1>
 
-    <p>
-        Download the latest Android APK version
-    </p>
+<div class="logo">
+🎸
+</div>
 
-    <a class="download" href="me90controller.apk" download>
-        DOWNLOAD APK
-    </a>
 
-    <div class="version">
-        Version 1.0<br>
-        Updated July 2026
-    </div>
+<h1>
+ME90Controller
+</h1>
+
+
+<p style="text-align:center">
+
+Professional Android Controller<br>
+for BOSS ME-90 Multi Effects
+
+</p>
+
+
+<p style="text-align:center">
+
+<span class="badge">
+Version 1.0
+</span>
+
+</p>
+
+
+
+<a class="download" href="me90controller.apk" download>
+
+DOWNLOAD APK
+
+</a>
+
+
+<p style="text-align:center">
+
+APK Size: 6 MB<br>
+Android 10+
+
+</p>
+
 
 </div>
 
+
+
+
+
+<div class="card">
+
+<h2>
+FEATURES
+</h2>
+
+
+<div class="feature">
+✓ USB MIDI Connection
+</div>
+
+
+<div class="feature">
+✓ Effect ON/OFF Control
+</div>
+
+
+<div class="feature">
+✓ Stomp 1-4 Control
+</div>
+
+
+<div class="feature">
+✓ Patch Save & Recall
+</div>
+
+
+<div class="feature">
+✓ Real Time Parameter Editor
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+<h2>
+APP SCREENSHOTS
+</h2>
+
+
+<p>
+ME90Controller interface preview
+</p>
+
+
+
+<img src="live.png" class="screenshot">
+
+
+<img src="editor.png" class="screenshot">
+
+
+<img src="patches.png" class="screenshot">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+<h2>
+INSTALLATION GUIDE
+</h2>
+
+
+<p>
+
+<b>1. Download APK</b><br>
+Press DOWNLOAD APK button.
+
+
+<br><br>
+
+
+<b>2. Install</b><br>
+Open APK file and allow installation permission.
+
+
+<br><br>
+
+
+<b>3. Connect BOSS ME-90</b><br>
+
+Android Phone<br>
+↓<br>
+USB OTG Cable<br>
+↓<br>
+BOSS ME-90
+
+
+<br><br>
+
+
+<b>4. Open ME90Controller</b><br>
+Allow USB permission and connect.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+<h2>
+TROUBLESHOOTING
+</h2>
+
+
+<p>
+
+<b>USB not detected?</b>
+
+<br><br>
+
+✓ Check OTG cable<br>
+✓ Reconnect USB<br>
+✓ Allow USB permission<br>
+✓ Restart app
+
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div class="card">
+
+<h2>
+VERSION HISTORY
+</h2>
+
+
+<p>
+
+<b>Version 1.0</b><br>
+
+✓ Initial release<br>
+✓ USB MIDI Control<br>
+✓ Effect Editor<br>
+✓ Patch System
+
+
+</p>
+
+</div>
+
+
+
+
+
+<footer>
+
+© 2026 ME90Controller<br>
+Developed by Murphy Sabando
+
+</footer>
+
+
+
+</div>
+
+
 </body>
+
 </html>
-
-
-
