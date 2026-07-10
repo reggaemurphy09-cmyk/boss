@@ -1,59 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>ME-90 Manual Effect Sync</title>
-<style>
-:root{--bg:#060a0e;--panel:#0d1218;--panel2:#111820;--border:#1a2535;--blue:#3b8bff;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--text:#e2eaf4;--dim:#5a7090;--mono:"JetBrains Mono","SF Mono",Consolas,monospace;--display:"Oswald","Arial Narrow",sans-serif}
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--mono);touch-action:manipulation}.page{display:none;max-width:540px;margin:0 auto;padding:12px 12px 90px}.page.active{display:block}.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:10px}.boss-logo{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:2px;color:var(--text)}.boss-logo span{color:var(--blue)}.conn-dot{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--dim);cursor:pointer}.led{width:8px;height:8px;border-radius:50%;background:#1a2535}.led.on{background:var(--green);box-shadow:0 0 8px var(--green)}.led.error{background:var(--red);box-shadow:0 0 8px var(--red)}.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}.sec-label{font-size:9.5px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;margin-bottom:10px}.patch-top{display:grid;grid-template-columns:80px 1fr 80px;gap:8px;align-items:center;margin-bottom:10px}.ph-block{text-align:center}.ph-label{font-size:9.5px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;margin-bottom:2px}.ph-value{font-family:var(--display);font-weight:700;font-size:22px;color:var(--blue)}.ph-value.name{font-size:18px;color:var(--text)}.ph-value.num{color:var(--text)}.patch-meta{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dim)}.patch-meta .tempo span{color:var(--blue);font-weight:700}.ctl-pill{padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;border:1px solid var(--green);color:var(--green);cursor:pointer}.ctl-pill.off{border-color:var(--dim);color:var(--dim)}.chain{display:flex;align-items:center;gap:4px;overflow-x:auto;padding-bottom:4px}.chain::-webkit-scrollbar{height:3px}.chain::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}.arrow{color:var(--dim);font-size:11px;flex-shrink:0}.chain-node{flex-shrink:0;width:70px;border:2px solid var(--border);border-radius:8px;padding:8px 4px 6px;text-align:center;background:var(--panel2);cursor:pointer}.chain-node.on{border-color:var(--green)}.chain-node.on .node-name{color:var(--green)}.chain-node.selected{box-shadow:0 0 0 1px var(--green),0 0 12px rgba(34,197,94,.25)}.chain-node.preamp.on{border-color:var(--amber)}.chain-node.preamp.on .node-name{color:var(--amber)}.node-icon{font-size:19px;margin-bottom:3px;display:block}.node-name{font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--dim)}.in-label,.out-label{font-size:9px;color:var(--dim);flex-shrink:0}.exp-grid{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.exp-mode{font-family:var(--display);font-weight:700;font-size:28px;color:var(--green);margin:4px 0}.exp-pos{font-size:28px;font-family:var(--display);font-weight:700;color:var(--green)}.exp-bar{height:8px;background:var(--border);border-radius:4px;margin-top:8px;overflow:hidden}.exp-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:4px}.wah-pedal{width:80px;height:110px;background:linear-gradient(145deg,#1a2535,#0d1218);border:3px solid var(--border);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:8px 4px;cursor:pointer;transition:border-color .2s,box-shadow .2s}.wah-pedal.on{border-color:var(--green);box-shadow:0 0 18px rgba(34,197,94,.4)}.wah-pedal .boss-mark{font-family:var(--display);font-size:9px;color:var(--dim);letter-spacing:1px}.wah-pedal .pedal-pad{width:44px;height:52px;background:linear-gradient(160deg,#2a3a4a,#141e28);border-radius:6px;border:1px solid #2a3540}.wah-pedal .wah-state{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--dim)}.wah-pedal.on .wah-state{color:var(--green)}.stomps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.stomp{border:2px solid var(--border);border-radius:8px;padding:10px 4px 8px;text-align:center;background:var(--panel2);cursor:pointer;transition:border-color .15s}.stomp.selected{border-color:var(--green);box-shadow:0 0 12px rgba(34,197,94,.25)}.stomp.ctl-stomp.selected{border-color:var(--blue);box-shadow:0 0 12px rgba(59,139,255,.25)}.stomp-num{font-size:9px;color:var(--dim);margin-bottom:3px}.stomp.selected .stomp-num{color:var(--green)}.stomp.ctl-stomp.selected .stomp-num{color:var(--blue)}.stomp-icon{font-size:18px;display:block;margin-bottom:2px}.stomp-name{font-size:10px;font-weight:700;color:var(--dim)}.stomp.selected .stomp-name{color:var(--text)}.stomp-state{font-size:9px;margin-top:4px;font-weight:700;color:var(--dim)}.stomp-state.on{color:var(--green)}.stomp.ctl-stomp.selected .stomp-name,.stomp.ctl-stomp.selected .stomp-state{color:var(--blue)}.conn-panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;display:none}.conn-panel.visible{display:block}.conn-status{font-size:11.5px;color:var(--dim);margin-top:6px}select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--border);font-family:var(--mono);font-size:12px;padding:9px;border-radius:6px;margin-bottom:8px}.patch-list{display:flex;flex-direction:column;gap:8px}.patch-item{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}.patch-item.active-patch{border-color:var(--blue);background:#0d2040}.pi-bank{font-size:10px;color:var(--dim);letter-spacing:1px;margin-bottom:2px}.pi-name{font-family:var(--display);font-weight:600;font-size:16px;color:var(--text)}.pi-num{font-family:var(--display);font-weight:700;font-size:22px;color:var(--blue)}.slider-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}.slider-row label{width:64px;font-size:11px;color:var(--dim)}.slider-row input[type=range]{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:#1a2535;border-radius:10px;outline:none}.slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--blue);cursor:pointer;border:1px solid #0a0e14}.slider-val{width:32px;text-align:right;font-size:12px;color:var(--text);font-weight:600}.etabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto}.etab{flex:1;min-width:70px;padding:8px 4px;text-align:center;font-size:10.5px;font-weight:700;background:var(--panel2);border:1px solid var(--border);border-radius:6px;color:var(--dim);cursor:pointer}.etab.active{border-color:var(--blue);color:var(--blue);background:#0d2040}.setting-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:12px}.setting-row:last-child{border-bottom:none}.setting-label{color:var(--dim)}.setting-val{color:var(--text);font-weight:600}.learn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.learn-btn{padding:9px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-family:var(--mono);font-size:11px;cursor:pointer}.learn-btn.active{border-color:var(--amber);color:var(--amber);box-shadow:0 0 10px rgba(245,158,11,.25)}.learn-btn.learned{border-color:var(--green);color:var(--green)}.clear-btn{width:100%;padding:10px;border:1px solid var(--red);background:rgba(239,68,68,.08);color:var(--red);border-radius:8px;margin-top:8px}.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#080c10;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:8px 0 14px;z-index:100}.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:4px 0}.nav-icon{font-size:19px}.nav-label{font-size:9.5px;letter-spacing:1px;color:var(--dim);text-transform:uppercase}.nav-item.active .nav-label{color:var(--blue)}
-</style>
+    <title>My App Download</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            background: #050607;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 60px;
+        }
+
+        .card {
+            background: #111820;
+            border-radius: 20px;
+            padding: 30px;
+            margin: auto;
+            width: 85%;
+            max-width: 400px;
+            border: 1px solid #26313A;
+        }
+
+        h1 {
+            color: #20ff72;
+        }
+
+        p {
+            color: #cccccc;
+        }
+
+        .download {
+            display: inline-block;
+            background: #20ff72;
+            color: black;
+            padding: 15px 30px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .download:hover {
+            background: white;
+        }
+
+        .version {
+            margin-top: 20px;
+            color: #888;
+        }
+    </style>
+
 </head>
+
 <body>
-<div class="page active" id="page-live"><div class="topbar"><div class="boss-logo">□BOSS <span>ME-90</span></div><div class="conn-dot" id="connToggle"><span id="connLabel">tap to connect</span><div class="led" id="connLed"></div></div></div><div class="conn-panel" id="connPanel"><select id="portSelect"><option>No MIDI devices found</option></select><div class="conn-status" id="connStatus">Waiting for Web MIDI...</div></div><div class="card"><div class="patch-top"><div class="ph-block"><div class="ph-label">Bank</div><div class="ph-value" id="bankVal">U2</div></div><div class="ph-block"><div class="ph-label">Patch Name</div><div class="ph-value name" id="patchName">ROCK LEAD</div></div><div class="ph-block"><div class="ph-label">Patch</div><div class="ph-value num" id="patchNum">1</div></div></div><div class="patch-meta"><div class="tempo">⏱ TEMPO <span id="tempoVal">120</span></div><div class="ctl-pill on" id="ctlPill">MANUAL</div></div></div><div class="card"><div class="sec-label">Active Signal Chain</div><div class="chain" id="chain"></div></div><div class="card"><div class="sec-label">Expression Pedal</div><div class="exp-grid"><div><div style="font-size:10.5px;color:var(--dim)">MODE</div><div class="exp-mode" id="expMode">WAH</div><div style="font-size:10.5px;color:var(--dim);margin-top:4px">LEVEL</div><div class="exp-pos" id="expPos">0</div><div class="exp-bar"><div class="exp-fill" id="expFill" style="width:0%"></div></div></div><div class="wah-pedal" id="wahPedal"><span class="boss-mark">□BOSS</span><div class="pedal-pad"></div><span class="wah-state" id="wahState">EXP SW</span></div></div></div><div class="card"><div class="sec-label">Stomps / Manual Effects</div><div class="stomps-grid" id="stompsGrid"></div></div></div>
-<div class="page" id="page-patches"><div class="topbar"><div class="boss-logo">□BOSS <span>PATCHES</span></div><div class="conn-dot"><span id="connLabel2">--</span><div class="led" id="connLed2"></div></div></div><div class="card"><div class="sec-label">Select Patch</div><div class="patch-list" id="patchList"></div></div></div>
-<div class="page" id="page-editor"><div class="topbar"><div class="boss-logo">□BOSS <span>EDITOR</span></div></div><div class="card"><div class="etabs" id="editorTabs"></div><div id="editorContent"></div></div></div>
-<div class="page" id="page-settings"><div class="topbar"><div class="boss-logo">□BOSS <span>SETTINGS</span></div></div><div class="card"><div class="sec-label">MIDI Connection</div><select id="portSelect2"><option>No MIDI devices found</option></select><div class="conn-status" id="connStatus2">Waiting for Web MIDI...</div><div class="setting-row"><span class="setting-label">Device</span><span class="setting-val" id="settDevice">--</span></div><div class="setting-row"><span class="setting-label">MIDI In</span><span class="setting-val" id="settIn">--</span></div><div class="setting-row"><span class="setting-label">MIDI Out</span><span class="setting-val" id="settOut">--</span></div></div><div class="card"><div class="sec-label">Effect Sync Learn</div><div class="conn-status" id="learnStatus">Tap LEARN, then press the same control on the real ME-90.</div><div class="learn-grid" id="learnGrid"></div><button class="clear-btn" id="clearLearn">Clear learned commands</button></div></div>
-<div class="bottom-nav"><div class="nav-item active" data-page="live"><span class="nav-icon">🏠</span><span class="nav-label">LIVE</span></div><div class="nav-item" data-page="patches"><span class="nav-icon">☰</span><span class="nav-label">PATCHES</span></div><div class="nav-item" data-page="editor"><span class="nav-icon">🎚</span><span class="nav-label">EDITOR</span></div><div class="nav-item" data-page="settings"><span class="nav-icon">⚙</span><span class="nav-label">SETTINGS</span></div></div>
-<script>
-var midiAccess=null,currentInput=null,currentOutput=null,activePatchIdx=3,selectedStomp='1',learnTarget=null,ignoreNextUntil=0;
-var patches=[{bank:'U1',name:'CLEAN JAZZ',num:1},{bank:'U1',name:'BLUES DRIVE',num:2},{bank:'U1',name:'ROCK CRUNCH',num:3},{bank:'U2',name:'ROCK LEAD',num:1},{bank:'U2',name:'METAL HEAVY',num:2},{bank:'U2',name:'SOLO BOOST',num:3},{bank:'U3',name:'ACOUSTIC SIM',num:1},{bank:'U3',name:'FUNK CLEAN',num:2},{bank:'U3',name:'AMBIENT PAD',num:3}];
-var effects=[{id:'manual',name:'MANUAL',icon:'M'},{id:'preamp',name:'PREAMP',icon:'🔊'},{id:'eq',name:'EQ',icon:'📊'},{id:'comp',name:'COMP',icon:'🎯'},{id:'odds',name:'OD/DS',icon:'⚡'},{id:'mod',name:'MOD',icon:'≋'},{id:'delay',name:'DELAY',icon:'⏱'},{id:'reverb',name:'REVERB',icon:'🌊'},{id:'expSw',name:'EXP SW',icon:'🦶'}];
-var stomps=[{id:'1',label:'1',name:'COMP',icon:'🎯'},{id:'2',label:'2',name:'OD/DS',icon:'⚡'},{id:'3',label:'3',name:'MOD',icon:'≋'},{id:'4',label:'4',name:'DELAY',icon:'⏱'},{id:'ctl',label:'CTL',name:'REVERB',icon:'🌊',ctl:true}];
-var defaultScene={manual:false,preamp:false,eq:false,comp:false,odds:false,mod:false,delay:false,reverb:false,expSw:false};
-var scenes=loadJSON('me90_scenes_v2')||{1:{manual:false,preamp:false,eq:false,comp:true,odds:false,mod:false,delay:false,reverb:false,expSw:false},2:{manual:false,preamp:false,eq:false,comp:false,odds:true,mod:false,delay:false,reverb:false,expSw:false},3:{manual:false,preamp:false,eq:false,comp:false,odds:false,mod:true,delay:false,reverb:false,expSw:false},4:{manual:false,preamp:false,eq:false,comp:false,odds:false,mod:false,delay:true,reverb:false,expSw:false},ctl:{manual:false,preamp:false,eq:false,comp:false,odds:false,mod:false,delay:false,reverb:true,expSw:false}};
-var learned=loadJSON('me90_learned_effects_v2')||{};
-var editorParams={manual:[{l:'LEVEL',v:80}],preamp:[{l:'GAIN',v:60},{l:'BASS',v:64},{l:'MID',v:64},{l:'TREBLE',v:64},{l:'LEVEL',v:80}],eq:[{l:'LOW',v:64},{l:'MID',v:64},{l:'HIGH',v:64},{l:'LEVEL',v:80}],comp:[{l:'SUSTAIN',v:60},{l:'ATTACK',v:50},{l:'LEVEL',v:80}],odds:[{l:'DRIVE',v:60},{l:'TONE',v:64},{l:'LEVEL',v:80}],mod:[{l:'RATE',v:50},{l:'DEPTH',v:60},{l:'LEVEL',v:80}],delay:[{l:'TIME',v:50},{l:'FEEDBACK',v:40},{l:'LEVEL',v:60}],reverb:[{l:'TIME',v:50},{l:'TONE',v:64},{l:'LEVEL',v:60}],expSw:[{l:'MIN',v:0},{l:'MAX',v:127}]};
-var activeTab='comp';
-function loadJSON(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){return null}}function saveJSON(k,v){localStorage.setItem(k,JSON.stringify(v))}
-function send(bytes){if(currentOutput){try{currentOutput.send(bytes);ignoreNextUntil=Date.now()+120;}catch(e){console.error(e);}}}
-function sendPatchByStomp(id){if(id==='1')send([0xC0,0]);if(id==='2')send([0xC0,1]);if(id==='3')send([0xC0,2]);if(id==='4')send([0xC0,3]);}
-function sendEffect(id,on){var cmd=learned[id+(on?':on':':off')]||learned[id];if(cmd){send(cmd);return true;}return false;}
-function handleMIDI(e){var d=Array.from(e.data);if(learnTarget&&Date.now()>ignoreNextUntil){learned[learnTarget]=d;saveJSON('me90_learned_effects_v2',learned);document.getElementById('learnStatus').textContent='Learned '+learnTarget+': '+hex(d);learnTarget=null;buildLearn();return;}var t=d[0]&0xF0;if(t===0xC0){var p=d[1]+1;if(p>=1&&p<=4){selectedStomp=String(p);activePatchIdx=d[1];updatePatchDisplay(d[1]);renderAll();}}if(t===0xB0){var cc=d[1],val=d[2];if(cc===7||cc===11||cc===1||cc===4){setExpression(val);}}}
-function hex(arr){return arr.map(function(x){return x.toString(16).padStart(2,'0').toUpperCase()}).join(' ')}
-function setExpression(v){document.getElementById('expPos').textContent=v;document.getElementById('expFill').style.width=Math.round((v/127)*100)+'%'}
-function setConnUI(name,ok){['connLed','connLed2'].forEach(function(id){var el=document.getElementById(id);if(el)el.className='led'+(ok?' on':'')});['connLabel','connLabel2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ok?'connected':'--'});document.getElementById('connStatus').textContent=ok?'Listening on "'+name+'"':'Not connected';document.getElementById('connStatus2').textContent=ok?'Connected to "'+name+'"':'Not connected';document.getElementById('settDevice').textContent=ok?name:'--';document.getElementById('settIn').textContent=ok?(currentInput?'Active':'--'):'--';document.getElementById('settOut').textContent=ok?(currentOutput?'Active':'--'):'--'}
-function attachDevice(name){if(currentInput)currentInput.onmidimessage=null;currentInput=Array.from(midiAccess.inputs.values()).find(function(i){return i.name===name})||null;currentOutput=Array.from(midiAccess.outputs.values()).find(function(o){return o.name===name})||null;if(currentInput)currentInput.onmidimessage=handleMIDI;setConnUI(name,!!(currentInput||currentOutput))}
-function buildPortOptions(sel){sel.innerHTML='';var names=new Set(Array.from(midiAccess.inputs.values()).map(function(i){return i.name}).concat(Array.from(midiAccess.outputs.values()).map(function(o){return o.name})));if(!names.size){sel.innerHTML='<option>No MIDI devices found</option>';return null}names.forEach(function(n){var o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o)});var p=Array.from(names).find(function(n){return /me-?90|boss/i.test(n)})||Array.from(names)[0];sel.value=p;return p}
-function refreshPorts(){var p=buildPortOptions(document.getElementById('portSelect'));buildPortOptions(document.getElementById('portSelect2'));if(p){document.getElementById('portSelect2').value=p;attachDevice(p)}}
-document.getElementById('portSelect').addEventListener('change',function(e){attachDevice(e.target.value)});document.getElementById('portSelect2').addEventListener('change',function(e){attachDevice(e.target.value);document.getElementById('portSelect').value=e.target.value});document.getElementById('connToggle').addEventListener('click',function(){document.getElementById('connPanel').classList.toggle('visible')});
-function updatePatchDisplay(idx){activePatchIdx=idx;var p=patches[idx]||{bank:'--',name:'PATCH '+(idx+1),num:idx+1};document.getElementById('patchNum').textContent=p.num;document.getElementById('patchName').textContent=p.name;document.getElementById('bankVal').textContent=p.bank;buildPatchList()}
-function buildPatchList(){var list=document.getElementById('patchList');list.innerHTML='';patches.forEach(function(p,i){var item=document.createElement('div');item.className='patch-item'+(i===activePatchIdx?' active-patch':'');item.innerHTML='<div><div class="pi-bank">'+p.bank+'</div><div class="pi-name">'+p.name+'</div></div><div class="pi-num">'+p.num+'</div>';item.addEventListener('click',function(){send([0xC0,i]);updatePatchDisplay(i);if(i>=0&&i<4)selectedStomp=String(i+1);renderAll();showPage('live')});list.appendChild(item)})}
-function renderChain(){var chain=document.getElementById('chain');chain.innerHTML='<span class="in-label">IN</span><span class="arrow">→</span>';var sc=scenes[selectedStomp]||defaultScene;effects.forEach(function(e,idx){var cls=(sc[e.id]?' on':'')+(activeTab===e.id?' selected':'')+(e.id==='preamp'?' preamp':'');chain.innerHTML+='<div class="chain-node'+cls+'" data-fx="'+e.id+'"><span class="node-icon">'+e.icon+'</span><span class="node-name">'+e.name+'</span></div>';if(idx<effects.length-1)chain.innerHTML+='<span class="arrow">→</span>'});chain.innerHTML+='<span class="arrow">→</span><span class="out-label">OUT</span>';document.querySelectorAll('.chain-node').forEach(function(n){n.addEventListener('click',function(){var id=n.dataset.fx;scenes[selectedStomp][id]=!scenes[selectedStomp][id];activeTab=id;saveJSON('me90_scenes_v2',scenes);sendEffect(id,scenes[selectedStomp][id]);renderAll();buildEditor()})})}
-function renderStomps(){var g=document.getElementById('stompsGrid');g.innerHTML='';stomps.forEach(function(s){var cls=(selectedStomp===s.id?' selected':'')+(s.ctl?' ctl-stomp':'');g.innerHTML+='<div class="stomp'+cls+'" data-stomp="'+s.id+'"><div class="stomp-num">'+s.label+'</div><span class="stomp-icon">'+s.icon+'</span><div class="stomp-name">'+s.name+'</div><div class="stomp-state'+(selectedStomp===s.id?' on':'')+'">'+(selectedStomp===s.id?'SELECTED':'')+'</div></div>'});document.querySelectorAll('.stomp').forEach(function(s){s.addEventListener('click',function(){selectedStomp=s.dataset.stomp;sendPatchByStomp(selectedStomp);renderAll()})})}
-function renderAll(){renderChain();renderStomps();buildPatchList();var sc=scenes[selectedStomp]||defaultScene;var exp=!!sc.expSw;document.getElementById('wahPedal').classList.toggle('on',exp);document.getElementById('wahState').textContent=exp?'EXP ON':'EXP SW'}
-function buildEditorTabs(){var tabs=document.getElementById('editorTabs');tabs.innerHTML='';effects.forEach(function(e){var tab=document.createElement('div');tab.className='etab'+(activeTab===e.id?' active':'');tab.dataset.tab=e.id;tab.textContent=e.name;tabs.appendChild(tab)})}
-function buildEditor(){buildEditorTabs();var c=document.getElementById('editorContent');c.innerHTML='';(editorParams[activeTab]||[]).forEach(function(p){var row=document.createElement('div');row.className='slider-row';row.innerHTML='<label>'+p.l+'</label><input type="range" min="0" max="127" value="'+p.v+'"><span class="slider-val">'+p.v+'</span>';var inp=row.querySelector('input'),val=row.querySelector('.slider-val');inp.addEventListener('input',function(){val.textContent=inp.value});c.appendChild(row)})}
-document.getElementById('editorTabs').addEventListener('click',function(e){var t=e.target.dataset.tab;if(!t)return;activeTab=t;buildEditor();renderChain()});
-document.getElementById('wahPedal').addEventListener('click',function(){var sc=scenes[selectedStomp]||defaultScene;sc.expSw=!sc.expSw;saveJSON('me90_scenes_v2',scenes);sendEffect('expSw',sc.expSw);renderAll()});
-document.getElementById('ctlPill').addEventListener('click',function(){var off=this.classList.toggle('off');this.textContent=off?'MEMORY':'MANUAL';sendEffect('manual',!off)});
-function buildLearn(){var g=document.getElementById('learnGrid');g.innerHTML='';effects.forEach(function(e){['on','off'].forEach(function(kind){var key=e.id+':'+kind;var b=document.createElement('button');b.className='learn-btn'+(learned[key]?' learned':'')+(learnTarget===key?' active':'');b.textContent='LEARN '+e.name+' '+kind.toUpperCase();b.addEventListener('click',function(){learnTarget=key;document.getElementById('learnStatus').textContent='Learning '+key+' — now press it on ME-90';buildLearn()});g.appendChild(b)})})}
-document.getElementById('clearLearn').addEventListener('click',function(){learned={};saveJSON('me90_learned_effects_v2',learned);buildLearn();document.getElementById('learnStatus').textContent='Learned commands cleared.'});
-function showPage(page){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});document.getElementById('page-'+page).classList.add('active');document.querySelectorAll('.nav-item').forEach(function(n){n.classList.toggle('active',n.dataset.page===page)});if(page==='editor')buildEditor()}
-document.querySelectorAll('.nav-item').forEach(function(item){item.addEventListener('click',function(){showPage(item.dataset.page)})});
-if(!navigator.requestMIDIAccess){document.getElementById('connStatus').textContent='Web MIDI not supported. Use Chrome.'}else{navigator.requestMIDIAccess({sysex:true}).then(function(access){midiAccess=access;refreshPorts();access.onstatechange=refreshPorts;document.getElementById('connPanel').classList.add('visible')}).catch(function(err){document.getElementById('connStatus').textContent='MIDI access denied: '+err.message})}
-buildPatchList();buildEditor();buildLearn();renderAll();
-</script>
+
+<div class="card">
+
+    <h1>MY CONTROLLER APP</h1>
+
+    <p>
+        Download the latest Android APK version
+    </p>
+
+    <a class="download" href="MyController.apk" download>
+        DOWNLOAD APK
+    </a>
+
+    <div class="version">
+        Version 1.0<br>
+        Updated July 2026
+    </div>
+
+</div>
+
 </body>
 </html>
