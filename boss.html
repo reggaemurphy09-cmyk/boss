@@ -587,6 +587,42 @@
             font-size: 13px;
         }
 
+        /* CHANGELOG */
+
+        .changelog {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 28px 30px;
+        }
+
+        .changelog h3 {
+            margin: 0 0 6px;
+            font-size: 20px;
+        }
+
+        .changelog .ver-date {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .changelog ul {
+            margin: 12px 0 0;
+            padding-left: 20px;
+            color: var(--text);
+        }
+
+        .changelog ul li {
+            margin-bottom: 7px;
+        }
+
+        .changelog .older {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+        }
+
         /* FAQ */
 
         .faq-list {
@@ -736,6 +772,7 @@
             <a href="#features">Features</a>
             <a href="#screenshots">Screenshots</a>
             <a href="#manual">Manual</a>
+            <a href="#changelog">What's New</a>
 
             <a
                 class="nav-download"
@@ -760,7 +797,7 @@
 
                 <div class="eyebrow">
                     <span class="status-dot"></span>
-                    ANDROID APP • VERSION 1.1
+                    ANDROID APP &bull; VERSION 1.4
                 </div>
 
                 <h1>
@@ -783,7 +820,7 @@
                         href="me90controller.apk"
                         download
                     >
-                        ↓ Update new APK
+                        &darr; Download APK &mdash; v1.4
                     </a>
 
                     <a
@@ -796,8 +833,8 @@
                 </div>
 
                 <div class="app-details">
-                    <span class="detail">Version 1.0</span>
-                    <span class="detail">5.17 MB</span>
+                    <span class="detail">Version 1.4</span>
+                    <span class="detail">5.5 MB</span>
                     <span class="detail">Android 10+</span>
                     <span class="detail">USB OTG Required</span>
                 </div>
@@ -861,7 +898,7 @@
                 </article>
 
                 <article class="feature-card panel">
-                    <div class="feature-icon">1–4</div>
+                    <div class="feature-icon">1&ndash;4</div>
 
                     <h3>Stomp Control</h3>
 
@@ -883,24 +920,24 @@
                 </article>
 
                 <article class="feature-card panel">
-                    <div class="feature-icon">P</div>
+                    <div class="feature-icon">CTL</div>
 
-                    <h3>Patch Management</h3>
+                    <h3>CTL Assignment</h3>
 
                     <p>
-                        Save your preferred tones and recall saved
-                        patches from the patches page.
+                        Assign effects to the CTL footswitch and toggle
+                        them together from an on/off switch in the app.
                     </p>
                 </article>
 
                 <article class="feature-card panel">
-                    <div class="feature-icon">↔</div>
+                    <div class="feature-icon">P</div>
 
-                    <h3>Real-Time Control</h3>
+                    <h3>Patches &amp; Presets</h3>
 
                     <p>
-                        Send parameter and effect changes from the app
-                        to the connected ME-90.
+                        Save custom tones on the Patches page and recall
+                        them fast from the Presets list.
                     </p>
                 </article>
 
@@ -1019,7 +1056,7 @@
                     <p>
                         Connection:
                         <strong>
-                            Android Phone → USB OTG → BOSS ME-90
+                            Android Phone &rarr; USB OTG &rarr; BOSS ME-90
                         </strong>
                     </p>
                 </div>
@@ -1104,7 +1141,7 @@
 
                     <ul class="manual-list">
                         <li>Tap an effect to select or control it.</li>
-                        <li>Use stomp buttons 1–4 to change patches.</li>
+                        <li>Use stomp buttons 1&ndash;4 to change patches.</li>
                         <li>Control the WAH section and level display.</li>
                         <li>View bank, patch name and patch number.</li>
                     </ul>
@@ -1142,18 +1179,17 @@
                 </article>
 
                 <article class="manual-card panel">
-                    <h3>Installation</h3>
+                    <h3>PRESET &amp; CTL</h3>
 
                     <p>
-                        Install the APK directly on a compatible Android
-                        device.
+                        Recall tones fast and drive the CTL footswitch.
                     </p>
 
                     <ul class="manual-list">
-                        <li>Press the Download APK button.</li>
-                        <li>Open the downloaded APK file.</li>
-                        <li>Allow installation from this browser if asked.</li>
-                        <li>Press Install and wait for completion.</li>
+                        <li>Open PRESET for a clean list of every saved patch.</li>
+                        <li>Tap a preset to load it &mdash; the pedal follows.</li>
+                        <li>Tap CTL to open the assignment card.</li>
+                        <li>Pick effects, then use the on/off switch.</li>
                     </ul>
                 </article>
 
@@ -1194,6 +1230,42 @@
                 <div class="requirement panel">
                     <strong>About 10 MB</strong>
                     <span>Free storage recommended</span>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CHANGELOG -->
+
+    <section id="changelog">
+        <div class="container">
+
+            <div class="section-heading">
+                <div class="section-label">WHAT'S NEW</div>
+
+                <h2>
+                    Changelog
+                </h2>
+            </div>
+
+            <div class="changelog panel">
+
+                <h3>Version 1.4</h3>
+                <span class="ver-date">Latest release</span>
+
+                <ul>
+                    <li>New PRESET page &mdash; a clean, tap-to-load list of every saved patch.</li>
+                    <li>CTL assignment card with an on/off switch and status LED.</li>
+                    <li>Pedal-style effect cards that recolor per selected type.</li>
+                    <li>iOS-style toggle switches for AMP, EQ and CTL.</li>
+                    <li>Faster hardware sync &mdash; the app follows bank and CTL changes made on the pedal.</li>
+                    <li>Loading a patch now sends a real Program Change so the pedal follows.</li>
+                </ul>
+
+                <div class="older">
+                    <strong>Version 1.0</strong> &mdash; Initial release:
+                    USB MIDI control, effect editor, patch system.
                 </div>
 
             </div>
@@ -1241,13 +1313,13 @@
 
                 <details>
                     <summary>
-                        The page does not show the screenshots
+                        Updating from an older version
                     </summary>
 
                     <p>
-                        Confirm that live.png, editor.png and patches.png
-                        are in the same GitHub repository folder as
-                        boss.html. File names must match exactly.
+                        Version 1.4 is signed with the same key as earlier
+                        releases, so it installs straight over your current
+                        app and keeps every saved patch.
                     </p>
                 </details>
 
@@ -1294,12 +1366,12 @@
                         href="me90controller.apk"
                         download="me90controller.apk"
                     >
-                        ↓ Update new APK — Version 1.1
+                        &darr; Download APK &mdash; Version 1.4
                     </a>
 
                     <p class="security-note">
-                        File: me90controller.apk • Size: approximately
-                        5.17 MB
+                        File: me90controller.apk &bull; Size: approximately
+                        5.5 MB
                     </p>
 
                 </div>
@@ -1318,8 +1390,8 @@
         </div>
 
         <div>
-            Version 1.0<br>
-            © 2026 Murphy Sabando
+            Version 1.4<br>
+            &copy; 2026 Murphy Sabando
         </div>
 
     </div>
