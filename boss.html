@@ -380,6 +380,50 @@
             font-size: 14px;
         }
 
+        .feature-icon.purple {
+            border-color: rgba(127, 69, 255, 0.35);
+            background: rgba(127, 69, 255, 0.1);
+            color: var(--purple);
+        }
+
+        .coming-soon-banner {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 16px;
+            padding: 22px 25px;
+        }
+
+        .badge-soon {
+            flex-shrink: 0;
+            padding: 7px 13px;
+            border: 1px solid rgba(127, 69, 255, 0.4);
+            border-radius: 100px;
+            background: rgba(127, 69, 255, 0.12);
+            color: #b79bff;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.6px;
+            white-space: nowrap;
+        }
+
+        .coming-soon-banner p {
+            margin: 0;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .coming-soon-banner strong {
+            color: var(--white);
+        }
+
+        @media (max-width: 480px) {
+            .coming-soon-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
         /* SCREENSHOTS */
 
         .screenshots {
@@ -942,6 +986,52 @@
                     </p>
                 </article>
 
+                <article class="feature-card panel">
+                    <div class="feature-icon">AUD</div>
+
+                    <h3>Backing Track Player</h3>
+
+                    <p>
+                        Play any song straight from your phone through
+                        the ME-90 &mdash; play, pause, seek and control
+                        volume without touching a laptop.
+                    </p>
+                </article>
+
+                <article class="feature-card panel">
+                    <div class="feature-icon">SP</div>
+
+                    <h3>Sample Patches</h3>
+
+                    <p>
+                        A set of ready-made tones bundled right into the
+                        app. Load any of them into a slot and start
+                        playing instantly &mdash; no editing required.
+                    </p>
+                </article>
+
+                <article class="feature-card panel">
+                    <div class="feature-icon purple">TS</div>
+
+                    <h3>Laptop-Only Effects, Unlocked</h3>
+
+                    <p>
+                        Extra effect types normally hidden behind BOSS
+                        Tone Studio on a computer &mdash; D-Comp,
+                        Harmonist, Pitch Shift, Warp, Glitch and more
+                        &mdash; now selectable right from your phone.
+                    </p>
+                </article>
+
+            </div>
+
+            <div class="coming-soon-banner panel">
+                <span class="badge-soon">COMING SOON</span>
+                <p>
+                    <strong>Looper Recording</strong> &mdash; record and
+                    loop your playing live through the ME-90, right from
+                    the app.
+                </p>
             </div>
         </div>
     </section>
@@ -1023,6 +1113,48 @@
                         <p>
                             Save and recall your custom effect setups
                             from the patches page.
+                        </p>
+                    </div>
+
+                </article>
+
+                <article class="screenshot-card panel">
+
+                    <div class="screenshot-frame">
+                        <img
+                            src="sample-patches.png"
+                            alt="ME90Controller sample patches list"
+                            loading="lazy"
+                        >
+                    </div>
+
+                    <div class="screenshot-info">
+                        <h3>Sample Patches</h3>
+
+                        <p>
+                            Ready-made tones bundled into the app &mdash;
+                            load one into a slot and play instantly.
+                        </p>
+                    </div>
+
+                </article>
+
+                <article class="screenshot-card panel">
+
+                    <div class="screenshot-frame">
+                        <img
+                            src="audio.png"
+                            alt="ME90Controller backing track player"
+                            loading="lazy"
+                        >
+                    </div>
+
+                    <div class="screenshot-info">
+                        <h3>Backing Track Player</h3>
+
+                        <p>
+                            Open a track from your phone and play it
+                            through the ME-90 with full transport control.
                         </p>
                     </div>
 
@@ -1191,6 +1323,22 @@
                         <li>Tap a preset to load it &mdash; the pedal follows.</li>
                         <li>Tap CTL to open the assignment card.</li>
                         <li>Pick effects, then use the on/off switch.</li>
+                    </ul>
+                </article>
+
+                <article class="manual-card panel">
+                    <h3>AUDIO Page</h3>
+
+                    <p>
+                        Play a backing track through the ME-90 while
+                        you play along.
+                    </p>
+
+                    <ul class="manual-list">
+                        <li>Open a track from your phone's storage.</li>
+                        <li>Play, pause, seek and adjust volume.</li>
+                        <li>Save tracks for quick access later.</li>
+                        <li>Patch control still works while it plays.</li>
                     </ul>
                 </article>
 
